@@ -88,14 +88,12 @@ typedef enum{
     if (is_iOS7()) {
         backImage = @"hm_bg001";
     }
-    PSLog(@"--[%f]---[%f]",CGRectGetWidth(self.view.frame),CGRectGetHeight(self.view.frame));
     [navigationBar setBackgroundImage:[UIImage imageNamed:backImage] forBarMetrics:UIBarMetricsDefault];
     textAttrs[UITextAttributeTextColor] = [UIColor blackColor];
     textAttrs[UITextAttributeTextShadowOffset] = [NSValue valueWithUIOffset:UIOffsetZero];
     textAttrs[UITextAttributeFont] = [UIFont systemFontOfSize:19.0];
     [navigationBar setTitleTextAttributes:textAttrs];
     self.navigationController.toolbarHidden=YES;
-     PSLog(@"--[%f]---[%f]",CGRectGetWidth(self.view.frame),CGRectGetHeight(self.view.frame));
 }
 
 -(void)initBase{
