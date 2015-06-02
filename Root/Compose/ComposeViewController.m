@@ -1,0 +1,401 @@
+//
+//  ComposeViewController.m
+//  RoutingTime
+//
+//  Created by HXL on 15/5/20.
+//  Copyright (c) 2015年 广州因孚网络科技有限公司. All rights reserved.
+//
+
+#import "ComposeViewController.h"
+#import "CCTextView.h"
+#import "PhotosView.h"
+#import "REPhoto.h"
+#import "PhotoSelectController.h"
+#import "PiFiiBaseNavigationController.h"
+#import "MJPhotoBrowser.h"
+#import <AssetsLibrary/AssetsLibrary.h>
+#define HEIGHT 150
+
+@interface ComposeViewController ()<UITextViewDelegate,PhotosViewDelegate,PiFiiBaseViewDelegate>{
+    NSMutableArray  *_photoArr;
+    MBProgressHUD           *stateView;
+    NSString *pathArchtive;
+    NSMutableOrderedSet     *_saveSet;
+    NSMutableDictionary *params;
+}
+
+@property(nonatomic,weak)CCTextView *textView;
+@property(nonatomic,weak)PhotosView *photosView;
+@property(nonatomic,weak)CCScrollView *rootScrollView;
+@end
+
+@implementation ComposeViewController
+
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    _photoArr=[NSMutableArray array];
+    pathArchtive= pathInCacheDirectory(@"AppCache/SavePhotoName.archiver");
+    NSArray *array=[NSKeyedUnarchiver unarchiveObjectWithFile:pathArchtive];
+    if (array&&array.count>0) {
+        _saveSet=[NSMutableOrderedSet orderedSetWithArray:array];
+    }else{
+        _saveSet=[NSMutableOrderedSet orderedSet];
+    }
+    self.view.backgroundColor = [UIColor whiteColor];
+    [self createTextView];
+    [self createPhotosView];
+    if (self.type==ComposeCamera) {
+        [self pushData];
+    }else if(self.type==ComposePhoto){
+        [self openLibaray];
+    }
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+
+}
+
+
+-(void)pushData{
+    NSMutableArray *datasource = [[NSMutableArray alloc] init];
+    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+    [library enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
+        if (group) {
+            [group setAssetsFilter:[ALAssetsFilter allAssets]];
+            [group enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
+                if([[result valueForProperty:ALAssetPropertyType] isEqualToString:ALAssetTypePhoto]) {
+                    REPhoto *photo = [[REPhoto alloc] init];
+                    photo.image = [UIImage imageWithCGImage:result.thumbnail];
+                    NSString *fileName=[[result defaultRepresentation]filename];
+                    photo.imageName=fileName;
+                    photo.imageUrl=[NSString stringWithFormat:@"%@",[result valueForProperty:ALAssetPropertyAssetURL]];
+                    photo.photoDate = [result valueForProperty:ALAssetPropertyDate];
+                    [datasource addObject:photo];
+                }else if([[result valueForProperty:ALAssetPropertyType] isEqualToString:ALAssetTypeVideo]){
+                    REPhoto *photo = [[REPhoto alloc] init];
+                    photo.image = [UIImage imageWithCGImage:result.thumbnail];
+                    NSString *fileName=[[result defaultRepresentation]filename];
+                    photo.imageName=fileName;
+                    photo.imageUrl=[NSString stringWithFormat:@"%@",[result valueForProperty:ALAssetPropertyAssetURL]];
+                    photo.photoDate = [result valueForProperty:ALAssetPropertyDate];
+                    photo.isVedio=YES;
+                    NSTimeInterval duration=[[result valueForProperty:ALAssetPropertyDuration] doubleValue];
+                    int hours=((int)duration)%(3600*24)/3600;
+                    int minus=((int)duration)%(3600*24)/60;
+                    int mt=((int)duration)%(3600*24)%60;
+                    if (hours==0) {
+                        photo.duration=[NSString stringWithFormat:@"%d:%02d",minus,mt];
+                    }else{
+                        photo.duration=[NSString stringWithFormat:@"%d%d:%02d",hours,minus,mt];
+                    }
+                    PSLog(@"--[%@]--",fileName);
+                    [datasource addObject:photo];
+                }
+            }];
+        } else {
+            [datasource sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                REPhoto *item1=(REPhoto *)obj1;
+                REPhoto *item2=(REPhoto *)obj2;
+                return [item2.photoDate compare:item1.photoDate];
+            }];
+           [self addImage:datasource[0]];
+        }
+    } failureBlock:^(NSError *error) {
+        
+    }];
+
+}
+
+-(void)coustomNav{
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStyleDone target:self action:@selector(cancel)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"分享" style:UIBarButtonItemStyleDone target:self action:@selector(send)];
+    self.navigationItem.rightBarButtonItem.enabled = NO;
+    self.title = @"时光发送";
+}
+
+-(void)createTextView{
+    // 1.添加
+    CCTextView *textView = [[CCTextView alloc] init];
+    textView.font = [UIFont systemFontOfSize:18];
+    textView.placeholderColor=RGBCommon(181, 181, 181);
+    
+    textView.frame = CGRectMake(7, 5, CGRectGetWidth(self.view.frame)-15, HEIGHT);
+//    textView.textContainerInset=UIEdgeInsetsMake(15, 10, 0, 10);
+    // 垂直方向上永远可以拖拽
+    textView.alwaysBounceVertical = YES;
+    textView.delegate = self;
+    textView.placeholder = @"这一刻的想法...";
+    [self.view addSubview:textView];
+    self.textView = textView;
+}
+
+-(void)createPhotosView{
+    CCScrollView *scrollView=CCScrollViewCreateNoneIndicatorWithFrame(CGRectMake(0, HEIGHT, CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame)-HEIGHT), self, NO);
+    scrollView.bounces=YES;
+    self.rootScrollView=scrollView;
+    [self.view addSubview:scrollView];
+    
+    PhotosView *photosView = [[PhotosView alloc] init];
+    photosView.frame = CGRectMake(0, 0, CGRectGetWidth(self.rootScrollView.frame), CGRectGetHeight(self.rootScrollView.frame));
+    self.photosView = photosView;
+    photosView.delegate=self;
+    [self.rootScrollView addSubview:photosView];
+
+    
+//    [photosView addImage:[UIImage imageNamed:@"hm_zengjjiad"]];
+    
+}
+
+-(void)onAddTap:(id)sendar{
+    PSLog(@"--add--");
+    
+}
+
+
+-(void)photosTapWithIndex:(NSInteger)index{
+    PSLog(@"--add--[%d]",index);
+    if(index==-1){
+        [self openLibaray];
+    }else{
+        MJPhotoBrowser *photo=[[MJPhotoBrowser alloc]init];
+        photo.isPhoto=YES;
+        photo.currentPhotoIndex=index-1;
+        photo.photos=_photoArr;
+        photo.pifiiDelegate=self;
+        [self.navigationController.view.layer addAnimation:[self customAnimationType:kCATransitionFade upDown:NO]  forKey:@"animation"];
+        [self.navigationController pushViewController:photo animated:NO];
+    }
+}
+
+
+
+-(void)pushViewDataSource:(id)dataSource{
+    [self addImage:dataSource];
+}
+
+-(void)removeViewDataSources:(id)dataSource{
+    _photoArr=[NSMutableArray array];
+    for (UIImageView *image in self.photosView.totalImages) {
+        [image removeFromSuperview];
+    }
+    [self addImage:dataSource];
+}
+
+-(void)addImage:(id)dataSource{
+    if ([dataSource isKindOfClass:[NSArray class]]) {
+        for (REPhoto *photo in dataSource) {
+            [self.photosView addImage:photo.image duration:photo.duration];
+            [_photoArr addObject:photo];
+        }
+    }else{
+        REPhoto *photo=dataSource;
+        [self.photosView addImage:photo.image duration:photo.duration];
+        [_photoArr addObject:photo];
+    }
+    CGFloat gh=self.photosView.subviews.count/4*80+HEIGHT;
+    self.rootScrollView.contentSize=CGSizeMake(0, gh);
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    [self.view endEditing:YES];
+}
+
+
+-(void)textViewDidChange:(UITextView *)textView{
+    self.navigationItem.rightBarButtonItem.enabled = (self.textView.text.length != 0);
+    
+}
+
+/*
+ * 打开相册
+ */
+-(void)openLibaray{
+    PhotoSelectController *photoController=[[PhotoSelectController alloc]init];
+    photoController.pifiiDelegate=self;
+    //    [self.navigationController.view.layer addAnimation:[self customAnimationType:kCATransitionPush upDown:YES] forKey:@"animation"];
+    //    [self.navigationController pushViewController:photoController animated:NO];
+    PiFiiBaseNavigationController *nav=[[PiFiiBaseNavigationController alloc]initWithRootViewController:photoController];
+    [self presentViewController:nav animated:YES completion:nil];
+}
+
+/**
+ *  取消
+ */
+- (void)cancel
+{
+//    [self dismissViewControllerAnimated:YES completion:nil];
+    [self exitCurrentController];
+}
+
+/**
+ *  发微博
+ */
+- (void)send
+{
+    [self.view endEditing:YES];
+    if(!stateView){
+        stateView=[MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    }
+    stateView.hidden=NO;
+    stateView.labelText=@"正在上传...";
+//    [self upload];
+    
+    NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+    NSDictionary *userData= [user objectForKey:USERDATA];
+    NSString *userPhone=userData[@"userPhone"];
+    params = [NSMutableDictionary dictionary];
+    params[@"username"] = userPhone;
+    //    params[@"title"] = [NSString stringWithFormat:@"%s",[_textView.text UTF8String]];
+    params[@"title"]=_textView.text;
+    //    params[@"date"]=@"2015-5-28";
+    //    params[@"date"]=@"20150529150816";
+    params[@"date"]=[self getDate];
+    [self uploadWithPhoto:_photoArr[0]];
+    // 关闭控制器
+//    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+
+-(void)uploadWithPhoto:(REPhoto *)photo{
+    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+    [library assetForURL:[NSURL URLWithString:photo.imageUrl] resultBlock:^(ALAsset *asset)
+     {
+         //在这里使用asset来获取图片
+         if (photo.isVedio) {//上传视频
+             ALAssetRepresentation *rep = [asset defaultRepresentation];
+             PSLog(@"[%lld]",rep.size);
+             const int bufferSize = 1024 * 1024;
+             Byte *buffer=(Byte *)malloc(bufferSize);
+             NSUInteger read=0,offSet=0;
+             NSError *error=nil;
+             NSMutableData *data=[NSMutableData data];
+             if (rep.size!=0) {
+                 do {
+                     read = [rep getBytes:buffer fromOffset:offSet length:bufferSize error:&error];
+                     [data appendBytes:buffer length:read];
+                     offSet += read;
+                 } while (read!=0&&!error);
+             }
+             
+             // 释放缓冲区，关闭文件
+             free(buffer);
+             buffer = NULL;
+             [self uploadVedio:data photo:photo];
+         }else{ // 上传图片
+             UIImage *image = [[UIImage alloc]initWithCGImage:[[asset  defaultRepresentation]fullScreenImage]];
+             [self uploadVedio:UIImageJPEGRepresentation(image, 1) photo:photo];
+         }
+     }
+            failureBlock:^(NSError *error)
+     {}];
+}
+
+
+#pragma -mark 备份视频
+-(void)uploadVedio:(NSData *)data photo:(REPhoto *)photo{
+    NSString *url=[NSString stringWithFormat:@"%@/uploadFiles",ROUTINGTIMEURL];
+    NSMutableURLRequest *request = [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:@"POST" URLString:url parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+        if (data) {
+            if (photo.isVedio) {
+                [formData appendPartWithFileData:data name:@"files" fileName:photo.imageName mimeType:@"video/mp4"];
+            }else{
+                 [formData appendPartWithFileData:data name:@"files" fileName:photo.imageName mimeType:@"image/jpeg"];
+            }
+        }
+        
+    } error:nil];
+    AFURLSessionManager *managers = [[AFURLSessionManager alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+    NSProgress *progress = nil;
+    NSURLSessionUploadTask *uploadTask = [managers uploadTaskWithStreamedRequest:request progress:&progress completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        if (error) {
+            PSLog(@"Error: %@", error);
+            stateView.labelText=@"备份失败";
+            [self performSelector:@selector(setStateView:) withObject:@"fail" afterDelay:0.5];
+        } else {
+            photo.isBackup=YES;
+            [_saveSet addObject:photo.imageName];
+            [NSKeyedArchiver archiveRootObject:_saveSet.array toFile:pathArchtive];
+            [_photoArr removeObject:photo];
+            if (_photoArr.count>0) {
+                [self uploadWithPhoto:_photoArr[0]];
+            }else{
+                stateView.labelText=@"备份成功";
+                [self performSelector:@selector(setStateView:) withObject:@"success" afterDelay:0.5];
+            }
+        }
+    }];
+    [progress addObserver:self
+               forKeyPath:NSStringFromSelector(@selector(fractionCompleted))
+                  options:NSKeyValueObservingOptionInitial
+                  context:nil];
+    [uploadTask resume];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
+                        change:(NSDictionary *)change context:(void *)context
+{
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        NSProgress *progress = object;
+        CGFloat fraction= progress.fractionCompleted;
+        NSString *localized=progress.localizedDescription;
+        NSString *additional=progress.localizedAdditionalDescription;
+        int progressDuration=fraction*100;
+        stateView.labelText=[NSString stringWithFormat:@"正在上传...(%d%%)",progressDuration];
+        PSLog(@"[%f]--[%@]--[%@]",fraction,localized,additional);
+    }];
+}
+
+
+
+-(void)setStateView:(NSString *)state{
+    [UIView animateWithDuration:0.3 animations:^{
+        stateView.alpha=0;
+    } completion:^(BOOL finished) {
+        stateView.alpha=1;
+        stateView.hidden=YES;
+        if ([state isEqualToString:@"fail"]) {
+            //            [self exitCurrentController];
+        }
+        
+    }];
+}
+
+-(NSString *)getDate{
+    NSDateFormatter *sdf=[[NSDateFormatter alloc]init];
+    [sdf setDateFormat:@"yyyyMMddHHmmss"];
+    return [sdf stringFromDate:[NSDate date]];
+}
+
+
+-(CATransition *)customAnimationType:(NSString *)type upDown:(BOOL )boolUpDown{
+    CATransition *animation = [CATransition animation];
+    animation.duration = 0.5f ;
+    animation.type = type;//101
+    if (boolUpDown) {
+        animation.subtype = kCATransitionFromTop;
+    }else{
+        animation.subtype = kCATransitionFromBottom;
+    }
+    animation.timingFunction = UIViewAnimationCurveEaseInOut;
+    
+    return animation;
+}
+
+
+-(void)exitCurrentController{
+    [self.navigationController.view.layer addAnimation:[self customAnimationType:kCATransitionPush upDown:NO] forKey:@"animation"];
+    if (![self.navigationController popViewControllerAnimated:NO]) {
+        [self dismissViewControllerAnimated:NO completion:nil];
+    }
+}
+
+
+@end

@@ -1,0 +1,6 @@
+/* Localized versions of Info.plist keys */
+
+CFBundleDisplayName = "时光路游";
+CFBundleName = "时光路游";
+
+"return" = "返回";
