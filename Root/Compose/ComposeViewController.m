@@ -246,18 +246,17 @@
     }
     stateView.hidden=NO;
     stateView.labelText=@"正在上传...";
-//    [self upload];
     
     NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
     NSDictionary *userData= [user objectForKey:USERDATA];
     NSString *userPhone=userData[@"userPhone"];
     params = [NSMutableDictionary dictionary];
     params[@"username"] = userPhone;
-    //    params[@"title"] = [NSString stringWithFormat:@"%s",[_textView.text UTF8String]];
     params[@"title"]=_textView.text;
     //    params[@"date"]=@"2015-5-28";
     //    params[@"date"]=@"20150529150816";
     params[@"date"]=[self getDate];
+    
     [self uploadWithPhoto:_photoArr[0]];
     // 关闭控制器
 //    [self dismissViewControllerAnimated:YES completion:nil];
