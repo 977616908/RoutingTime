@@ -22,12 +22,12 @@ typedef enum{
     CGFloat lastScrollOffset;
     CGFloat angle;
     CADisplayLink *link;
-    BOOL          isRefresh;
     NSInteger pageCount;
     NSMutableArray *_arrTime;
     UINavigationBar *navigationBar;
     NSArray *arrImgs;
     MBProgressHUD           *stateView;
+    BOOL isRefresh;
 }
 @property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *imgArr;
 @property (strong, nonatomic) IBOutletCollection(UILabel) NSArray *titileArr;
@@ -39,6 +39,7 @@ typedef enum{
 @property (nonatomic,assign)CameraType type;
 
 @property(nonatomic,weak)MJRefreshHeaderView *header;
+@property (nonatomic, weak) MJRefreshFooterView *footer;
 @property (weak, nonatomic) IBOutlet UIScrollView *rootScrollView;
 @end
 
@@ -78,7 +79,7 @@ typedef enum{
         [self.btnWifii setTitle:@" 未绑定" forState:UIControlStateNormal];
     }
     pageCount=1;
-    [self getRequestWithPage:pageCount];
+    [self getRequestPage:1 mark:@"home"];
 }
 
 
@@ -104,19 +105,52 @@ typedef enum{
 }
 
 #pragma -mark 网络加载
--(void)getRequestWithPage:(NSInteger)page{
+-(void)getRequestPage:(NSInteger)page mark:(NSString *)mark{
     NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
     NSDictionary *userData= [user objectForKey:USERDATA];
     NSString *userPhone=userData[@"userPhone"];
     if (userPhone&&![userPhone isEqualToString:@""]) {
-        [self initPostWithURL:ROUTINGTIMEURL path:@"mainPageVideo" paras:@{@"username":userPhone,@"page":@(page)} mark:@"home" autoRequest:YES];
+        [self initPostWithURL:ROUTINGTIMEURL path:@"mainPageVideo" paras:@{@"username":userPhone,@"page":@(page)} mark:mark autoRequest:YES];
     }
   
 }
 
 -(void)handleRequestOK:(id)response mark:(NSString *)mark{
-    if([mark isEqualToString:@"home"]){
-        NSNumber *returnCode=[response objectForKey:@"returnCode"];
+    NSNumber *returnCode=[response objectForKey:@"returnCode"];
+    if([mark isEqualToString:@"header"]){
+        if ([returnCode integerValue]==200) {
+            NSArray *data=[response objectForKey:@"data"];
+            [_arrTime removeAllObjects];
+            for (NSDictionary *param in data) {
+                RoutingTime *time=[[RoutingTime alloc]initWithData:param];
+                [_arrTime addObject:time];
+            }
+            NSInteger count=[[response objectForKey:@"pages"]integerValue];
+            if (pageCount==count||pageCount>count) {
+                pageCount=-1;
+            }else{
+                pageCount=2;
+            }
+        }
+        [self performSelector:@selector(updateMark:) withObject:mark afterDelay:.2];
+    }else if([mark isEqualToString:@"footer"]){
+        if ([returnCode integerValue]==200) {
+            NSArray *data=[response objectForKey:@"data"];
+            NSMutableArray *arr=[NSMutableArray array];
+            for (NSDictionary *param in data) {
+                RoutingTime *time=[[RoutingTime alloc]initWithData:param];
+                [arr addObject:time];
+            }
+            [_arrTime addObjectsFromArray:arr];
+            NSInteger count=[[response objectForKey:@"pages"]integerValue];
+            if (pageCount==count||pageCount>count) {
+                pageCount=-1;
+            }else{
+                pageCount+=1;
+            }
+        }
+        [self performSelector:@selector(updateMark:) withObject:mark afterDelay:.2];
+    }else{
         if ([returnCode integerValue]==200) {
             NSArray *data=[response objectForKey:@"data"];
             [_arrTime removeAllObjects];
@@ -138,25 +172,30 @@ typedef enum{
                 NSDictionary *dict=@{@"url":path,@"imageView":self.topImg,@"size":size};
                 [NSThread detachNewThreadSelector:@selector(cacheImage:) toTarget:[ImageCacher defaultCacher] withObject:dict];
             }
-            [self performSelector:@selector(updateWithData) withObject:nil afterDelay:.2];
+            NSInteger count=[[response objectForKey:@"pages"]integerValue];
+            if (pageCount==count||pageCount>count) {
+                pageCount=-1;
+            }else{
+                pageCount+=1;
+            }
+            [self.rootTable reloadData];
         }
+
     }
-    
+   
 }
 
 -(void)handleRequestFail:(NSError *)error mark:(NSString *)mark{
-    
+    [self performSelector:@selector(updateMark:) withObject:mark afterDelay:.2];
 }
 
--(void)updateWithData{
-    if (isRefresh) {
-        isRefresh=NO;
+-(void)updateMark:(NSString *)mark{
+    if ([mark isEqualToString:@"header"]) {
         [self.header endRefreshing];
     }else{
-       
+        isRefresh=NO;
+        [self.footer endRefreshing];
     }
-
-    
     [self.rootTable reloadData];
 }
 
@@ -317,9 +356,28 @@ typedef enum{
         angle=angle>0?-angle:angle;
     }
     lastScrollOffset=y;
-   [self startAnimation];
+    [self startAnimation];
+    [self scrollViewBottomScroll:scrollView];
 }
 
+
+-(void)scrollViewBottomScroll:(UIScrollView*)aScrollView{
+    CGPoint offset = aScrollView.contentOffset;
+    CGRect bounds = aScrollView.bounds;
+    CGSize size = aScrollView.contentSize;
+    UIEdgeInsets inset = aScrollView.contentInset;
+    float y = offset.y + bounds.size.height - inset.bottom;
+    float h = size.height;
+    float reload_distance = 10;
+    if(y > h + reload_distance) {
+        PSLog(@"---end---");
+        if (pageCount!=-1&&!isRefresh) {
+            isRefresh=YES;
+            [self.footer beginRefreshing];
+            [self getRequestPage:pageCount mark:@"footer"];
+        }
+    }
+}
 -(void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView{
     [UIView animateWithDuration:0.5 animations:^{
         _rootScrollView.contentOffset=CGPointMake(0, 60);
@@ -349,23 +407,29 @@ typedef enum{
     header.scrollView = scrollView;
     header.delegate = self;
     self.header = header;
-    isRefresh=NO;
+    
+    MJRefreshFooterView *footer = [MJRefreshFooterView footer];
+    footer.scrollView=scrollView;
+    footer.delegate=self;
+    self.footer=footer;
 }
 /**
  *  刷新控件进入开始刷新状态的时候调用
  */
 - (void)refreshViewBeginRefreshing:(MJRefreshBaseView *)refreshView
 {
-    //    if ([refreshView isKindOfClass:[MJRefreshFooterView class]]) { // 上拉刷新
-    //        [self loadMoreData];
-    //    } else { // 下拉刷新
-    //        [self loadNewData];
-    //    }
-    isRefresh=YES;
-    [self getRequestWithPage:pageCount];
+    if ([refreshView isKindOfClass:[MJRefreshHeaderView class]]) {
+        [self getRequestPage:1 mark:@"header"];
+    }else{
+        [refreshView endRefreshing];
+    }
+    
     
 }
 
+-(void)refreshView:(MJRefreshBaseView *)refreshView stateChange:(MJRefreshState)state{
+    PSLog(@"---[%d]---",state);
+}
 
 - (void)startAnimation
 {
@@ -461,7 +525,9 @@ typedef enum{
 }
 
 -(void)dealloc{
+    // 释放内存
     [self.header free];
+    [self.footer free];
 }
 
 #pragma -mark 上传头像
