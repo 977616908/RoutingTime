@@ -83,6 +83,7 @@ typedef enum{
     [self getRequestWithPage:pageCount];
 }
 
+
 -(void)setNavBackground{
     NSMutableDictionary *textAttrs = [NSMutableDictionary dictionary];
     NSString *backImage = @"hm_bg001_iOS6";
