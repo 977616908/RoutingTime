@@ -243,9 +243,6 @@ typedef enum{
     return 189.0f;
 }
 
-//-(CGFloat)tableView:(UITableView *)tableView estimatedHeightForHeaderInSection:(NSInteger)section{
-//    return 0.0f;
-//}
 
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
     NSLog(@"--[%d]---[%d]",actionSheet.tag,buttonIndex);
