@@ -32,6 +32,13 @@
 @implementation ComposeViewController
 
 
+-(void)loadView{
+    [super loadView];
+    if (self.type==ComposePhoto) {
+        [self openLibaray];
+    }
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     _photoArr=[NSMutableArray array];
@@ -47,9 +54,10 @@
     [self createPhotosView];
     if (self.type==ComposeCamera) {
         [self pushData];
-    }else if(self.type==ComposePhoto){
-        [self openLibaray];
     }
+//    else if(self.type==ComposePhoto){
+//        [self openLibaray];
+//    }
 }
 
 -(void)viewWillAppear:(BOOL)animated{
