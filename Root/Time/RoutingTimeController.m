@@ -154,6 +154,7 @@ typedef enum{
         if ([returnCode integerValue]==200) {
             NSArray *data=[response objectForKey:@"data"];
             [_arrTime removeAllObjects];
+//            [_arrTime addObject:photo];
             for (NSDictionary *param in data) {
                 RoutingTime *time=[[RoutingTime alloc]initWithData:param];
                 [_arrTime addObject:time];
@@ -370,7 +371,6 @@ typedef enum{
     float h = size.height;
     float reload_distance = 10;
     if(y > h + reload_distance) {
-        PSLog(@"---end---");
         if (pageCount!=-1&&!isRefresh) {
             isRefresh=YES;
             [self.footer beginRefreshing];
