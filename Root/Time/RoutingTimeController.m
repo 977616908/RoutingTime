@@ -28,7 +28,6 @@ typedef enum{
     UINavigationBar *navigationBar;
     NSArray *arrImgs;
     MBProgressHUD           *stateView;
-    UIView *bgTop;
 }
 @property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *imgArr;
 @property (strong, nonatomic) IBOutletCollection(UILabel) NSArray *titileArr;
@@ -71,7 +70,6 @@ typedef enum{
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self setNavBackground];
-    [self addTopView];
     BOOL isMacBouds=[GlobalShare isBindMac];
     if (isMacBouds) {
         NSString *pifiiTitle=[[NSUserDefaults standardUserDefaults] objectForKey:ROUTERNAME];
@@ -98,18 +96,6 @@ typedef enum{
     [navigationBar setTitleTextAttributes:textAttrs];
     self.navigationController.toolbarHidden=YES;
      PSLog(@"--[%f]---[%f]",CGRectGetWidth(self.view.frame),CGRectGetHeight(self.view.frame));
-}
-
--(void)addTopView{
-    bgTop=[[UIView alloc]initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame), 189)];
-    bgTop.backgroundColor=[UIColor redColor];
-    self.rootTable.tableHeaderView=bgTop;
-    [self performSelector:@selector(onExit) withObject:nil afterDelay:5];
-}
-
--(void)onExit{
-    [bgTop removeFromSuperview];
-//    self.rootTable.tableHeaderView.hidden=YES;
 }
 
 -(void)initBase{
