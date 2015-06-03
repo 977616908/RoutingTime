@@ -23,6 +23,7 @@
     NSString *pathArchtive;
     NSMutableOrderedSet     *_saveSet;
     NSMutableDictionary *params;
+    NSInteger downCount;
 }
 
 @property(nonatomic,weak)CCTextView *textView;
@@ -262,7 +263,8 @@
     down.downList=_photoArr;
     
     [self.pifiiDelegate pushViewDataSource:down];
-//    [self uploadWithPhoto:_photoArr[0]];
+    downCount=_photoArr.count;
+    [self uploadWithPhoto:_photoArr[0]];
     // 关闭控制器
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -353,6 +355,10 @@
         NSString *additional=progress.localizedAdditionalDescription;
         int progressDuration=fraction*100;
         stateView.labelText=[NSString stringWithFormat:@"正在上传...(%d%%)",progressDuration];
+        NSDictionary *param=@{@"count":@(_photoArr.count),
+                              @"totalCount":@(downCount),
+                              @"progress":@(fraction*100)};
+        [PSNotificationCenter postNotificationName:@"DOWNPROGRESS" object:nil userInfo:param];
         PSLog(@"[%f]--[%@]--[%@]",fraction,localized,additional);
     }];
 }

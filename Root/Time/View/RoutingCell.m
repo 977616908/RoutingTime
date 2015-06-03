@@ -14,6 +14,7 @@
 }
 #define HEIGHT 150
 #define WEITH 268
+#define DOWNPROGRESS @"DOWNPROGRESS"
 
 @property (weak, nonatomic) IBOutlet UIView *bgView;
 @property (weak, nonatomic) IBOutlet UILabel *lbTitle;
@@ -21,6 +22,8 @@
 @property (weak, nonatomic) IBOutlet UIImageView *imgTag;
 @property (weak, nonatomic) IBOutlet UILabel *lbDay;
 @property (weak, nonatomic) IBOutlet UILabel *lbMM;
+@property (weak, nonatomic) UILabel *lbProgress;
+@property (weak, nonatomic) UIView *lbView;
 
 
 @end
@@ -111,9 +114,12 @@
     UILabel *lbDown=[[UILabel alloc]initWithFrame:CGRectMake(20, 0,CGRectGetWidth(self.bgView.frame), CGRectGetHeight(lbView.frame))];
     [lbDown setFont:[UIFont systemFontOfSize:10.0]];
     lbDown.textColor=[UIColor whiteColor];
-    lbDown.text=@"上传中...(2/1)37.0%";
+//    lbDown.text=@"上传中...(2/1)37.0%";
+    self.lbProgress=lbDown;
     [lbView addSubview:lbDown];
+    self.lbView=lbView;
     [self.bgView addSubview:lbView];
+    [PSNotificationCenter addObserver:self selector:@selector(onProgressChange:) name:DOWNPROGRESS object:nil];
 }
 
 -(void)addImageCount:(NSInteger)count{
@@ -163,6 +169,23 @@
     }
     [sdf setDateFormat:type];
     return [sdf stringFromDate:dt];
+}
+
+-(void)onProgressChange:(NSNotification *)not{
+//    @"count":@(_photoArr.count),
+//    @"totalCount":@(10),
+//    @"progress":@(fraction*100)
+    NSDictionary *param=not.userInfo;
+    NSInteger totalCount=[param[@"totalCount"] integerValue];
+    NSInteger count=totalCount-[param[@"count"] integerValue];
+    CGFloat progress=[param[@"progress"] floatValue];
+    //    lbDown.text=@"上传中...(2/1)37.0%";
+    self.lbProgress.text=[NSString stringWithFormat:@"上传中...(%d/%d)%.2f%%",totalCount,count,progress];
+    if (progress>=100&&totalCount==count) {
+        [PSNotificationCenter removeObserver:self name:DOWNPROGRESS object:nil];
+        [self.lbView removeFromSuperview];
+    }
+    PSLog(@"--[%d]--[%f]-[%d]",totalCount,progress,count);
 }
 
 @end
