@@ -274,8 +274,8 @@ typedef enum{
     if ([dataSource isKindOfClass:[NSArray class]]) {
         [self performSelector:@selector(startIntent:) withObject:dataSource afterDelay:.2];
     }else{
-        RoutingDown *donw=[[RoutingDown alloc]init];
-        [_arrTime insertObject:donw atIndex:0];
+        RoutingDown *down=dataSource;
+        [_arrTime insertObject:down atIndex:0];
         [self.rootTable reloadData];
     }
     PSLog(@"---pushView---");

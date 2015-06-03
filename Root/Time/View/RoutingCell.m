@@ -130,6 +130,15 @@
     
 }
 
+-(void)setRoutingDown:(RoutingDown *)routingDown{
+    _routingDown=routingDown;
+    NSDictionary *param=routingDown.params;
+    self.lbTitle.text=param[@"title"];
+    self.lbCount.text=[NSString stringWithFormat:@"%d",routingDown.downList.count];
+    self.lbMM.text=[self getDate:nil type:@"MM月"];
+    self.lbDay.text=[self getDate:nil type:@"dd"];
+}
+
 -(void)setImgName:(NSString *)imgName{
     _imgName=imgName;
     self.imgTag.image=[UIImage imageNamed:imgName];
@@ -137,8 +146,11 @@
 
 -(NSString *)getDate:(NSString *)date type:type{
     NSDateFormatter *sdf=[[NSDateFormatter alloc]init];
-    [sdf setDateFormat:@"yyyy-MM-dd"];
-    NSDate *dt=[sdf dateFromString:date];
+    NSDate *dt=[NSDate date];
+    if (date) {
+        [sdf setDateFormat:@"yyyy-MM-dd"];
+        dt=[sdf dateFromString:date];
+    }
     [sdf setDateFormat:type];
     return [sdf stringFromDate:dt];
 }
