@@ -201,6 +201,7 @@
         return;
     }
     RoutingDetailController *detailController=[[RoutingDetailController alloc]init];
+    detailController.routingTime=_routingTime;
     [controller.navigationController pushViewController:detailController animated:YES];
 }
 

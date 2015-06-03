@@ -7,8 +7,9 @@
 //
 
 #import "PiFiiBaseViewController.h"
-
+@class RoutingTime;
 
 @interface RoutingDetailController : PiFiiBaseViewController
-@property(nonatomic,copy)NSArray *arrPhoto;
+@property(nonatomic,strong)RoutingTime *routingTime;
+
 @end

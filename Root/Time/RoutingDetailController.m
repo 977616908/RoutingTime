@@ -11,8 +11,9 @@
 #import "PhotosView.h"
 #import "MJPhotoBrowser.h"
 #import <AssetsLibrary/AssetsLibrary.h>
-#import "RoutingDown.h"
-#define HEIGHT 150
+#import "RoutingMsg.h"
+#import "RoutingTime.h"
+#define HEIGHT 200
 
 @interface RoutingDetailController ()<UITextViewDelegate,PhotosViewDelegate,PiFiiBaseViewDelegate>{
     NSMutableArray  *_photoArr;
@@ -43,10 +44,12 @@
         _saveSet=[NSMutableOrderedSet orderedSet];
     }
     self.view.backgroundColor = [UIColor whiteColor];
-    [self createTextView];
     [self createPhotosView];
-    if (_arrPhoto) {
-        [self addImage:_arrPhoto];
+    [self createTextView];
+    if (_routingTime) {
+        NSArray *arr=_routingTime.rtSmallPaths;
+        [self addImage:arr];
+        _textView.text=_routingTime.rtTitle;
     }
 }
 
@@ -59,26 +62,28 @@
 -(void)createTextView{
     // 1.添加
     CCTextView *textView = [[CCTextView alloc] init];
-    textView.font = [UIFont systemFontOfSize:18];
+    textView.font = [UIFont systemFontOfSize:14];
     textView.placeholderColor=RGBCommon(181, 181, 181);
     
-    textView.frame = CGRectMake(7, 5, CGRectGetWidth(self.view.frame)-15, HEIGHT);
+    textView.frame = CGRectMake(7, CGRectGetMaxY(self.rootScrollView.frame), CGRectGetWidth(self.view.frame)-15, HEIGHT);
 //    textView.textContainerInset=UIEdgeInsetsMake(15, 10, 0, 10);
     // 垂直方向上永远可以拖拽
     textView.alwaysBounceVertical = YES;
     textView.delegate = self;
-    textView.placeholder = @"这一刻的想法...";
+    textView.editable=NO;
+//    textView.placeholder = @"这一刻的想法...";
     [self.view addSubview:textView];
     self.textView = textView;
 }
 
 -(void)createPhotosView{
-    CCScrollView *scrollView=CCScrollViewCreateNoneIndicatorWithFrame(CGRectMake(0, HEIGHT, CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame)-HEIGHT), self, NO);
+    CCScrollView *scrollView=CCScrollViewCreateNoneIndicatorWithFrame(CGRectMake(0, 5, CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame)-HEIGHT), self, NO);
     scrollView.bounces=YES;
     self.rootScrollView=scrollView;
     [self.view addSubview:scrollView];
     
     PhotosView *photosView = [[PhotosView alloc] init];
+    photosView.isAdd=YES;
     photosView.frame = CGRectMake(0, 0, CGRectGetWidth(self.rootScrollView.frame), CGRectGetHeight(self.rootScrollView.frame));
     self.photosView = photosView;
     photosView.delegate=self;
@@ -101,7 +106,7 @@
     photo.isPhoto=YES;
     photo.currentPhotoIndex=index-1;
     photo.photos=_photoArr;
-    photo.pifiiDelegate=self;
+//    photo.pifiiDelegate=self;
     [self.navigationController.view.layer addAnimation:[self customAnimationType:kCATransitionFade upDown:NO]  forKey:@"animation"];
     [self.navigationController pushViewController:photo animated:NO];
     
@@ -111,8 +116,20 @@
 
 
 -(void)addImage:(id)dataSource{
-
-    CGFloat gh=self.photosView.subviews.count/4*80+HEIGHT;
+    for (RoutingMsg *msg in dataSource) {
+        NSString *path=msg.msgPath;
+        //        [cell.imgView setImageWithURL:[path urlInstance]];
+        if (hasCachedImageWithString(path)) {
+            UIImage *image=[UIImage imageWithContentsOfFile:pathForString(path)];
+            [self.photosView addImage:image duration:nil];
+        }else{
+            UIImageView *image=[self.photosView addImage:nil duration:nil];
+            NSValue *size=[NSValue valueWithCGSize:CGSizeMake(144, 144)];
+            NSDictionary *dict=@{@"url":path,@"imageView":image,@"size":size};
+            [NSThread detachNewThreadSelector:@selector(cacheImage:) toTarget:[ImageCacher defaultCacher] withObject:dict];
+        }
+    }
+    CGFloat gh=self.photosView.subviews.count/4*80;
     self.rootScrollView.contentSize=CGSizeMake(0, gh);
 }
 

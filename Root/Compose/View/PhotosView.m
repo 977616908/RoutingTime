@@ -23,10 +23,14 @@
     return self;
 }
 
-- (void)addImage:(UIImage *)image duration:(NSString *)duration
+- (UIImageView *)addImage:(UIImage *)image duration:(NSString *)duration
 {
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, HEIGHT, HEIGHT)];
-    imageView.image = image;
+    if (image) {
+        imageView.image = image;
+    }else{
+        imageView.image=[UIImage imageNamed:@"hm_tupian"];
+    }
     if (duration&&![duration isEqualToString:@""]) {
         UIView *bgVedio=[[UIView alloc]initWithFrame:CGRectMake(2, CGRectGetMaxY(imageView.frame)-16, CGRectGetWidth(imageView.frame), 16)];
         bgVedio.hidden=NO;
@@ -45,6 +49,7 @@
         [imageView addSubview:bgVedio];
     }
     [self addSubview:imageView];
+    return imageView;
 }
 
 - (void)layoutSubviews
@@ -65,7 +70,7 @@
     CGFloat imageViewX = margin + ((count-1) % maxColumns) * (HEIGHT + margin);
     CGFloat imageViewY = ((count-1) / maxColumns) * (HEIGHT + margin);
     ((UIImageView *)self.subviews[0]).frame=CGRectMake(imageViewX, imageViewY, HEIGHT, HEIGHT);
-
+    ((UIImageView *)self.subviews[0]).hidden=_isAdd;
 }
 
 -(void)onAddTap:(UITapGestureRecognizer *)sendar{

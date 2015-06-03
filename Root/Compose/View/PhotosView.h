@@ -16,11 +16,13 @@
 
 @interface PhotosView : UIView
 
+@property(nonatomic,assign)BOOL isAdd;
+
 @property(nonatomic,weak)id<PhotosViewDelegate> delegate;
 /**
  *  添加一张新的图片
  */
-- (void)addImage:(UIImage *)image duration:(NSString *)duration;
+- (UIImageView *)addImage:(UIImage *)image duration:(NSString *)duration;
 
 /**
  *  返回内部所有的图片
