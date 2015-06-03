@@ -8,7 +8,10 @@
 
 #import "RoutingCell.h"
 #import "RoutingMsg.h"
-@interface RoutingCell ()
+#import "REPhoto.h"
+@interface RoutingCell (){
+    NSArray *arrImgs;
+}
 #define HEIGHT 150
 #define WEITH 268
 
@@ -54,80 +57,32 @@
 
 -(void)setRoutingTime:(RoutingTime *)routingTime{
     _routingTime=routingTime;
-    if (routingTime) {
-        self.lbTitle.text=routingTime.rtTitle;
-        self.lbCount.text=routingTime.rtNums;
-        self.lbMM.text=[self getDate:routingTime.rtDate type:@"MM月"];
-        self.lbDay.text=[self getDate:routingTime.rtDate type:@"dd"];
-        if (routingTime.rtSmallPaths.count==1) {
-            UIImageView *image=[[UIImageView alloc]initWithFrame:CGRectMake(2, 2, WEITH, HEIGHT)];
-            image.image=[UIImage imageNamed:@"hm_tupian_da"];
-            [self.bgView addSubview:image];
-            RoutingMsg *msg=routingTime.rtSmallPaths[0];
+    self.lbTitle.text=routingTime.rtTitle;
+    self.lbCount.text=routingTime.rtNums;
+    self.lbMM.text=[self getDate:routingTime.rtDate type:@"MM月"];
+    self.lbDay.text=[self getDate:routingTime.rtDate type:@"dd"];
+    NSArray *arr=routingTime.rtSmallPaths;
+    if (arr) {
+        [self addImageCount:arr.count];
+        for (int i=0; i<arrImgs.count; i++) {
+            UIImageView *image=arrImgs[i];
+            RoutingMsg *msg=routingTime.rtSmallPaths[i];
             NSString *path=msg.msgPath;
             //        [cell.imgView setImageWithURL:[path urlInstance]];
             if (hasCachedImageWithString(path)) {
                 image.image=[UIImage imageWithContentsOfFile:pathForString(path)];
             }else{
                 NSValue *size=[NSValue valueWithCGSize:CGSizeMake(WEITH, HEIGHT)];
+                if(i==1){
+                    size=[NSValue valueWithCGSize:CGSizeMake(WEITH/2, HEIGHT)];
+                }else if(i==2){
+                    size=[NSValue valueWithCGSize:CGSizeMake(WEITH/2, HEIGHT/2)];
+                }
                 NSDictionary *dict=@{@"url":path,@"imageView":image,@"size":size};
                 [NSThread detachNewThreadSelector:@selector(cacheImage:) toTarget:[ImageCacher defaultCacher] withObject:dict];
             }
-            
-        }else if(routingTime.rtSmallPaths.count==2){
-            for (int i=0; i<2; i++) {
-                UIImageView *image=[[UIImageView alloc]initWithFrame:CGRectMake(2+(WEITH/2)*i,2 ,WEITH/2-1, HEIGHT)];
-                image.image=[UIImage imageNamed:@"hm_tupian_center"];
-                [self.bgView addSubview:image];
-                RoutingMsg *msg=routingTime.rtSmallPaths[i];
-                NSString *path=msg.msgPath;
-                //        [cell.imgView setImageWithURL:[path urlInstance]];
-                if (hasCachedImageWithString(path)) {
-                    image.image=[UIImage imageWithContentsOfFile:pathForString(path)];
-                }else{
-                    NSValue *size=[NSValue valueWithCGSize:CGSizeMake(WEITH/2, HEIGHT)];
-                    NSDictionary *dict=@{@"url":path,@"imageView":image,@"size":size};
-                    [NSThread detachNewThreadSelector:@selector(cacheImage:) toTarget:[ImageCacher defaultCacher] withObject:dict];
-                }
-            }
-            
-            
-        }else{
-            for (int i=0; i<3; i++) {
-                if (i==0) {
-                    UIImageView *image=[[UIImageView alloc]initWithFrame:CGRectMake(2, 2, WEITH/2-1, HEIGHT-1)];
-                    image.image=[UIImage imageNamed:@"hm_tupian_center"];
-                    [self.bgView addSubview:image];
-                    RoutingMsg *msg=routingTime.rtSmallPaths[i];
-                    NSString *path=msg.msgPath;
-                    //        [cell.imgView setImageWithURL:[path urlInstance]];
-                    if (hasCachedImageWithString(path)) {
-                        image.image=[UIImage imageWithContentsOfFile:pathForString(path)];
-                    }else{
-                        NSValue *size=[NSValue valueWithCGSize:CGSizeMake(WEITH/2, HEIGHT)];
-                        NSDictionary *dict=@{@"url":path,@"imageView":image,@"size":size};
-                        [NSThread detachNewThreadSelector:@selector(cacheImage:) toTarget:[ImageCacher defaultCacher] withObject:dict];
-                    }
-                }else{
-                    UIImageView *image=[[UIImageView alloc]initWithFrame:CGRectMake(WEITH/2+2,2+(HEIGHT/2)*(i-1), WEITH/2, HEIGHT/2-1)];
-                    image.image=[UIImage imageNamed:@"hm_tupian_small"];
-                    [self.bgView addSubview:image];
-                    RoutingMsg *msg=routingTime.rtSmallPaths[i];
-                    NSString *path=msg.msgPath;
-                    //        [cell.imgView setImageWithURL:[path urlInstance]];
-                    if (hasCachedImageWithString(path)) {
-                        image.image=[UIImage imageWithContentsOfFile:pathForString(path)];
-                    }else{
-                        NSValue *size=[NSValue valueWithCGSize:CGSizeMake(WEITH/2, HEIGHT/2)];
-                        NSDictionary *dict=@{@"url":path,@"imageView":image,@"size":size};
-                        [NSThread detachNewThreadSelector:@selector(cacheImage:) toTarget:[ImageCacher defaultCacher] withObject:dict];
-                    }
-                }
-            }
         }
-
     }
-    
 }
 
 -(void)setRoutingDown:(RoutingDown *)routingDown{
@@ -137,7 +92,49 @@
     self.lbCount.text=[NSString stringWithFormat:@"%d",routingDown.downList.count];
     self.lbMM.text=[self getDate:nil type:@"MM月"];
     self.lbDay.text=[self getDate:nil type:@"dd"];
+    NSArray *arr=_routingDown.downList;
+    if (arr) {
+        [self addImageCount:arr.count];
+        for (int i=0; i<arrImgs.count; i++) {
+            UIImageView *image=arrImgs[i];
+            REPhoto *photo=arr[i];
+            image.image=photo.image;
+        }
+    }
 }
+
+-(void)addImageCount:(NSInteger)count{
+    NSMutableArray *imags=[NSMutableArray array];
+    if (count==1) {
+        UIImageView *image=[[UIImageView alloc]initWithFrame:CGRectMake(2, 2, WEITH, HEIGHT)];
+        image.image=[UIImage imageNamed:@"hm_tupian_da"];
+        [self.bgView addSubview:image];
+        [imags addObject:image];
+    }else if(count==2){
+        for (int i=0; i<2; i++) {
+            UIImageView *image=[[UIImageView alloc]initWithFrame:CGRectMake(2+(WEITH/2)*i,2 ,WEITH/2-1, HEIGHT)];
+            image.image=[UIImage imageNamed:@"hm_tupian_center"];
+            [self.bgView addSubview:image];
+            [imags addObject:image];
+        }
+    }else{
+        for (int i=0; i<3; i++) {
+            if (i==0) {
+                UIImageView *image=[[UIImageView alloc]initWithFrame:CGRectMake(2, 2, WEITH/2-1, HEIGHT-1)];
+                image.image=[UIImage imageNamed:@"hm_tupian_center"];
+                [self.bgView addSubview:image];
+                [imags addObject:image];
+            }else{
+                UIImageView *image=[[UIImageView alloc]initWithFrame:CGRectMake(WEITH/2+2,2+(HEIGHT/2)*(i-1), WEITH/2, HEIGHT/2-1)];
+                image.image=[UIImage imageNamed:@"hm_tupian_small"];
+                [self.bgView addSubview:image];
+                [imags addObject:image];
+            }
+        }
+    }
+    arrImgs=imags;
+}
+
 
 -(void)setImgName:(NSString *)imgName{
     _imgName=imgName;
