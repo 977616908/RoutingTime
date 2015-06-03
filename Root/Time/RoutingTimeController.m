@@ -9,16 +9,16 @@
 #import "RoutingTimeController.h"
 #import "RoutingCell.h"
 #import "ComposeViewController.h"
+#import "PhotoSelectController.h"
 #import "PiFiiBaseNavigationController.h"
 #import "LoginRegisterController.h"
 #import "MJRefresh.h"
-#import "RoutingTime.h"
 typedef enum{
     CameraNone,
     CameraPhoto
 }CameraType;
 
-@interface RoutingTimeController ()<MJRefreshBaseViewDelegate,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate>{
+@interface RoutingTimeController ()<MJRefreshBaseViewDelegate,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,PiFiiBaseViewDelegate>{
     CGFloat lastScrollOffset;
     CGFloat angle;
     CADisplayLink *link;
@@ -55,6 +55,7 @@ typedef enum{
     self.topImg.image=image;
     navigationBar=self.navigationController.navigationBar;
     _rootScrollView.contentSize=CGSizeMake(0, CGRectGetHeight(self.view.frame)+14);
+    [self getRequestPage:1 mark:@"home"];
 }
 
 
@@ -79,7 +80,6 @@ typedef enum{
         [self.btnWifii setTitle:@" 未绑定" forState:UIControlStateNormal];
     }
     pageCount=1;
-    [self getRequestPage:1 mark:@"home"];
 }
 
 
@@ -154,7 +154,6 @@ typedef enum{
         if ([returnCode integerValue]==200) {
             NSArray *data=[response objectForKey:@"data"];
             [_arrTime removeAllObjects];
-//            [_arrTime addObject:photo];
             for (NSDictionary *param in data) {
                 RoutingTime *time=[[RoutingTime alloc]initWithData:param];
                 [_arrTime addObject:time];
@@ -234,7 +233,12 @@ typedef enum{
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     RoutingCell *cell=[RoutingCell cellWithTableView:tableView];
-    cell.routingTime=_arrTime[indexPath.row];
+    id data=_arrTime[indexPath.row];
+    if ([data isKindOfClass:[RoutingDown class]]) {
+        [cell setRoutingDown:data];
+    }else{
+        [cell setRoutingTime:data];
+    }
     cell.imgName=arrImgs[indexPath.row%6];
     return cell;
 }
@@ -254,11 +258,10 @@ typedef enum{
         case 1://男
             //选择相册
             if (self.type==CameraNone) {
-                ComposeViewController *cp=[[ComposeViewController alloc]init];
-                cp.type=ComposePhoto;
-//                PiFiiBaseNavigationController *nav=[[PiFiiBaseNavigationController alloc]initWithRootViewController:cp];
-//                [self presentViewController:nav animated:NO completion:nil];
-                [self.navigationController pushViewController:cp animated:NO];
+                PhotoSelectController *photoController=[[PhotoSelectController alloc]init];
+                photoController.pifiiDelegate=self;
+                PiFiiBaseNavigationController *nav=[[PiFiiBaseNavigationController alloc]initWithRootViewController:photoController];
+                [self presentViewController:nav animated:NO completion:nil];
             }else{
                 [self openPics];
             }
@@ -267,6 +270,29 @@ typedef enum{
 }
 
 #pragma -mark 拍照与相册
+-(void)pushViewDataSource:(id)dataSource{
+    if ([dataSource isKindOfClass:[NSArray class]]) {
+        [self performSelector:@selector(startIntent:) withObject:dataSource afterDelay:.2];
+    }else{
+        RoutingDown *donw=[[RoutingDown alloc]init];
+        [_arrTime insertObject:donw atIndex:0];
+        [self.rootTable reloadData];
+    }
+    PSLog(@"---pushView---");
+}
+
+-(void)startIntent:(id)dataSource{
+    ComposeViewController *cp=[[ComposeViewController alloc]init];
+    cp.pifiiDelegate=self;
+    if (dataSource) {
+        cp.arrPhoto=dataSource;
+    }else{
+        cp.type=ComposeCamera;
+    }
+    
+    PiFiiBaseNavigationController *nav=[[PiFiiBaseNavigationController alloc]initWithRootViewController:cp];
+    [self presentViewController:nav animated:YES completion:nil];
+}
 // 打开相机
 - (void)openCamera {
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
@@ -336,9 +362,7 @@ typedef enum{
     if (error) {
         PSLog(@"%@",[error description]);
     }else{
-        ComposeViewController *cp=[[ComposeViewController alloc]init];
-        cp.type=ComposeCamera;
-        [self.navigationController pushViewController:cp animated:NO];
+        [self performSelector:@selector(startIntent:) withObject:nil];
     }
 }
 

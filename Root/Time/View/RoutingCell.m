@@ -7,10 +7,9 @@
 //
 
 #import "RoutingCell.h"
-#import "RoutingTime.h"
 #import "RoutingMsg.h"
 @interface RoutingCell ()
-#define HEIGHT 156
+#define HEIGHT 150
 #define WEITH 268
 
 @property (weak, nonatomic) IBOutlet UIView *bgView;

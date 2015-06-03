@@ -16,4 +16,5 @@ typedef enum{
 
 @interface ComposeViewController : PiFiiBaseViewController
 @property(nonatomic,assign)ComposeType type;
+@property(nonatomic,copy)NSArray *arrPhoto;
 @end

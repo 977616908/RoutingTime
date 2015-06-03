@@ -14,6 +14,7 @@
 #import "PiFiiBaseNavigationController.h"
 #import "MJPhotoBrowser.h"
 #import <AssetsLibrary/AssetsLibrary.h>
+#import "RoutingDown.h"
 #define HEIGHT 150
 
 @interface ComposeViewController ()<UITextViewDelegate,PhotosViewDelegate,PiFiiBaseViewDelegate>{
@@ -32,13 +33,6 @@
 @implementation ComposeViewController
 
 
--(void)loadView{
-    [super loadView];
-    if (self.type==ComposePhoto) {
-        [self openLibaray];
-    }
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     _photoArr=[NSMutableArray array];
@@ -55,9 +49,9 @@
     if (self.type==ComposeCamera) {
         [self pushData];
     }
-//    else if(self.type==ComposePhoto){
-//        [self openLibaray];
-//    }
+    if (_arrPhoto) {
+        [self addImage:_arrPhoto];
+    }
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -161,7 +155,6 @@
     
 }
 
-
 -(void)photosTapWithIndex:(NSInteger)index{
     PSLog(@"--add--[%d]",index);
     if(index==-1){
@@ -239,8 +232,8 @@
  */
 - (void)cancel
 {
-//    [self dismissViewControllerAnimated:YES completion:nil];
-    [self exitCurrentController];
+    [self dismissViewControllerAnimated:YES completion:nil];
+//    [self exitCurrentController];
 }
 
 /**
@@ -264,10 +257,14 @@
     //    params[@"date"]=@"2015-5-28";
     //    params[@"date"]=@"20150529150816";
     params[@"date"]=[self getDate];
+    RoutingDown *down=[[RoutingDown alloc]init];
+    down.params=params;
+    down.downList=_photoArr;
     
-    [self uploadWithPhoto:_photoArr[0]];
+    [self.pifiiDelegate pushViewDataSource:down];
+//    [self uploadWithPhoto:_photoArr[0]];
     // 关闭控制器
-//    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 

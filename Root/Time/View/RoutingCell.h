@@ -7,11 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-@class RoutingTime;
+#import "RoutingTime.h"
+#import "RoutingDown.h"
 @interface RoutingCell : UITableViewCell
 
 +(instancetype)cellWithTableView:(UITableView *)tableView;
 
 @property(nonatomic,strong)RoutingTime *routingTime;
+@property(nonatomic,strong)RoutingTime *routingDown;
 @property(nonatomic,copy)NSString *imgName;
 @end
