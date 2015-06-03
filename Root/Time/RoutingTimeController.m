@@ -232,7 +232,7 @@ typedef enum{
 // Cell gets various attributes set automatically based on table (separators) and data source (accessory views, editing controls)
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    RoutingCell *cell=[RoutingCell cellWithTableView:tableView];
+    RoutingCell *cell=[RoutingCell cellWithTarget:self tableView:tableView];
     id data=_arrTime[indexPath.row];
     if ([data isKindOfClass:[RoutingDown class]]) {
         [cell setRoutingDown:data];

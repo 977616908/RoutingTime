@@ -9,6 +9,8 @@
 #import "RoutingCell.h"
 #import "RoutingMsg.h"
 #import "REPhoto.h"
+#import "RoutingDetailController.h"
+#import "RoutingTimeController.h"
 @interface RoutingCell (){
     NSArray *arrImgs;
 }
@@ -24,7 +26,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *lbMM;
 @property (weak, nonatomic) UILabel *lbProgress;
 @property (weak, nonatomic) UIView *lbView;
-
+@property(nonatomic,strong)id superController;
 
 @end
 
@@ -34,11 +36,12 @@
     // Initialization code
 }
 
-+(instancetype)cellWithTableView:(UITableView *)tableView{
++(instancetype)cellWithTarget:(id)target tableView:(UITableView *)tableView {
    static NSString *ID=@"RoutingTime";
     RoutingCell *cell=[tableView dequeueReusableCellWithIdentifier:ID];
     if (!cell) {
         cell=[[RoutingCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
+        cell.superController=target;
     }
     cell.bgView.layer.masksToBounds=YES;
     cell.bgView.layer.cornerRadius=2.5;
@@ -48,6 +51,8 @@
 -(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
     if (self=[super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         self=[[NSBundle mainBundle]loadNibNamed:@"RoutingCell" owner:nil options:nil][0];
+        self.bgView.userInteractionEnabled=YES;
+        [self.bgView addGestureRecognizer:[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(onTapClick)]];
     }
     return self;
 }
@@ -186,6 +191,17 @@
         [self.lbView removeFromSuperview];
     }
     PSLog(@"--[%d]--[%f]-[%d]",totalCount,progress,count);
+}
+
+-(void)onTapClick{
+    NSLog(@"tap--[%d]",_routingTime.rtSmallPaths.count);
+    RoutingTimeController *controller=self.superController;
+    if (_routingDown) {
+        [controller showToast:@"时光片段正在分享..." Long:0.3];
+        return;
+    }
+    RoutingDetailController *detailController=[[RoutingDetailController alloc]init];
+    [controller.navigationController pushViewController:detailController animated:YES];
 }
 
 @end

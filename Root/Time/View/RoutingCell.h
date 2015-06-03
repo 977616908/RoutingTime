@@ -11,7 +11,7 @@
 #import "RoutingDown.h"
 @interface RoutingCell : UITableViewCell
 
-+(instancetype)cellWithTableView:(UITableView *)tableView;
++(instancetype)cellWithTarget:(id)target tableView:(UITableView *)tableView;
 
 @property(nonatomic,strong)RoutingTime *routingTime;
 @property(nonatomic,strong)RoutingDown *routingDown;
