@@ -101,6 +101,19 @@
             image.image=photo.image;
         }
     }
+    UIView *lbView=[[UIView alloc]initWithFrame:CGRectMake(2, 2, CGRectGetWidth(self.bgView.frame)-5, 15)];
+    lbView.backgroundColor=RGBAlpha(0, 0, 0, 0.7);
+    UIActivityIndicatorView *start=[[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    start.frame=CGRectMake(5, 2, 10, 10);
+    start.transform=CGAffineTransformMakeScale(0.5, 0.5);
+    [start startAnimating];
+    [lbView addSubview:start];
+    UILabel *lbDown=[[UILabel alloc]initWithFrame:CGRectMake(20, 0,CGRectGetWidth(self.bgView.frame), CGRectGetHeight(lbView.frame))];
+    [lbDown setFont:[UIFont systemFontOfSize:10.0]];
+    lbDown.textColor=[UIColor whiteColor];
+    lbDown.text=@"上传中...(2/1)37.0%";
+    [lbView addSubview:lbDown];
+    [self.bgView addSubview:lbView];
 }
 
 -(void)addImageCount:(NSInteger)count{

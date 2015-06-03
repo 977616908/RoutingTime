@@ -79,6 +79,11 @@
             </connections>
             <point key="canvasLocation" x="329" y="183.5"/>
         </tableViewCell>
+        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="white" id="dXN-BP-tWf">
+            <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <point key="canvasLocation" x="482" y="485"/>
+        </activityIndicatorView>
     </objects>
     <resources>
         <image name="hm_diana.png" width="9" height="9"/>
