@@ -10,7 +10,7 @@
                 <outlet property="btnWifii" destination="UKj-Tf-rCj" id="IsK-6C-HTI"/>
                 <outlet property="rootScrollView" destination="SUR-Jl-eSZ" id="6pu-rx-pee"/>
                 <outlet property="rootTable" destination="sPl-xk-I81" id="Lk1-St-Abh"/>
-                <outlet property="topImg" destination="uFu-2n-bkL" id="P5y-Wl-RhM"/>
+                <outlet property="topImg" destination="nu3-vW-DC2" id="US5-9g-Oey"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
                 <outletCollection property="imgArr" destination="6f7-kx-ueT" id="9XA-35-Mwp"/>
                 <outletCollection property="imgArr" destination="6BR-wb-jhe" id="EKD-Uz-nPR"/>
@@ -27,7 +27,10 @@
                 <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SUR-Jl-eSZ">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                     <subviews>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hm_top.png" translatesAutoresizingMaskIntoConstraints="NO" id="uFu-2n-bkL">
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hm_top_db.png" translatesAutoresizingMaskIntoConstraints="NO" id="uFu-2n-bkL">
+                            <rect key="frame" x="0.0" y="-219" width="320" height="155"/>
+                        </imageView>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hm_top.png" translatesAutoresizingMaskIntoConstraints="NO" id="nu3-vW-DC2">
                             <rect key="frame" x="0.0" y="-64" width="320" height="186"/>
                         </imageView>
                         <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kUt-Vg-tAe">
@@ -108,7 +111,8 @@
         <image name="hm_dallun.png" width="19" height="19"/>
         <image name="hm_lunxian.png" width="49" height="23"/>
         <image name="hm_shipin.png" width="16" height="16"/>
-        <image name="hm_top.png" width="320" height="123"/>
+        <image name="hm_top.png" width="320" height="186"/>
+        <image name="hm_top_db.png" width="320" height="105"/>
         <image name="hm_wifi.png" width="17" height="14"/>
         <image name="hm_xiaolun.png" width="13" height="13"/>
         <image name="hm_xing.png" width="16" height="16"/>

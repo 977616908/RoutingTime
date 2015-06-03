@@ -177,7 +177,7 @@
 //    @"progress":@(fraction*100)
     NSDictionary *param=not.userInfo;
     NSInteger totalCount=[param[@"totalCount"] integerValue];
-    NSInteger count=totalCount-[param[@"count"] integerValue];
+    NSInteger count=totalCount-[param[@"count"] integerValue]+1;
     CGFloat progress=[param[@"progress"] floatValue];
     //    lbDown.text=@"上传中...(2/1)37.0%";
     self.lbProgress.text=[NSString stringWithFormat:@"上传中...(%d/%d)%.2f%%",totalCount,count,progress];

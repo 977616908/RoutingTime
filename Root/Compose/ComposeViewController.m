@@ -247,7 +247,7 @@
         stateView=[MBProgressHUD showHUDAddedTo:self.view animated:YES];
     }
     stateView.hidden=NO;
-    stateView.labelText=@"正在上传...";
+    stateView.labelText=@"正在分享...";
     
     NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
     NSDictionary *userData= [user objectForKey:USERDATA];
@@ -265,8 +265,8 @@
     [self.pifiiDelegate pushViewDataSource:down];
     downCount=_photoArr.count;
     [self uploadWithPhoto:_photoArr[0]];
-    // 关闭控制器
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self performSelector:@selector(setStateView:) withObject:@"success" afterDelay:0.2];
+   
 }
 
 
@@ -321,10 +321,9 @@
     AFURLSessionManager *managers = [[AFURLSessionManager alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
     NSProgress *progress = nil;
     NSURLSessionUploadTask *uploadTask = [managers uploadTaskWithStreamedRequest:request progress:&progress completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        if(progress)[progress removeObserver:self forKeyPath:NSStringFromSelector(@selector(fractionCompleted))];
         if (error) {
             PSLog(@"Error: %@", error);
-            stateView.labelText=@"备份失败";
-            [self performSelector:@selector(setStateView:) withObject:@"fail" afterDelay:0.5];
         } else {
             photo.isBackup=YES;
             [_saveSet addObject:photo.imageName];
@@ -333,8 +332,7 @@
             if (_photoArr.count>0) {
                 [self uploadWithPhoto:_photoArr[0]];
             }else{
-                stateView.labelText=@"备份成功";
-                [self performSelector:@selector(setStateView:) withObject:@"success" afterDelay:0.5];
+               [PSNotificationCenter postNotificationName:@"UPDATE" object:nil userInfo:nil];
             }
         }
     }];
@@ -353,8 +351,7 @@
         CGFloat fraction= progress.fractionCompleted;
         NSString *localized=progress.localizedDescription;
         NSString *additional=progress.localizedAdditionalDescription;
-        int progressDuration=fraction*100;
-        stateView.labelText=[NSString stringWithFormat:@"正在上传...(%d%%)",progressDuration];
+
         NSDictionary *param=@{@"count":@(_photoArr.count),
                               @"totalCount":@(downCount),
                               @"progress":@(fraction*100)};
@@ -374,7 +371,8 @@
         if ([state isEqualToString:@"fail"]) {
             //            [self exitCurrentController];
         }
-        
+        // 关闭控制器
+        [self dismissViewControllerAnimated:YES completion:nil];
     }];
 }
 

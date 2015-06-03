@@ -277,8 +277,14 @@ typedef enum{
         RoutingDown *down=dataSource;
         [_arrTime insertObject:down atIndex:0];
         [self.rootTable reloadData];
+        [PSNotificationCenter addObserver:self selector:@selector(updateDate:) name:@"UPDATE" object:nil];
     }
     PSLog(@"---pushView---");
+}
+
+-(void)updateDate:(NSNotification *)not{
+    [self getRequestPage:1 mark:@"home"];
+    [PSNotificationCenter removeObserver:self name:@"UPDATE" object:nil];
 }
 
 -(void)startIntent:(id)dataSource{
