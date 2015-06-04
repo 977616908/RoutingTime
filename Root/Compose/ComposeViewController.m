@@ -17,7 +17,7 @@
 #import "RoutingDown.h"
 #define HEIGHT 150
 
-@interface ComposeViewController ()<UITextViewDelegate,PhotosViewDelegate,PiFiiBaseViewDelegate>{
+@interface ComposeViewController ()<UITextViewDelegate,PhotosViewDelegate,PiFiiBaseViewDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate>{
     NSMutableArray  *_photoArr;
     MBProgressHUD           *stateView;
     NSString *pathArchtive;
@@ -159,7 +159,9 @@
 -(void)photosTapWithIndex:(NSInteger)index{
     PSLog(@"--add--[%d]",index);
     if(index==-1){
-        [self openLibaray];
+        UIActionSheet *action=[[UIActionSheet alloc]initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:@"拍照" otherButtonTitles:@"从手机相册中选择", nil];
+        [action showInView:self.view];
+//        [self openLibaray];
     }else{
         MJPhotoBrowser *photo=[[MJPhotoBrowser alloc]init];
         photo.isPhoto=YES;
@@ -172,6 +174,44 @@
 }
 
 
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
+    switch (buttonIndex) {
+        case 0://未知
+            //拍照
+            [self openCamera];
+            break;
+        case 1://男
+            [self openLibaray];
+            break;
+    }
+}
+
+
+#pragma -mark 打开相机
+- (void)openCamera {
+    UIImagePickerController *imagePicker =  [[UIImagePickerController alloc] init];
+    imagePicker.delegate = self;
+    imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+    imagePicker.showsCameraControls = YES;
+    [self presentViewController:imagePicker animated:YES completion:nil];
+}
+
+-(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info{
+    // 1.销毁picker控制器
+    [picker dismissViewControllerAnimated:YES completion:nil];
+    
+    // 2.去的图片
+    UIImage *image = info[UIImagePickerControllerOriginalImage];
+    UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+}
+
+- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo{
+    if (error) {
+        PSLog(@"%@",[error description]);
+    }else{
+        [self pushData];
+    }
+}
 
 -(void)pushViewDataSource:(id)dataSource{
     [self addImage:dataSource];

@@ -409,7 +409,7 @@
     label.textColor=[UIColor whiteColor];
     label.backgroundColor=[UIColor blackColor];
     label.frame=CGRectMake(0, 0, 250, 40);
-    label.center=CGPointMake(160, CGRectGetHeight(self.view.frame)-60);
+    label.center=CGPointMake(160, CGRectGetHeight(self.view.frame)-80);
     label.alpha=0.0;
     label.layer.cornerRadius=5;
     label.clipsToBounds=YES;

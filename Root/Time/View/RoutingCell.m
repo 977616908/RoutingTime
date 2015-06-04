@@ -197,7 +197,7 @@
     NSLog(@"tap--[%d]",_routingTime.rtSmallPaths.count);
     RoutingTimeController *controller=self.superController;
     if (_routingDown) {
-        [controller showToast:@"时光片段正在分享..." Long:0.3];
+        [controller showToast:@"时光片段正在分享..." Long:1.5];
         return;
     }
     RoutingDetailController *detailController=[[RoutingDetailController alloc]init];
