@@ -102,6 +102,8 @@
         if (indexPath.row==4) {
             UISwitch *select=[[UISwitch alloc]init];
             select.onTintColor=RGBCommon(63, 205, 225);
+            NSUserDefaults *user=[NSUserDefaults standardUserDefaults];
+            [select setOn:[[user objectForKey:ISHDPICTURE]boolValue]];
             [select addTarget:self action:@selector(onSelectClick:) forControlEvents:UIControlEventTouchUpInside];
             cell.accessoryView=select;
         }
@@ -114,6 +116,13 @@
 
 -(void)onSelectClick:(UISwitch *)sendar{
     PSLog(@"---select---");
+    NSUserDefaults *user=[NSUserDefaults standardUserDefaults];
+    if (sendar.isOn) {
+        [user setObject:@(YES) forKey:ISHDPICTURE];
+    }else{
+        [user setObject:@(NO) forKey:ISHDPICTURE];
+    }
+    [user synchronize];
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{

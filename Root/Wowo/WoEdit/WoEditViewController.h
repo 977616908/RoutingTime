@@ -8,8 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+#import "WoUser.h"
 
 @interface WoEditViewController : PiFiiBaseViewController
 
+@property(nonatomic,strong)WoUser *user;
 
 @end

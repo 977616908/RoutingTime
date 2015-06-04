@@ -49,7 +49,7 @@
 
 
 -(void)onComplete{
-    
+    [self upload];
 }
 
 - (void)didReceiveMemoryWarning
@@ -79,12 +79,26 @@
     
     CEButton *btnContent=[[CEButton alloc]initWithFrame:CGRectMake(0, 0, CGRectGetWidth(cell.frame)-35, CGRectGetHeight(cell.frame))];
     btnContent.tag=row;
+    if (!_user) {
+        _user=[[WoUser alloc]init];
+        _user.nickname=@"可爱宝贝";
+        _user.gender=@"未知";
+        _user.image=[UIImage imageNamed:@"hm_touxiang"];
+    }
     if (row==0) {
-        [btnContent setImageName:@"hm_touxiang"];
+        NSString *path=_user.facephotoUrl;
+        if (hasCachedImageWithString(path)) {
+            UIImage *image=[UIImage imageWithContentsOfFile:pathForString(path)];
+            [btnContent setImage:image forState:UIControlStateNormal];
+            _user.image=image;
+        }else{
+            [btnContent setImageName:@"hm_touxiang"];
+        }
+        
     }else if(row==1){
-        [btnContent setTitleName:@"可爱宝贝"];
+        [btnContent setTitleName:_user.nickname];
     }else{
-        [btnContent setTitleName:@"女"];
+        [btnContent setTitleName:_user.gender];
     }
     [btnContent addTarget:self action:@selector(onClick:) forControlEvents:UIControlEventTouchUpInside];
     [cell addSubview:btnContent];
@@ -137,6 +151,7 @@
      UITextField *textContent = [alertView textFieldAtIndex:0];
     if (buttonIndex==1) {
         [_selectBtn setTitleName:textContent.text];
+        _user.nickname=_selectBtn.titleLabel.text;
     }
 }
 
@@ -149,6 +164,7 @@
                 [self openCamera];
             }else{
                [_selectBtn setTitleName:@"未知"];
+                _user.gender=_selectBtn.titleLabel.text;
             }
             break;
         case 1://男
@@ -156,13 +172,18 @@
                 [self openPics];
             }else{
                 [_selectBtn setTitleName:@"男"];
+                _user.gender=_selectBtn.titleLabel.text;
             }
             
             break;
         case 2://女
-            if(tag!=0)[_selectBtn setTitleName:@"女"];
+            if(tag!=0){
+                [_selectBtn setTitleName:@"女"];
+                _user.gender=_selectBtn.titleLabel.text;
+            }
             break;
     }
+    
 }
 
 // 打开相机
@@ -213,7 +234,45 @@
             
         }
         [self.selectBtn setImage:theImage forState:UIControlStateNormal];
+        _user.image=theImage;
     }
+}
+
+#pragma -mark 修改用户息
+-(void)upload{
+    NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+    NSDictionary *userData= [user objectForKey:USERDATA];
+    NSString *userPhone=userData[@"userPhone"];
+    // 1.创建对象
+    AFHTTPRequestOperationManager *mgr=[AFHTTPRequestOperationManager manager];
+    // 2.封装请求参数
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    params[@"username"] = userPhone;
+    
+    params[@"nickname"]=_user.nickname;
+    params[@"gender"]=_user.gender;
+    NSString *url=[NSString stringWithFormat:@"%@/updateUserInfo",ROUTINGTIMEURL];
+    // 3.发送请求
+    [mgr POST:url parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData> formData) { // 在发送请求之前调用这个block
+        if (_user.image) {
+            [formData appendPartWithFileData:UIImageJPEGRepresentation(_user.image, 1) name:@"facephoto" fileName:@"face.png" mimeType:@"image/jpeg"];
+        }
+    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        //        PSLog(@"-[ld]-%@--",operation.expectedContentLength,responseObject);
+        //        [_dataImgArr removeObject:photo];
+        //        [_centerView setImagePhoto:_dataImgArr];
+        PSLog(@"--%@--",responseObject);
+        [self performSelector:@selector(startIntent:) withObject:@"success" afterDelay:0.5];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        PSLog(@"--%@--",error);
+        [self performSelector:@selector(startIntent:) withObject:@"fail" afterDelay:0.5];
+    }];
+    
+}
+
+
+-(void)startIntent:(NSString *)mark{
+    [self exitCurrentController];
 }
 
 @end

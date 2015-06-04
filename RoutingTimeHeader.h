@@ -44,6 +44,8 @@
 #define ISNET @"isNet" //是否安全上网
 #define USERDATA @"userData" //保存用户日记
 #define ISCONNECT @"isConnect" //是否连接当前路由
+#define ISHDPICTURE @"isHDPicture" //是否为高清图片
+
 
 //自定义Log
 #ifdef DEBUG

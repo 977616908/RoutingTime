@@ -12,6 +12,7 @@
 #import "BindView.h"
 #import "ScannerViewController.h"
 #import "WoSetViewController.h"
+#import "WoUser.h"
 #import <ShareSDK/ShareSDK.h>
 
 #define BUTTONHEIGHT 75
@@ -25,6 +26,10 @@
 @property (nonatomic,weak)BindView        *bindView;
 @property (nonatomic,strong)DeviceEcho    *echo;
 @property (nonatomic,weak)CCButton        *btnWifii;
+@property (nonatomic,weak)UIImageView *imgUser;
+@property (nonatomic,weak)UILabel  *lbName;
+@property (nonatomic,strong)WoUser *user;
+
 @end
 
 @implementation WowoViewController
@@ -44,6 +49,7 @@
                 @{@"icon":@"hm_tjgpy",@"title":@"推荐给朋友"},
                 @{@"icon":@"hm_shez",@"title":@"设置"}];
     isMacBounds=[GlobalShare isBindMac];
+    
 }
 
 -(void)coustomNav{
@@ -67,11 +73,13 @@
     imageView.layer.masksToBounds=YES;
     imageView.layer.cornerRadius=25;
     imageView.image=[UIImage imageNamed:@"hm_touxiang"];
+    self.imgUser=imageView;
     [bgView addSubview:imageView];
     UILabel *lbName=[[UILabel alloc ]initWithFrame:CGRectMake(CGRectGetMaxX(imageView.frame)+10, 30, 100, 20)];
     lbName.textColor=RGBCommon(52, 52, 52);
     lbName.font=[UIFont systemFontOfSize:16];
     lbName.text=@"用户名";
+    self.lbName=lbName;
     [bgView addSubview:lbName];
     return bgView;
 }
@@ -92,8 +100,23 @@
     return bgView;
 }
 
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self getRequestUser];
+}
+
 -(void)onWoClick:(id)sendar{
     PSLog(@"onClick:%d",[sendar tag]);
+}
+
+#pragma -mark 获取个人信息
+-(void)getRequestUser{
+    NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+    NSDictionary *userData= [user objectForKey:USERDATA];
+    NSString *userPhone=userData[@"userPhone"];
+    if (userPhone&&![userPhone isEqualToString:@""]) {
+        [self initPostWithURL:ROUTINGTIMEURL path:@"queryUserInfo" paras:@{@"username":userPhone} mark:@"user" autoRequest:YES];
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -167,6 +190,7 @@
     NSInteger section=indexPath.section;
     if (section==0) {
         WoEditViewController *editController=[[WoEditViewController alloc]init];
+        editController.user=self.user;
         [self.navigationController pushViewController:editController animated:YES];
     }else if(section==2){
         NSLog(@"---[%d]--",indexPath.row);
@@ -351,6 +375,26 @@
             }
             stateView.labelText=msg;
             [self performSelector:@selector(setStateView:) withObject:@"error" afterDelay:0.5];
+        }
+    }else{
+        NSNumber *returnCode=[response objectForKey:@"returnCode"];
+        if ([returnCode intValue]==200) {
+            NSDictionary *data=response[@"Data"];
+            if (data.count>0) {
+                WoUser *user=[[WoUser alloc]initWithData:data];
+                self.user=user;
+                self.lbName.text=user.nickname;
+                NSString *path=user.facephotoUrl;
+                //        [cell.imgView setImageWithURL:[path urlInstance]];
+                if (hasCachedImageWithString(path)) {
+                    UIImage *image=[UIImage imageWithContentsOfFile:pathForString(path)];
+                    self.imgUser.image=image;
+                }else{
+                    NSValue *size=[NSValue valueWithCGSize:CGSizeMake(144, 144)];
+                    NSDictionary *dict=@{@"url":path,@"imageView":self.imgUser,@"size":size};
+                    [NSThread detachNewThreadSelector:@selector(cacheImage:) toTarget:[ImageCacher defaultCacher] withObject:dict];
+                }
+            }
         }
     }
     
