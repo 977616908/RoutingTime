@@ -38,6 +38,7 @@
                 @{@"title":@"重启路由器",@"icon":@"hm_cqlyq"},
                 @{@"icon":@"hm_icon",@"title":@"快速上网"},
                 @{@"icon":@"hm_zhuxiao",@"title":@"注销"},
+                @{@"icon":@"hm_wotupian",@"title":@"上传原图片"},
                 @{@"icon":@"hm_icon02",@"title":@"意见反馈"}];
     CGFloat gh=44;
     if(is_iOS7()){
@@ -98,11 +99,21 @@
         NSDictionary *param=_arrTitle[indexPath.row];
         cell.imageView.image=[UIImage imageNamed:param[@"icon"]];
         cell.textLabel.text=param[@"title"];
+        if (indexPath.row==4) {
+            UISwitch *select=[[UISwitch alloc]init];
+            select.onTintColor=RGBCommon(63, 205, 225);
+            [select addTarget:self action:@selector(onSelectClick:) forControlEvents:UIControlEventTouchUpInside];
+            cell.accessoryView=select;
+        }
     }else{
         cell.accessoryView.hidden=YES;
         cell.backgroundView=[self createUpdate:cell.frame];
     }
     return cell;
+}
+
+-(void)onSelectClick:(UISwitch *)sendar{
+    PSLog(@"---select---");
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -111,8 +122,10 @@
         NSLog(@"---[%d]--",indexPath.row);
         if (indexPath.row==3) {
              [[[UIAlertView alloc]initWithTitle:@"注销" message:@"注销并返回登录界面?" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"注销", nil]show];
+        }else if(indexPath.row==4){
+            
         }else{
-            NSArray *pushControllers = @[@"WiFiSetNameViewController",@"ResetStartViewController",@"NetSetViewController",@"",@"FeedBackViewController"];
+            NSArray *pushControllers = @[@"WiFiSetNameViewController",@"ResetStartViewController",@"NetSetViewController",@"",@"",@"FeedBackViewController"];
             id  vcInstance = [[pushControllers objectAtIndex:indexPath.row] instance];
             [self.navigationController.view.layer addAnimation:[self customAnimation:self.view upDown:YES] forKey:@"animation"];
             [vcInstance setCustomAnimation:YES];

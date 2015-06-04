@@ -95,7 +95,7 @@
     _toolbar = [[MJPhotoToolbar alloc] init];
     _toolbar.isPhoto=self.isPhoto;
     //    _toolbar.backgroundColor=[UIColor grayColor];
-    _toolbar.backgroundColor=RGBCommon(2, 133, 188);
+    _toolbar.backgroundColor=RGBCommon(63, 205, 225);
     _toolbar.Delegate = self;
     _toolbar.frame = CGRectMake(0, barY, CGRectGetWidth(self.view.frame), BARHEIHGT);
     _toolbar.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
@@ -441,7 +441,12 @@
             photo.name=rePhoto.imageName;
             photo.save=rePhoto.isBackup;
         }else{
-            photo.url=ROUTER_FILE_WHOLEDOWNLOAD(rePhoto.imageUrl).encodedString.urlInstance;
+            if ([rePhoto.imageUrl hasPrefix:@"http://"]) {
+                photo.url=rePhoto.imageUrl.encodedString.urlInstance;
+            }else{
+                photo.url=ROUTER_FILE_WHOLEDOWNLOAD(rePhoto.imageUrl).encodedString.urlInstance;
+            }
+            
         }
         photo.firstShow = i == _currentPhotoIndex;
         [arr addObject:photo];

@@ -10,23 +10,30 @@
 #import "CCTextView.h"
 #import "PhotosView.h"
 #import "MJPhotoBrowser.h"
+#import "REPhoto.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "RoutingMsg.h"
 #import "RoutingTime.h"
 #define HEIGHT 200
+#define BARHEIGHT 44
 
-@interface RoutingDetailController ()<UITextViewDelegate,PhotosViewDelegate,PiFiiBaseViewDelegate>{
+@interface RoutingDetailController ()<UITextViewDelegate,PhotosViewDelegate,PiFiiBaseViewDelegate,UIActionSheetDelegate>{
     NSMutableArray  *_photoArr;
     MBProgressHUD           *stateView;
     NSString *pathArchtive;
     NSMutableOrderedSet     *_saveSet;
+    NSMutableOrderedSet     *_deleteArr;
     NSMutableDictionary *params;
     NSInteger downCount;
+    UIView       *_toolbar;
+    BOOL  isDelete;
 }
 
 @property(nonatomic,weak)CCTextView *textView;
 @property(nonatomic,weak)PhotosView *photosView;
 @property(nonatomic,weak)CCScrollView *rootScrollView;
+@property(nonatomic,weak)CCLabel *lbDate;
+@property(nonatomic,weak)CCButton *btnSelect;
 @end
 
 @implementation RoutingDetailController
@@ -36,6 +43,7 @@
     [super viewDidLoad];
     self.title=@"时光片段";
     _photoArr=[NSMutableArray array];
+    _deleteArr=[NSMutableOrderedSet orderedSet];
     pathArchtive= pathInCacheDirectory(@"AppCache/SavePhotoName.archiver");
     NSArray *array=[NSKeyedUnarchiver unarchiveObjectWithFile:pathArchtive];
     if (array&&array.count>0) {
@@ -43,13 +51,20 @@
     }else{
         _saveSet=[NSMutableOrderedSet orderedSet];
     }
-    self.view.backgroundColor = [UIColor whiteColor];
     [self createPhotosView];
     [self createTextView];
+    [self createView];
     if (_routingTime) {
         NSArray *arr=_routingTime.rtSmallPaths;
         [self addImage:arr];
         _textView.text=_routingTime.rtTitle;
+        _lbDate.text=[NSString stringWithFormat:@"创建时间: %@",_routingTime.rtDate];
+        for (RoutingMsg *msg in _routingTime.rtPaths) {
+            REPhoto *photo=[[REPhoto alloc]init];
+            photo.imageUrl=msg.msgPath;
+            photo.date=_routingTime.rtDate;
+            [_photoArr addObject:photo];
+        }
     }
 }
 
@@ -60,20 +75,30 @@
 
 
 -(void)createTextView{
+    
+    UIView *bgView=[[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(self.rootScrollView.frame), CGRectGetWidth(self.view.frame), HEIGHT)];
+    bgView.backgroundColor=[UIColor whiteColor];
+    CCLabel *lbDate=CCLabelCreateWithNewValue(@"", 15, CGRectMake(5, 5, CGRectGetWidth(self.view.frame), 15));
+    lbDate.textColor=RGBCommon(181, 181, 181);
+    self.lbDate=lbDate;
+    [bgView addSubview:lbDate];
     // 1.添加
     CCTextView *textView = [[CCTextView alloc] init];
     textView.font = [UIFont systemFontOfSize:14];
+    textView.textColor=RGBCommon(52, 52, 52);
     textView.placeholderColor=RGBCommon(181, 181, 181);
     
-    textView.frame = CGRectMake(7, CGRectGetMaxY(self.rootScrollView.frame), CGRectGetWidth(self.view.frame)-15, HEIGHT);
+    textView.frame = CGRectMake(7, 20, CGRectGetWidth(self.view.frame)-15, HEIGHT-70);
 //    textView.textContainerInset=UIEdgeInsetsMake(15, 10, 0, 10);
     // 垂直方向上永远可以拖拽
     textView.alwaysBounceVertical = YES;
     textView.delegate = self;
     textView.editable=NO;
 //    textView.placeholder = @"这一刻的想法...";
-    [self.view addSubview:textView];
     self.textView = textView;
+    [bgView addSubview:textView];
+    [self.view addSubview:bgView];
+  
 }
 
 -(void)createPhotosView{
@@ -94,22 +119,110 @@
     
 }
 
--(void)onAddTap:(id)sendar{
-    PSLog(@"--add--");
+
+-(void)createView{
+    CCButton *sendBut = CCButtonCreateWithValue(CGRectMake(-10, 0, 50,50), @selector(addPhotoListener:), self);
+    [sendBut alterNormalTitle:@"选择"];
+    [sendBut alterNormalTitleColor:RGBWhiteColor()];
+    [sendBut alterFontSize:16];
+    self.btnSelect=sendBut;
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:sendBut];
+    _toolbar = [[UIView alloc] init];
+    _toolbar.backgroundColor=RGBCommon(63, 205, 225);
+    _toolbar.frame = CGRectMake(0, CGRectGetHeight(self.view.frame), CGRectGetWidth(self.view.frame), BARHEIGHT);
+    _toolbar.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
+    
+    UIButton *downBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    downBtn.frame=CGRectMake(20, 0, BARHEIGHT, BARHEIGHT);
+    downBtn.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    downBtn.tag=1;
+    [downBtn setImage:[UIImage imageNamed:@"hm_baocun_selector"] forState:UIControlStateNormal];
+    //    [_deleteBtn setImage:[UIImage imageNamed:@"photo-gallery-trashcan.png"] forState:UIControlStateHighlighted];
+    [downBtn addTarget:self action:@selector(onClick:) forControlEvents:UIControlEventTouchUpInside];
+    [_toolbar addSubview:downBtn];
+    
+    UIButton *deleteBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    deleteBtn.frame=CGRectMake(CGRectGetWidth(self.view.frame)-20-BARHEIGHT, 0, BARHEIGHT, BARHEIGHT);
+    deleteBtn.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    [deleteBtn setImage:[UIImage imageNamed:@"hm_shanchu_selector"] forState:UIControlStateNormal];
+    deleteBtn.tag=2;
+    //    [_deleteBtn setImage:[UIImage imageNamed:@"photo-gallery-trashcan.png"] forState:UIControlStateHighlighted];
+    [deleteBtn addTarget:self action:@selector(onClick:) forControlEvents:UIControlEventTouchUpInside];
+    [_toolbar addSubview:deleteBtn];
+    [self.view addSubview:_toolbar];
+}
+
+-(void)onClick:(UIButton *)sendar{
+    PSLog(@"--图片--%d",sendar.tag);
+    UIActionSheet *action=nil;
+    switch (sendar.tag) {
+        case 1:
+            if (_deleteArr.count==1) {
+                action=[[UIActionSheet alloc]initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:@"下载到本地" otherButtonTitles:nil, nil];
+            }else{
+                action=[[UIActionSheet alloc]initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:[NSString stringWithFormat:@"下载%d张到本地",_deleteArr.count] otherButtonTitles:nil, nil];
+            }
+            [action showInView:self.view];
+            break;
+        case 2:
+            if (_deleteArr.count==1) {
+                action=[[UIActionSheet alloc]initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:@"删除照片" otherButtonTitles:nil, nil];
+            }else{
+                action=[[UIActionSheet alloc]initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:[NSString stringWithFormat:@"删除%d张照片",_deleteArr.count] otherButtonTitles:nil, nil];
+            }
+            [action showInView:self.view];
+            break;
+    }
     
 }
 
+-(void)addPhotoListener:(CCButton*)sendar{
+    if ([sendar.titleLabel.text isEqualToString:@"选择"]) {
+        [sendar alterNormalTitle:@"取消"];
+        [self toolBarWithAnimation:NO];
+        self.title=@"选择项目";
+        isDelete=YES;
+    }else{
+        [sendar alterNormalTitle:@"选择"];
+        [self toolBarWithAnimation:YES];
+        self.title=@"时光片段";
+        isDelete=NO;
+    }
+    [_deleteArr removeAllObjects];
+}
+
+-(void)toolBarWithAnimation:(BOOL)isHidden{
+    CGFloat barY=0;
+    if (isHidden) {
+        barY=CGRectGetHeight(self.view.frame);
+    }else{
+        barY=CGRectGetHeight(self.view.frame)-BARHEIGHT;
+    }
+    [UIView animateWithDuration:0.3 animations:^{
+        _toolbar.frame = CGRectMake(0, barY, CGRectGetWidth(self.view.frame), BARHEIGHT);
+    }];
+}
+
+
 -(void)photosTapWithIndex:(NSInteger)index{
     PSLog(@"--add--[%d]",index);
-
-    MJPhotoBrowser *photo=[[MJPhotoBrowser alloc]init];
-    photo.isPhoto=YES;
-    photo.currentPhotoIndex=index-1;
-    photo.photos=_photoArr;
-//    photo.pifiiDelegate=self;
-    [self.navigationController.view.layer addAnimation:[self customAnimationType:kCATransitionFade upDown:NO]  forKey:@"animation"];
-    [self.navigationController pushViewController:photo animated:NO];
-    
+    if (isDelete) {
+        UIImageView *delImg=self.photosView.totalImages[index-1];
+        
+        UIImageView *selectImg=[[UIImageView alloc]init];
+        UIImage *image=@"ImageSelectedOn".imageInstance;
+        CGSize size=image.size;
+        selectImg.frame=CGRectMake(CGRectGetWidth(delImg.frame)-size.width, CGRectGetHeight(delImg.frame)-size.height, size.width, size.height);
+        [delImg addSubview:selectImg];
+    }else{
+        MJPhotoBrowser *photo=[[MJPhotoBrowser alloc]init];
+        photo.isPhoto=NO;
+        photo.currentPhotoIndex=index-1;
+        photo.photos=_photoArr;
+        //    photo.pifiiDelegate=self;
+        [self.navigationController.view.layer addAnimation:[self customAnimationType:kCATransitionFade upDown:NO]  forKey:@"animation"];
+        [self.navigationController pushViewController:photo animated:NO];
+    }
 }
 
 
