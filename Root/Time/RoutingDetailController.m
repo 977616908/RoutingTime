@@ -74,33 +74,6 @@
 }
 
 
--(void)createTextView{
-    
-    UIView *bgView=[[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(self.rootScrollView.frame), CGRectGetWidth(self.view.frame), HEIGHT)];
-    bgView.backgroundColor=[UIColor whiteColor];
-    CCLabel *lbDate=CCLabelCreateWithNewValue(@"", 15, CGRectMake(5, 5, CGRectGetWidth(self.view.frame), 15));
-    lbDate.textColor=RGBCommon(181, 181, 181);
-    self.lbDate=lbDate;
-    [bgView addSubview:lbDate];
-    // 1.添加
-    CCTextView *textView = [[CCTextView alloc] init];
-    textView.font = [UIFont systemFontOfSize:14];
-    textView.textColor=RGBCommon(52, 52, 52);
-    textView.placeholderColor=RGBCommon(181, 181, 181);
-    
-    textView.frame = CGRectMake(7, 20, CGRectGetWidth(self.view.frame)-15, HEIGHT-70);
-//    textView.textContainerInset=UIEdgeInsetsMake(15, 10, 0, 10);
-    // 垂直方向上永远可以拖拽
-    textView.alwaysBounceVertical = YES;
-    textView.delegate = self;
-    textView.editable=NO;
-//    textView.placeholder = @"这一刻的想法...";
-    self.textView = textView;
-    [bgView addSubview:textView];
-    [self.view addSubview:bgView];
-  
-}
-
 -(void)createPhotosView{
     CCScrollView *scrollView=CCScrollViewCreateNoneIndicatorWithFrame(CGRectMake(0, 5, CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame)-HEIGHT), self, NO);
     scrollView.bounces=YES;
@@ -113,10 +86,54 @@
     self.photosView = photosView;
     photosView.delegate=self;
     [self.rootScrollView addSubview:photosView];
+    
+}
 
+-(void)createTextView{
+    UIView *bgView=[[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.frame)-HEIGHT, CGRectGetWidth(self.view.frame), HEIGHT)];
+    bgView.backgroundColor=[UIColor whiteColor];
+    CCLabel *lbDate=CCLabelCreateWithNewValue(@"", 15, CGRectMake(5, 5, CGRectGetWidth(self.view.frame), 15));
+    lbDate.textColor=RGBCommon(181, 181, 181);
+    self.lbDate=lbDate;
+    [bgView addSubview:lbDate];
+    // 1.添加
+    CCTextView *textView = [[CCTextView alloc] init];
+    textView.font = [UIFont systemFontOfSize:14];
+    textView.textColor=RGBCommon(52, 52, 52);
+    textView.placeholderColor=RGBCommon(181, 181, 181);
+    textView.frame = CGRectMake(7, 20, CGRectGetWidth(bgView.frame)-15, 20);
+//    textView.textContainerInset=UIEdgeInsetsMake(15, 10, 0, 10);
+    // 垂直方向上永远可以拖拽
+    textView.alwaysBounceVertical = YES;
+    textView.delegate = self;
+    textView.editable=NO;
+//    textView.placeholder = @"这一刻的想法...";
+    self.textView = textView;
+    [bgView addSubview:textView];
     
-//    [photosView addImage:[UIImage imageNamed:@"hm_zengjjiad"]];
+    UIView *line=[[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetHeight(bgView.frame)-31, CGRectGetWidth(bgView.frame), 1)];
+    line.backgroundColor=RGBCommon(181, 181, 181);
+    [bgView addSubview:line];
     
+    UIView *bgTool=[[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetHeight(bgView.frame)-30, CGRectGetWidth(bgView.frame), 30)];
+    bgTool.backgroundColor=[UIColor whiteColor];
+    CCButton *btnComment=CCButtonCreateWithValue(CGRectMake(0, 0, CGRectGetWidth(bgTool.frame)/2, 30), @selector(onCommentClick:), self);
+    btnComment.tag=1;
+    [btnComment alterFontSize:12];
+    [btnComment setImage:[UIImage imageNamed:@"hm_share"] forState:UIControlStateNormal];
+    [btnComment alterNormalTitle:@"分享"];
+    [bgTool addSubview:btnComment];
+    
+    CCButton *btnEdit=CCButtonCreateWithValue(CGRectMake(0, CGRectGetWidth(bgTool.frame)/2, CGRectGetWidth(bgTool.frame)/2, 30), @selector(onCommentClick:), self);
+    btnEdit.tag=1;
+    [btnEdit alterFontSize:12];
+    [btnEdit setImage:[UIImage imageNamed:@"hm_edit"] forState:UIControlStateNormal];
+    [btnEdit alterNormalTitle:@"编辑"];
+    [bgTool addSubview:btnEdit];
+    [bgView addSubview:bgTool];
+  
+    
+    [self.view addSubview:bgView];
 }
 
 
@@ -150,6 +167,10 @@
     [deleteBtn addTarget:self action:@selector(onClick:) forControlEvents:UIControlEventTouchUpInside];
     [_toolbar addSubview:deleteBtn];
     [self.view addSubview:_toolbar];
+}
+
+-(void)onCommentClick:(CCButton *)sendar{
+    PSLog(@"--评论--%d",sendar.tag);
 }
 
 -(void)onClick:(UIButton *)sendar{
