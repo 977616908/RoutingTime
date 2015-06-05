@@ -55,7 +55,6 @@ typedef enum{
     self.topImg.image=image;
     navigationBar=self.navigationController.navigationBar;
     _rootScrollView.contentSize=CGSizeMake(0, CGRectGetHeight(self.view.frame)+14);
-    [self getRequestPage:1 mark:@"home"];
 }
 
 
@@ -80,6 +79,7 @@ typedef enum{
         [self.btnWifii setTitle:@" 未绑定" forState:UIControlStateNormal];
     }
     pageCount=1;
+    [self getRequestPage:1 mark:@"home"];
 }
 
 
@@ -120,7 +120,7 @@ typedef enum{
     if([mark isEqualToString:@"header"]){
         if ([returnCode integerValue]==200) {
             NSArray *data=[response objectForKey:@"data"];
-            [_arrTime removeAllObjects];
+            [self removeRoutingClass:[RoutingDown class]];
             for (NSDictionary *param in data) {
                 RoutingTime *time=[[RoutingTime alloc]initWithData:param];
                 [_arrTime addObject:time];
@@ -153,7 +153,7 @@ typedef enum{
     }else{
         if ([returnCode integerValue]==200) {
             NSArray *data=[response objectForKey:@"data"];
-            [_arrTime removeAllObjects];
+            [self removeRoutingClass:[RoutingDown class]];
             for (NSDictionary *param in data) {
                 RoutingTime *time=[[RoutingTime alloc]initWithData:param];
                 [_arrTime addObject:time];
@@ -182,7 +182,17 @@ typedef enum{
         }
 
     }
-   
+}
+
+-(void)removeRoutingClass:(Class)class{
+    NSMutableArray *arrs=[NSMutableArray array];
+    for (id obj in _arrTime) {
+        if ([obj isKindOfClass:class]) {
+            [arrs addObject:obj];
+        }
+    }
+    [_arrTime removeAllObjects];
+    [_arrTime addObjectsFromArray:arrs];
 }
 
 -(void)handleRequestFail:(NSError *)error mark:(NSString *)mark{
@@ -283,6 +293,7 @@ typedef enum{
 }
 
 -(void)updateDate:(NSNotification *)not{
+    [self removeRoutingClass:[RoutingTime class]];
     [self getRequestPage:1 mark:@"home"];
     [PSNotificationCenter removeObserver:self name:@"UPDATE" object:nil];
 }

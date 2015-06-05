@@ -101,7 +101,9 @@
         for (int i=0; i<arrImgs.count; i++) {
             UIImageView *image=arrImgs[i];
             REPhoto *photo=arr[i];
-            image.image=photo.image;
+            CGSize size=image.frame.size;
+            UIImage *scaleImg=[[ImageCacher defaultCacher]scaleImage:photo.image size:CGSizeMake(size.width*2, size.height*2)];
+            image.image=scaleImg;
         }
     }
     UIView *lbView=[[UIView alloc]initWithFrame:CGRectMake(2, 2, CGRectGetWidth(self.bgView.frame)-5, 15)];
