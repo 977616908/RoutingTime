@@ -234,7 +234,7 @@
             
         }
         [self.selectBtn setImage:theImage forState:UIControlStateNormal];
-        _user.image=theImage;
+        _user.image=[UIImage imageWithData:UIImageJPEGRepresentation(theImage, 0.1)];
     }
 }
 

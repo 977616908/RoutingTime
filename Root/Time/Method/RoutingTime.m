@@ -25,7 +25,7 @@
             _rtPaths=arrPath;
             NSMutableArray *arrSmallPath=[NSMutableArray array];
             for (NSDictionary *param in data[@"smallpath"]) {
-                RoutingMsg *msg=[[RoutingMsg alloc]initWithData:param];
+                RoutingMsg *msg=[[RoutingMsg alloc]initWithSmallData:param];
                 [arrSmallPath addObject:msg];
             }
             _rtSmallPaths=arrSmallPath;

@@ -17,5 +17,16 @@
     }
     return self;
 }
+-(id)initWithSmallData:(NSDictionary *)data{
+    if (self=[super init]) {
+        _msgNum=data[@"id"];
+        _msgPath=data[@"smallpath"];
+        _msgDuration=data[@"duration"];
+        if (isNIL(_msgDuration)) {
+            _isVedio=YES;
+        }
+    }
+    return self;
+}
 
 @end

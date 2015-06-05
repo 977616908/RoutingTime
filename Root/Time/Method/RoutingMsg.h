@@ -12,8 +12,11 @@
 
 @property(nonatomic,copy)NSString *msgNum;
 @property(nonatomic,copy)NSString *msgPath;
-@property(nonatomic,copy)NSString *msg;
+@property(nonatomic,copy)NSString *msgDuration;
+@property(nonatomic,assign)BOOL isVedio;
 
 -(id)initWithData:(NSDictionary *)data;
+
+-(id)initWithSmallData:(NSDictionary *)data;
 
 @end

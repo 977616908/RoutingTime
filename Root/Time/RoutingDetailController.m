@@ -14,6 +14,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "RoutingMsg.h"
 #import "RoutingTime.h"
+#import <ShareSDK/ShareSDK.h>
 #define HEIGHT 200
 #define BARHEIGHT 44
 
@@ -91,19 +92,22 @@
 
 -(void)createTextView{
     
-    UIView *bgView=[[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.frame)-HEIGHT, CGRectGetWidth(self.view.frame), HEIGHT)];
-    bgView.backgroundColor=[UIColor whiteColor];
-    CCLabel *lbDate=CCLabelCreateWithNewValue(@"", 15, CGRectMake(5, 5, CGRectGetWidth(self.view.frame), 15));
+    CCLabel *lbDate=CCLabelCreateWithNewValue(@"", 12, CGRectMake(5, CGRectGetMaxY(_rootScrollView.frame), CGRectGetWidth(self.view.frame), 15));
     lbDate.textColor=RGBCommon(181, 181, 181);
     self.lbDate=lbDate;
-    [bgView addSubview:lbDate];
+    [self.view addSubview:lbDate];
+    CGFloat hg=HEIGHT-20;
+    if (is_iOS7()) {
+        hg-=64;
+    }
+    UIView *bgView=[[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(lbDate.frame), CGRectGetWidth(self.view.frame), hg)];
+    bgView.backgroundColor=[UIColor whiteColor];
     // 1.添加
     CCTextView *textView = [[CCTextView alloc] init];
     textView.font = [UIFont systemFontOfSize:14];
     textView.textColor=RGBCommon(52, 52, 52);
     textView.placeholderColor=RGBCommon(181, 181, 181);
-//    textView.backgroundColor=[UIColor redColor];
-    textView.frame = CGRectMake(7, 20, CGRectGetWidth(bgView.frame)-15, CGRectGetHeight(bgView.frame)-51);
+    textView.frame = CGRectMake(5, -5, CGRectGetWidth(bgView.frame)-10, CGRectGetHeight(bgView.frame)-32);
 //    textView.textContainerInset=UIEdgeInsetsMake(15, 10, 0, 10);
     // 垂直方向上永远可以拖拽
     textView.alwaysBounceVertical = YES;
@@ -111,6 +115,7 @@
     textView.editable=NO;
 //    textView.placeholder = @"这一刻的想法...";
     self.textView = textView;
+    textView.backgroundColor=[UIColor clearColor];
     [bgView addSubview:textView];
     
     UIView *line=[[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetHeight(bgView.frame)-31, CGRectGetWidth(bgView.frame), 1)];
@@ -118,19 +123,24 @@
     [bgView addSubview:line];
     
     UIView *bgTool=[[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetHeight(bgView.frame)-30, CGRectGetWidth(bgView.frame), 30)];
-    bgTool.backgroundColor=[UIColor whiteColor];
     CCButton *btnComment=CCButtonCreateWithValue(CGRectMake(0, 0, CGRectGetWidth(bgTool.frame)/2, 30), @selector(onCommentClick:), self);
     btnComment.tag=1;
     [btnComment alterFontSize:12];
+    [btnComment alterNormalTitleColor:RGBCommon(52, 52, 52)];
     [btnComment setImage:[UIImage imageNamed:@"hm_share"] forState:UIControlStateNormal];
-    [btnComment alterNormalTitle:@"分享"];
+    [btnComment alterNormalTitle:@" 分享"];
     [bgTool addSubview:btnComment];
     
-    CCButton *btnEdit=CCButtonCreateWithValue(CGRectMake(0, CGRectGetWidth(bgTool.frame)/2, CGRectGetWidth(bgTool.frame)/2, 30), @selector(onCommentClick:), self);
-    btnEdit.tag=1;
+    UIView *line2=[[UIView alloc]initWithFrame:CGRectMake(CGRectGetWidth(bgTool.frame)/2, 0, 1, CGRectGetHeight(bgTool.frame))];
+    line2.backgroundColor=RGBCommon(181, 181, 181);
+    [bgTool addSubview:line2];
+    
+    CCButton *btnEdit=CCButtonCreateWithValue(CGRectMake(CGRectGetWidth(bgTool.frame)/2+1, 0, CGRectGetWidth(bgTool.frame)/2, 30), @selector(onCommentClick:), self);
+    btnEdit.tag=2;
     [btnEdit alterFontSize:12];
+    [btnEdit alterNormalTitleColor:RGBCommon(52, 52, 52)];
     [btnEdit setImage:[UIImage imageNamed:@"hm_edit"] forState:UIControlStateNormal];
-    [btnEdit alterNormalTitle:@"编辑"];
+    [btnEdit alterNormalTitle:@" 编辑"];
     [bgTool addSubview:btnEdit];
     [bgView addSubview:bgTool];
   
@@ -173,6 +183,9 @@
 
 -(void)onCommentClick:(CCButton *)sendar{
     PSLog(@"--评论--%d",sendar.tag);
+    if (sendar.tag==1) {
+        [self shareSDK];
+    }
 }
 
 -(void)onClick:(UIButton *)sendar{
@@ -231,12 +244,21 @@
     PSLog(@"--add--[%d]",index);
     if (isDelete) {
         UIImageView *delImg=self.photosView.totalImages[index-1];
-        
-        UIImageView *selectImg=[[UIImageView alloc]init];
-        UIImage *image=@"ImageSelectedOn".imageInstance;
-        CGSize size=image.size;
-        selectImg.frame=CGRectMake(CGRectGetWidth(delImg.frame)-size.width, CGRectGetHeight(delImg.frame)-size.height, size.width, size.height);
-        [delImg addSubview:selectImg];
+        REPhoto *photo=_photoArr[index-1];
+        if ([_deleteArr containsObject:photo]) {
+            delImg.alpha=1.0;
+            [_deleteArr removeObject:photo];
+            [delImg.subviews[0] removeFromSuperview];
+        }else{
+            [_deleteArr addObject:photo];
+            UIImageView *selectImg=[[UIImageView alloc]init];
+            UIImage *image=@"ImageSelectedOn".imageInstance;
+            CGSize size=image.size;
+            selectImg.frame=CGRectMake(CGRectGetWidth(delImg.frame)-size.width, CGRectGetHeight(delImg.frame)-size.height, size.width, size.height);
+            selectImg.image=image;
+            [delImg addSubview:selectImg];
+            delImg.alpha=0.7;
+        }
     }else{
         MJPhotoBrowser *photo=[[MJPhotoBrowser alloc]init];
         photo.isPhoto=NO;
@@ -279,6 +301,55 @@
 {
     [self.view endEditing:YES];
 }
+
+#pragma -mark 分享信息
+-(void)shareSDK{
+    NSString *content=_textView.text;//@"要分享的内容"
+    REPhoto *photo=_photoArr[0];
+    NSString *url=photo.imageUrl;
+    //1、构造分享内容
+    id<ISSContent> publishContent = [ShareSDK content:content
+                                       defaultContent:@"默认内容"
+                                                image:[ShareSDK imageWithUrl:url]
+                                                title:@"时光路游 - 美好记忆的开始"
+                                                  url:url
+                                          description:@"这是一条演示信息"
+                                            mediaType:SSPublishContentMediaTypeNews];
+    //1+创建弹出菜单容器（iPad必要）
+    id<ISSContainer> container = [ShareSDK container];
+    [container setIPadContainerWithView:self.view arrowDirect:UIPopoverArrowDirectionUp];
+    
+    //2、弹出分享菜单
+    [ShareSDK showShareActionSheet:container
+                         shareList:nil
+                           content:publishContent
+                     statusBarTips:YES
+                       authOptions:nil
+                      shareOptions:nil
+                            result:^(ShareType type, SSResponseState state, id<ISSPlatformShareInfo> statusInfo, id<ICMErrorInfo> error, BOOL end) {
+                                
+                                //可以根据回调提示用户。
+                                if (state == SSResponseStateSuccess)
+                                {
+                                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"分享成功"
+                                                                                    message:nil
+                                                                                   delegate:nil
+                                                                          cancelButtonTitle:@"OK"
+                                                                          otherButtonTitles:nil, nil];
+                                    [alert show];
+                                }
+                                else if (state == SSResponseStateFail)
+                                {
+                                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"分享失败"
+                                                                                    message:[NSString stringWithFormat:@"失败描述：%@",[error errorDescription]]
+                                                                                   delegate:nil
+                                                                          cancelButtonTitle:@"OK"
+                                                                          otherButtonTitles:nil, nil];
+                                    [alert show];
+                                }
+                            }];
+}
+
 
 
 -(void)textViewDidChange:(UITextView *)textView{
