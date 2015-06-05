@@ -38,6 +38,11 @@ FOUNDATION_EXPORT CGFloat ScreenHeight()
     return  [num boolValue];
 }
 
++ (BOOL)isHDPicture{
+    NSNumber *num=[[NSUserDefaults standardUserDefaults] objectForKey:ISHDPICTURE];
+    return  [num boolValue];
+}
+
 +(void)clearMac{
     NSUserDefaults *defaults=[NSUserDefaults standardUserDefaults];
     [defaults removeObjectForKey:BOUNDMAC];

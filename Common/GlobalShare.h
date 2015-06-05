@@ -84,6 +84,7 @@ FOUNDATION_EXPORT NSUInteger CurrentRouterConnectionMode();
 + (NSString *)routerMac;
 + (BOOL)isBindMac;
 + (void)clearMac;
++ (BOOL)isHDPicture;
 /**
  *  显示提示窗口,并加入一个子视图
  *

@@ -83,7 +83,12 @@ static ImageCacher *defaultCacher=nil;
         small=[self scaleImage:image size:CGSizeMake(144, 144)];
     }
     if (!hasCachedImageWithString(paths)) {
-        NSData *smallData=UIImageJPEGRepresentation(small, 0.5);
+        NSData *smallData=nil;
+        if ([GlobalShare isHDPicture]) {
+            smallData=UIImageJPEGRepresentation(small, 1);
+        }else{
+            smallData=UIImageJPEGRepresentation(small, 0.5);
+        }
         if (smallData) {
             NSString *path=pathInCacheDirectory(@"com.pifii");
             NSFileManager *fileManager=[NSFileManager defaultManager];

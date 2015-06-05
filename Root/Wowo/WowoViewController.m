@@ -390,7 +390,7 @@
                     UIImage *image=[UIImage imageWithContentsOfFile:pathForString(path)];
                     self.imgUser.image=image;
                 }else{
-                    NSValue *size=[NSValue valueWithCGSize:CGSizeMake(144, 144)];
+                    NSValue *size=[NSValue valueWithCGSize:self.imgUser.frame.size];
                     NSDictionary *dict=@{@"url":path,@"imageView":self.imgUser,@"size":size};
                     [NSThread detachNewThreadSelector:@selector(cacheImage:) toTarget:[ImageCacher defaultCacher] withObject:dict];
                 }

@@ -90,6 +90,7 @@
 }
 
 -(void)createTextView{
+    
     UIView *bgView=[[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.frame)-HEIGHT, CGRectGetWidth(self.view.frame), HEIGHT)];
     bgView.backgroundColor=[UIColor whiteColor];
     CCLabel *lbDate=CCLabelCreateWithNewValue(@"", 15, CGRectMake(5, 5, CGRectGetWidth(self.view.frame), 15));
@@ -101,7 +102,8 @@
     textView.font = [UIFont systemFontOfSize:14];
     textView.textColor=RGBCommon(52, 52, 52);
     textView.placeholderColor=RGBCommon(181, 181, 181);
-    textView.frame = CGRectMake(7, 20, CGRectGetWidth(bgView.frame)-15, 20);
+//    textView.backgroundColor=[UIColor redColor];
+    textView.frame = CGRectMake(7, 20, CGRectGetWidth(bgView.frame)-15, CGRectGetHeight(bgView.frame)-51);
 //    textView.textContainerInset=UIEdgeInsetsMake(15, 10, 0, 10);
     // 垂直方向上永远可以拖拽
     textView.alwaysBounceVertical = YES;
@@ -255,10 +257,11 @@
         //        [cell.imgView setImageWithURL:[path urlInstance]];
         if (hasCachedImageWithString(path)) {
             UIImage *image=[UIImage imageWithContentsOfFile:pathForString(path)];
-            [self.photosView addImage:image duration:nil];
+            UIImage *scaleImag=[[ImageCacher defaultCacher]scaleImage:image size:CGSizeMake(144, 144)];
+            [self.photosView addImage:scaleImag duration:nil];
         }else{
             UIImageView *image=[self.photosView addImage:nil duration:nil];
-            NSValue *size=[NSValue valueWithCGSize:CGSizeMake(144, 144)];
+            NSValue *size=[NSValue valueWithCGSize:image.frame.size];
             NSDictionary *dict=@{@"url":path,@"imageView":image,@"size":size};
             [NSThread detachNewThreadSelector:@selector(cacheImage:) toTarget:[ImageCacher defaultCacher] withObject:dict];
         }

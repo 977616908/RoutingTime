@@ -80,12 +80,7 @@
             if (hasCachedImageWithString(path)) {
                 image.image=[UIImage imageWithContentsOfFile:pathForString(path)];
             }else{
-                NSValue *size=[NSValue valueWithCGSize:CGSizeMake(WEITH, HEIGHT)];
-                if(i==1){
-                    size=[NSValue valueWithCGSize:CGSizeMake(WEITH/2, HEIGHT)];
-                }else if(i==2){
-                    size=[NSValue valueWithCGSize:CGSizeMake(WEITH/2, HEIGHT/2)];
-                }
+                NSValue *size=[NSValue valueWithCGSize:image.frame.size];
                 NSDictionary *dict=@{@"url":path,@"imageView":image,@"size":size};
                 [NSThread detachNewThreadSelector:@selector(cacheImage:) toTarget:[ImageCacher defaultCacher] withObject:dict];
             }

@@ -168,7 +168,7 @@ typedef enum{
             if (hasCachedImageWithString(path)) {
                 self.topImg.image=[UIImage imageWithContentsOfFile:pathForString(path)];
             }else{
-                NSValue *size=[NSValue valueWithCGSize:CGSizeMake(320, 186)];
+                NSValue *size=[NSValue valueWithCGSize:self.topImg.frame.size];
                 NSDictionary *dict=@{@"url":path,@"imageView":self.topImg,@"size":size};
                 [NSThread detachNewThreadSelector:@selector(cacheImage:) toTarget:[ImageCacher defaultCacher] withObject:dict];
             }
@@ -354,7 +354,8 @@ typedef enum{
             }
             stateView.hidden=NO;
             stateView.labelText=@"正在更换封面...";
-            UIImage *customImg=[[ImageCacher defaultCacher]scaleImage:theImage size:CGSizeMake(320, 186)];
+            CGSize size=self.topImg.frame.size;
+            UIImage *customImg=[[ImageCacher defaultCacher]scaleImage:theImage size:size];
             //        UIImage *customImg=[[ImageCacher defaultCacher]compressImage:theImage sizeheight:186];
             [self uploadImage:customImg];
         }else{
@@ -579,7 +580,8 @@ typedef enum{
         //        [_centerView setImagePhoto:_dataImgArr];
         if ([responseObject[@"returnCode"] integerValue]==200) {
             stateView.labelText=@"更换成功";
-            self.topImg.image=image;
+//            self.topImg.image=image;
+            [self getRequestPage:1 mark:@"home"];
            
         }else{
             stateView.labelText=responseObject[@"desc"];
