@@ -13,7 +13,7 @@
 -(id)initWithData:(NSDictionary *)data{
     if (self=[super init]) {
         if (data) {
-            _rtId=data[@"id"];
+            _rtId=[data[@"id"] integerValue];
             _rtNums=data[@"nums"];
             _rtDate=data[@"record_date"];
             _rtTitle=data[@"title"];

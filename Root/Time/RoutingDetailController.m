@@ -10,6 +10,8 @@
 #import "CCTextView.h"
 #import "PhotosView.h"
 #import "MJPhotoBrowser.h"
+#import "RoutingEditController.h"
+#import "PiFiiBaseNavigationController.h"
 #import "REPhoto.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "RoutingMsg.h"
@@ -17,6 +19,7 @@
 #import <ShareSDK/ShareSDK.h>
 #define HEIGHT 200
 #define BARHEIGHT 44
+
 
 @interface RoutingDetailController ()<UITextViewDelegate,PhotosViewDelegate,PiFiiBaseViewDelegate,UIActionSheetDelegate>{
     NSMutableArray  *_photoArr;
@@ -185,6 +188,12 @@
     PSLog(@"--评论--%d",sendar.tag);
     if (sendar.tag==1) {
         [self shareSDK];
+    }else{
+        RoutingEditController *editController=[[RoutingEditController alloc]init];
+        editController.routingTime=_routingTime;
+        editController.pifiiDelegate=self;
+        PiFiiBaseNavigationController *nav=[[PiFiiBaseNavigationController alloc]initWithRootViewController:editController];
+        [self presentViewController:nav animated:YES completion:nil];
     }
 }
 
@@ -223,6 +232,10 @@
         [self toolBarWithAnimation:YES];
         self.title=@"时光片段";
         isDelete=NO;
+        for (UIImageView *delImg in _photosView.totalImages) {
+            delImg.alpha=1.0;
+            if(delImg.subviews.count>0)[delImg.subviews[0] removeFromSuperview];
+        }
     }
     [_deleteArr removeAllObjects];
 }
@@ -350,6 +363,13 @@
                             }];
 }
 
+
+-(void)pushViewDataSource:(id)dataSource{
+    if ([dataSource isKindOfClass:[RoutingTime class]]) {
+        _routingTime=dataSource;
+        self.textView.text=_routingTime.rtTitle;
+    }
+}
 
 
 -(void)textViewDidChange:(UITextView *)textView{

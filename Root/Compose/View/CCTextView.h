@@ -11,4 +11,6 @@
 @interface CCTextView : UITextView
 @property (nonatomic, copy) NSString *placeholder;
 @property (nonatomic, strong) UIColor *placeholderColor;
+- (void)textDidChange;
 @end
+

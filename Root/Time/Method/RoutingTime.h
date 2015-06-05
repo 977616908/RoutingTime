@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface RoutingTime : NSObject
-@property(nonatomic,assign)NSNumber *rtId;
+@property(nonatomic,assign)NSInteger rtId;
 @property(nonatomic,copy)NSString  *rtNums;
 @property(nonatomic,copy)NSString  *rtDate;
 @property(nonatomic,copy)NSString  *rtTitle;
