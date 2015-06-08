@@ -66,34 +66,16 @@
     ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
     [library enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
         if (group) {
-            [group setAssetsFilter:[ALAssetsFilter allAssets]];
+            [group setAssetsFilter:[ALAssetsFilter allPhotos]];
             [group enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
                 if([[result valueForProperty:ALAssetPropertyType] isEqualToString:ALAssetTypePhoto]) {
                     REPhoto *photo = [[REPhoto alloc] init];
                     photo.image = [UIImage imageWithCGImage:result.thumbnail];
+//                    photo.image = [UIImage imageWithCGImage:result.aspectRatioThumbnail];//高清
                     NSString *fileName=[[result defaultRepresentation]filename];
                     photo.imageName=fileName;
                     photo.imageUrl=[NSString stringWithFormat:@"%@",[result valueForProperty:ALAssetPropertyAssetURL]];
                     photo.photoDate = [result valueForProperty:ALAssetPropertyDate];
-                    [datasource addObject:photo];
-                }else if([[result valueForProperty:ALAssetPropertyType] isEqualToString:ALAssetTypeVideo]){
-                    REPhoto *photo = [[REPhoto alloc] init];
-                    photo.image = [UIImage imageWithCGImage:result.thumbnail];
-                    NSString *fileName=[[result defaultRepresentation]filename];
-                    photo.imageName=fileName;
-                    photo.imageUrl=[NSString stringWithFormat:@"%@",[result valueForProperty:ALAssetPropertyAssetURL]];
-                    photo.photoDate = [result valueForProperty:ALAssetPropertyDate];
-                    photo.isVedio=YES;
-                    NSTimeInterval duration=[[result valueForProperty:ALAssetPropertyDuration] doubleValue];
-                    int hours=((int)duration)%(3600*24)/3600;
-                    int minus=((int)duration)%(3600*24)/60;
-                    int mt=((int)duration)%(3600*24)%60;
-                    if (hours==0) {
-                        photo.duration=[NSString stringWithFormat:@"%d:%02d",minus,mt];
-                    }else{
-                        photo.duration=[NSString stringWithFormat:@"%d%d:%02d",hours,minus,mt];
-                    }
-                    PSLog(@"--[%@]--",fileName);
                     [datasource addObject:photo];
                 }
             }];
