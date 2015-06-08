@@ -77,10 +77,17 @@
             RoutingMsg *msg=routingTime.rtSmallPaths[i];
             NSString *path=msg.msgPath;
             //        [cell.imgView setImageWithURL:[path urlInstance]];
+            CGSize imgSize=image.frame.size;
             if (hasCachedImageWithString(path)) {
-                image.image=[UIImage imageWithContentsOfFile:pathForString(path)];
+                UIImage *img=[UIImage imageWithContentsOfFile:pathForString(path)];
+                image.image=img;
+//                if (img.size.width>imgSize.width&&img.size.height>imgSize.height) {
+//                    image.image=img;
+//                }else{
+//                   image.image=[[ImageCacher defaultCacher]scaleImage:img size:CGSizeMake(imgSize.width, imgSize.height)];
+//                }
             }else{
-                NSValue *size=[NSValue valueWithCGSize:image.frame.size];
+                NSValue *size=[NSValue valueWithCGSize:imgSize];
                 NSDictionary *dict=@{@"url":path,@"imageView":image,@"size":size};
                 [NSThread detachNewThreadSelector:@selector(cacheImage:) toTarget:[ImageCacher defaultCacher] withObject:dict];
             }
@@ -116,7 +123,7 @@
     UILabel *lbDown=[[UILabel alloc]initWithFrame:CGRectMake(20, 0,CGRectGetWidth(self.bgView.frame), CGRectGetHeight(lbView.frame))];
     [lbDown setFont:[UIFont systemFontOfSize:10.0]];
     lbDown.textColor=[UIColor whiteColor];
-//    lbDown.text=@"上传中...(2/1)37.0%";
+    lbDown.text=@"上传中...";
     self.lbProgress=lbDown;
     [lbView addSubview:lbDown];
     self.lbView=lbView;

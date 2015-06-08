@@ -67,6 +67,8 @@
             REPhoto *photo=[[REPhoto alloc]init];
             photo.imageUrl=msg.msgPath;
             photo.date=_routingTime.rtDate;
+            photo.isVedio=msg.isVedio;
+            photo.imageName=msg.msgNum;
             [_photoArr addObject:photo];
         }
     }
@@ -168,7 +170,7 @@
     downBtn.frame=CGRectMake(20, 0, BARHEIGHT, BARHEIGHT);
     downBtn.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     downBtn.tag=1;
-    [downBtn setImage:[UIImage imageNamed:@"hm_baocun_selector"] forState:UIControlStateNormal];
+    [downBtn setImage:[UIImage imageNamed:@"hm_baocun"] forState:UIControlStateNormal];
     //    [_deleteBtn setImage:[UIImage imageNamed:@"photo-gallery-trashcan.png"] forState:UIControlStateHighlighted];
     [downBtn addTarget:self action:@selector(onClick:) forControlEvents:UIControlEventTouchUpInside];
     [_toolbar addSubview:downBtn];
@@ -176,7 +178,7 @@
     UIButton *deleteBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     deleteBtn.frame=CGRectMake(CGRectGetWidth(self.view.frame)-20-BARHEIGHT, 0, BARHEIGHT, BARHEIGHT);
     deleteBtn.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-    [deleteBtn setImage:[UIImage imageNamed:@"hm_shanchu_selector"] forState:UIControlStateNormal];
+    [deleteBtn setImage:[UIImage imageNamed:@"hm_shanchu"] forState:UIControlStateNormal];
     deleteBtn.tag=2;
     //    [_deleteBtn setImage:[UIImage imageNamed:@"photo-gallery-trashcan.png"] forState:UIControlStateHighlighted];
     [deleteBtn addTarget:self action:@selector(onClick:) forControlEvents:UIControlEventTouchUpInside];
@@ -198,7 +200,6 @@
 }
 
 -(void)onClick:(UIButton *)sendar{
-    PSLog(@"--图片--%d",sendar.tag);
     UIActionSheet *action=nil;
     switch (sendar.tag) {
         case 1:
@@ -218,7 +219,7 @@
             [action showInView:self.view];
             break;
     }
-    
+    action.tag=sendar.tag;
 }
 
 -(void)addPhotoListener:(CCButton*)sendar{
@@ -308,6 +309,53 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+
+#pragma -mark 删除图片
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (buttonIndex==0) {
+        if (actionSheet.tag==1) {
+            PSLog(@"下载图片");
+        }else{
+            PSLog(@"删除图片");
+            if (_deleteArr.count>0) {
+                NSMutableString *sb=[NSMutableString string];
+                for (int i=0; i<_deleteArr.count; i++) {
+                        REPhoto *photo=_deleteArr[i];
+                        if (i!=0) {
+                            [sb appendString:@","];
+                        }
+                        [sb appendString:photo.imageName];
+                }
+                NSDictionary *param=@{
+                                       @"resId":sb,
+                                       @"timeId":@(_routingTime.rtId)};
+                [self initPostWithURL:ROUTINGTIMEURL path:@"deleteFiles" paras:param mark:@"delete" autoRequest:YES];
+            }
+        }
+    }
+}
+
+-(void)handleRequestOK:(id)response mark:(NSString *)mark{
+    if ([[response objectForKey:@"returnCode"]integerValue]==200) {
+        if (_deleteArr.count==_photoArr.count) {
+            [self performSelector:@selector(exitCurrentController) withObject:nil afterDelay:1.5];
+        }else{
+            for (REPhoto *photo in _deleteArr) {
+                [_photoArr removeObject:photo];
+            }
+            [_deleteArr removeAllObjects];
+            for (UIImageView *delImg in _photosView.totalImages) {
+                delImg.alpha=1.0;
+                if(delImg.subviews.count>0)[delImg removeFromSuperview];
+            }
+        }
+    }
+}
+
+-(void)handleRequestFail:(NSError *)error mark:(NSString *)mark{
+    
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
