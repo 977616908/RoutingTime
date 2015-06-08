@@ -11,6 +11,7 @@
 #import "REPhoto.h"
 #import "RoutingDetailController.h"
 #import "RoutingTimeController.h"
+#import "MJPhotoBrowser.h"
 @interface RoutingCell (){
     NSArray *arrImgs;
 }
@@ -27,6 +28,7 @@
 @property (weak, nonatomic) UILabel *lbProgress;
 @property (weak, nonatomic) UIView *lbView;
 @property(nonatomic,strong)id superController;
+- (IBAction)onDetailClick:(id)sender;
 
 @end
 
@@ -51,8 +53,6 @@
 -(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
     if (self=[super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         self=[[NSBundle mainBundle]loadNibNamed:@"RoutingCell" owner:nil options:nil][0];
-        self.bgView.userInteractionEnabled=YES;
-        [self.bgView addGestureRecognizer:[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(onTapClick)]];
     }
     return self;
 }
@@ -74,6 +74,9 @@
         [self addImageCount:arr.count];
         for (int i=0; i<arrImgs.count; i++) {
             UIImageView *image=arrImgs[i];
+            image.tag=i;
+            image.userInteractionEnabled=YES;
+            [image addGestureRecognizer:[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(onTapClick:)]];
             RoutingMsg *msg=routingTime.rtSmallPaths[i];
             NSString *path=msg.msgPath;
             //        [cell.imgView setImageWithURL:[path urlInstance]];
@@ -197,8 +200,29 @@
     PSLog(@"--[%d]--[%f]-[%d]",totalCount,progress,count);
 }
 
--(void)onTapClick{
-    NSLog(@"tap--[%d]",_routingTime.rtSmallPaths.count);
+-(void)onTapClick:(UITapGestureRecognizer *)gesture{
+    NSMutableArray *arrPhoto=[NSMutableArray array];
+    for (RoutingMsg *msg in _routingTime.rtPaths) {
+        REPhoto *photo=[[REPhoto alloc]init];
+        photo.imageUrl=msg.msgPath;
+        photo.date=_routingTime.rtDate;
+        photo.isVedio=msg.isVedio;
+        photo.imageName=msg.msgNum;
+        [arrPhoto addObject:photo];
+    }
+    NSLog(@"tap--[%d]",gesture.view.tag);
+    MJPhotoBrowser *photo=[[MJPhotoBrowser alloc]init];
+    photo.isPhoto=NO;
+    photo.currentPhotoIndex=gesture.view.tag;
+    photo.photos=arrPhoto;
+    //    photo.pifiiDelegate=self;
+    RoutingTimeController *controller=self.superController;
+    [controller.navigationController.view.layer addAnimation:[self customAnimationType:kCATransitionFade upDown:NO]  forKey:@"animation"];
+    [controller.navigationController pushViewController:photo animated:NO];
+    
+}
+
+- (IBAction)onDetailClick:(id)sender {
     RoutingTimeController *controller=self.superController;
     if (_routingDown) {
         [controller showToast:@"时光片段正在分享..." Long:1.5];
@@ -207,6 +231,20 @@
     RoutingDetailController *detailController=[[RoutingDetailController alloc]init];
     detailController.routingTime=_routingTime;
     [controller.navigationController pushViewController:detailController animated:YES];
+}
+
+-(CATransition *)customAnimationType:(NSString *)type upDown:(BOOL )boolUpDown{
+    CATransition *animation = [CATransition animation];
+    animation.duration = 0.5f ;
+    animation.type = type;//101
+    if (boolUpDown) {
+        animation.subtype = kCATransitionFromTop;
+    }else{
+        animation.subtype = kCATransitionFromBottom;
+    }
+    animation.timingFunction = UIViewAnimationCurveEaseInOut;
+    
+    return animation;
 }
 
 @end

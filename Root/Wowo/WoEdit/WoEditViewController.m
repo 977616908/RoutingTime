@@ -90,7 +90,6 @@
         if (hasCachedImageWithString(path)) {
             UIImage *image=[UIImage imageWithContentsOfFile:pathForString(path)];
             [btnContent setImage:image forState:UIControlStateNormal];
-            _user.image=image;
         }else{
             [btnContent setImageName:@"hm_touxiang"];
         }
@@ -256,6 +255,11 @@
     [mgr POST:url parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData> formData) { // 在发送请求之前调用这个block
         if (_user.image) {
             [formData appendPartWithFileData:UIImageJPEGRepresentation(_user.image, 1) name:@"facephoto" fileName:@"face.png" mimeType:@"image/jpeg"];
+        }else{
+            NSData *data=[NSData dataWithContentsOfURL:[NSURL URLWithString:_user.facephotoUrl]];
+            if (data) {
+                [formData appendPartWithFileData:data name:@"facephoto" fileName:@"face.png" mimeType:@"image/jpeg"];
+            }
         }
     } success:^(AFHTTPRequestOperation *operation, id responseObject) {
         //        PSLog(@"-[ld]-%@--",operation.expectedContentLength,responseObject);

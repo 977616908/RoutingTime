@@ -47,7 +47,7 @@
     [super viewDidLoad];
     _arrTitle=@[@{@"icon":@"hm_sgly",@"title":@"时光路游"},
                 @{@"icon":@"hm_tjgpy",@"title":@"推荐给朋友"},
-                @{@"icon":@"hm_shez",@"title":@"设置"}];
+                @{@"icon":@"hm_shezhi",@"title":@"设置"}];
     isMacBounds=[GlobalShare isBindMac];
     
 }
@@ -86,7 +86,7 @@
 
 -(UIView *)createButtonView:(CGRect)frame{
     UIView *bgView=[[UIView alloc]initWithFrame:frame];
-    bgView.backgroundColor=[UIColor clearColor];
+    bgView.backgroundColor=[UIColor whiteColor];
     NSArray *iconArr=@[@"hm_ddgl",@"hm_sggj",@"hm_sgjy"];
     NSArray *titleArr=@[@"时光赶集",@"时光脚印",@"订单管理"];
     for (int i=0; i<iconArr.count; i++) {
