@@ -54,7 +54,8 @@ typedef enum{
     UIImage *image=[[UIImage imageNamed:@"hm_top"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0,  130, 0) resizingMode:UIImageResizingModeStretch];
     self.topImg.image=image;
     navigationBar=self.navigationController.navigationBar;
-    _rootScrollView.contentSize=CGSizeMake(0, CGRectGetHeight(self.view.frame)+14);
+//    _rootScrollView.contentSize=CGSizeMake(0, CGRectGetHeight(self.view.frame)+14);
+    _rootScrollView.contentSize=CGSizeMake(0, CGRectGetHeight(self.view.frame)-14);
 }
 
 
@@ -90,7 +91,7 @@ typedef enum{
         backImage = @"hm_bg001";
     }
     [navigationBar setBackgroundImage:[UIImage imageNamed:backImage] forBarMetrics:UIBarMetricsDefault];
-    textAttrs[UITextAttributeTextColor] = [UIColor blackColor];
+    textAttrs[UITextAttributeTextColor] = RGBCommon(52, 52, 52);
     textAttrs[UITextAttributeTextShadowOffset] = [NSValue valueWithUIOffset:UIOffsetZero];
     textAttrs[UITextAttributeFont] = [UIFont systemFontOfSize:19.0];
     [navigationBar setTitleTextAttributes:textAttrs];
@@ -419,7 +420,7 @@ typedef enum{
 }
 -(void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView{
     [UIView animateWithDuration:0.5 animations:^{
-        _rootScrollView.contentOffset=CGPointMake(0, 60);
+        _rootScrollView.contentOffset=CGPointMake(0, 35);
     }];
 }
 
