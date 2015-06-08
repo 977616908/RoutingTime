@@ -78,6 +78,9 @@
             image.userInteractionEnabled=YES;
             [image addGestureRecognizer:[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(onTapClick:)]];
             RoutingMsg *msg=routingTime.rtSmallPaths[i];
+            if (msg.isVedio) {
+                [self addVedioImg:image duration:msg.msgDuration];
+            }
             NSString *path=msg.msgPath;
             //        [cell.imgView setImageWithURL:[path urlInstance]];
             CGSize imgSize=image.frame.size;
@@ -114,6 +117,9 @@
 //            CGSize size=image.frame.size;
 //            UIImage *scaleImg=[[ImageCacher defaultCacher]scaleImage:photo.image size:CGSizeMake(size.width*2, size.height*2)];
             image.image=photo.image;
+            if (photo.isVedio) {
+                [self addVedioImg:image duration:photo.duration];
+            }
         }
     }
     UIView *lbView=[[UIView alloc]initWithFrame:CGRectMake(2, 2, CGRectGetWidth(self.bgView.frame)-5, 15)];
@@ -166,6 +172,22 @@
     arrImgs=imags;
 }
 
+
+-(void)addVedioImg:(UIImageView *)image duration:(NSString *)duration{
+    UIView *bgVedio=[[UIView alloc]initWithFrame:CGRectMake(2, 2, CGRectGetWidth(image.frame), 16)];
+    bgVedio.backgroundColor=[UIColor clearColor];
+    UIImageView *imgVedio=[[UIImageView alloc]initWithFrame:CGRectMake(2, 0, 14, 14)];
+    imgVedio.image=[UIImage imageNamed:@"hm_vedio"];
+    [bgVedio addSubview:imgVedio];
+    UILabel *txtDuration=[[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(imgVedio.frame)+5,0, CGRectGetWidth(bgVedio.frame), 12)];
+    txtDuration.backgroundColor=[UIColor clearColor];
+    txtDuration.textColor = [UIColor whiteColor];
+    txtDuration.font=[UIFont systemFontOfSize:12.0f];
+    txtDuration.text=duration;
+    [bgVedio addSubview:txtDuration];
+    
+    [image addSubview:bgVedio];
+}
 
 -(void)setImgName:(NSString *)imgName{
     _imgName=imgName;
