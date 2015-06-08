@@ -12,6 +12,8 @@
 #import "RoutingDetailController.h"
 #import "RoutingTimeController.h"
 #import "MJPhotoBrowser.h"
+#import <MediaPlayer/MediaPlayer.h>
+
 @interface RoutingCell (){
     NSArray *arrImgs;
 }
@@ -224,23 +226,35 @@
 
 -(void)onTapClick:(UITapGestureRecognizer *)gesture{
     NSMutableArray *arrPhoto=[NSMutableArray array];
-    for (RoutingMsg *msg in _routingTime.rtPaths) {
-        REPhoto *photo=[[REPhoto alloc]init];
-        photo.imageUrl=msg.msgPath;
-        photo.date=_routingTime.rtDate;
-        photo.isVedio=msg.isVedio;
-        photo.imageName=msg.msgNum;
-        [arrPhoto addObject:photo];
-    }
-    NSLog(@"tap--[%d]",gesture.view.tag);
-    MJPhotoBrowser *photo=[[MJPhotoBrowser alloc]init];
-    photo.isPhoto=NO;
-    photo.currentPhotoIndex=gesture.view.tag;
-    photo.photos=arrPhoto;
-    //    photo.pifiiDelegate=self;
+    RoutingMsg *msg=_routingTime.rtSmallPaths[gesture.view.tag];
     RoutingTimeController *controller=self.superController;
-    [controller.navigationController.view.layer addAnimation:[self customAnimationType:kCATransitionFade upDown:NO]  forKey:@"animation"];
-    [controller.navigationController pushViewController:photo animated:NO];
+    if (msg.isVedio) {
+        MPMoviePlayerViewController *playerController=[[MPMoviePlayerViewController alloc]init];
+        NSURL *url=[_routingTime.rtPaths[gesture.view.tag] msgPath].urlInstance;
+        playerController.moviePlayer.contentURL = url;
+        playerController.moviePlayer.controlStyle=MPMovieControlStyleFullscreen;
+        [playerController.moviePlayer prepareToPlay];
+        [controller presentMoviePlayerViewControllerAnimated:playerController];
+    }else{
+        for (RoutingMsg *msg in _routingTime.rtPaths) {
+            REPhoto *photo=[[REPhoto alloc]init];
+            photo.imageUrl=msg.msgPath;
+            photo.date=_routingTime.rtDate;
+            photo.isVedio=msg.isVedio;
+            photo.imageName=msg.msgNum;
+            [arrPhoto addObject:photo];
+        }
+        NSLog(@"tap--[%d]",gesture.view.tag);
+        
+        
+        MJPhotoBrowser *photo=[[MJPhotoBrowser alloc]init];
+        photo.isPhoto=NO;
+        photo.currentPhotoIndex=gesture.view.tag;
+        photo.photos=arrPhoto;
+        //    photo.pifiiDelegate=self;
+        [controller.navigationController.view.layer addAnimation:[self customAnimationType:kCATransitionFade upDown:NO]  forKey:@"animation"];
+        [controller.navigationController pushViewController:photo animated:NO];
+    }
     
 }
 

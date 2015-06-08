@@ -24,6 +24,8 @@
         _msgDuration=isNIL(data[@"duration"])?@"":data[@"duration"];
         if (![_msgDuration isEqualToString:@""]&&![_msgDuration isEqualToString:@"null"]){
             _isVedio=YES;
+        }else{
+            _msgDuration=nil;
         }
     }
     return self;

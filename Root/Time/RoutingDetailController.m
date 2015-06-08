@@ -14,6 +14,7 @@
 #import "PiFiiBaseNavigationController.h"
 #import "REPhoto.h"
 #import <AssetsLibrary/AssetsLibrary.h>
+#import <MediaPlayer/MediaPlayer.h>
 #import "RoutingMsg.h"
 #import "RoutingTime.h"
 #import <ShareSDK/ShareSDK.h>
@@ -63,13 +64,16 @@
         [self addImage:arr];
         _textView.text=_routingTime.rtTitle;
         _lbDate.text=[NSString stringWithFormat:@"创建时间: %@",_routingTime.rtDate];
-        for (RoutingMsg *msg in _routingTime.rtPaths) {
-            REPhoto *photo=[[REPhoto alloc]init];
-            photo.imageUrl=msg.msgPath;
-            photo.date=_routingTime.rtDate;
-            photo.isVedio=msg.isVedio;
-            photo.imageName=msg.msgNum;
-            [_photoArr addObject:photo];
+        for (int i=0; i<_routingTime.rtPaths.count; i++) {
+            if (![_routingTime.rtSmallPaths[i] isVedio]) {
+                RoutingMsg *msg=_routingTime.rtPaths[i];
+                REPhoto *photo=[[REPhoto alloc]init];
+                photo.imageUrl=msg.msgPath;
+                photo.date=_routingTime.rtDate;
+                photo.isVedio=msg.isVedio;
+                photo.imageName=msg.msgNum;
+                [_photoArr addObject:photo];
+            }
         }
     }
 }
@@ -274,13 +278,22 @@
             delImg.alpha=0.7;
         }
     }else{
-        MJPhotoBrowser *photo=[[MJPhotoBrowser alloc]init];
-        photo.isPhoto=NO;
-        photo.currentPhotoIndex=index-1;
-        photo.photos=_photoArr;
-        //    photo.pifiiDelegate=self;
-        [self.navigationController.view.layer addAnimation:[self customAnimationType:kCATransitionFade upDown:NO]  forKey:@"animation"];
-        [self.navigationController pushViewController:photo animated:NO];
+        if ([_routingTime.rtSmallPaths[index-1] isVedio]) {
+            MPMoviePlayerViewController *playerController=[[MPMoviePlayerViewController alloc]init];
+            NSURL *url=[_routingTime.rtPaths[index-1] msgPath].urlInstance;
+            playerController.moviePlayer.contentURL = url;
+            playerController.moviePlayer.controlStyle=MPMovieControlStyleFullscreen;
+            [playerController.moviePlayer prepareToPlay];
+            [self presentMoviePlayerViewControllerAnimated:playerController];
+        }else{
+            MJPhotoBrowser *photo=[[MJPhotoBrowser alloc]init];
+            photo.isPhoto=NO;
+            photo.currentPhotoIndex=index-1;
+            photo.photos=_photoArr;
+            //    photo.pifiiDelegate=self;
+            [self.navigationController.view.layer addAnimation:[self customAnimationType:kCATransitionFade upDown:NO]  forKey:@"animation"];
+            [self.navigationController pushViewController:photo animated:NO];
+        }
     }
 }
 
@@ -294,9 +307,9 @@
         if (hasCachedImageWithString(path)) {
             UIImage *image=[UIImage imageWithContentsOfFile:pathForString(path)];
             UIImage *scaleImag=[[ImageCacher defaultCacher]scaleImage:image size:CGSizeMake(144, 144)];
-            [self.photosView addImage:scaleImag duration:nil];
+            [self.photosView addImage:scaleImag duration:msg.msgDuration];
         }else{
-            UIImageView *image=[self.photosView addImage:nil duration:nil];
+            UIImageView *image=[self.photosView addImage:nil duration:msg.msgDuration];
             NSValue *size=[NSValue valueWithCGSize:image.frame.size];
             NSDictionary *dict=@{@"url":path,@"imageView":image,@"size":size};
             [NSThread detachNewThreadSelector:@selector(cacheImage:) toTarget:[ImageCacher defaultCacher] withObject:dict];
