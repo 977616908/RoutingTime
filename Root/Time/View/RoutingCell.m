@@ -72,7 +72,7 @@
     self.lbMM.text=[self getDate:routingTime.rtDate type:@"MM月"];
     self.lbDay.text=[self getDate:routingTime.rtDate type:@"dd"];
     NSArray *arr=routingTime.rtSmallPaths;
-    if (arr) {
+    if (arr&&arr.count>0) {
         [self addImageCount:arr.count];
         for (int i=0; i<arrImgs.count; i++) {
             UIImageView *image=arrImgs[i];
@@ -225,7 +225,6 @@
 }
 
 -(void)onTapClick:(UITapGestureRecognizer *)gesture{
-    NSMutableArray *arrPhoto=[NSMutableArray array];
     RoutingMsg *msg=_routingTime.rtSmallPaths[gesture.view.tag];
     RoutingTimeController *controller=self.superController;
     if (msg.isVedio) {
@@ -236,13 +235,17 @@
         [playerController.moviePlayer prepareToPlay];
         [controller presentMoviePlayerViewControllerAnimated:playerController];
     }else{
-        for (RoutingMsg *msg in _routingTime.rtPaths) {
-            REPhoto *photo=[[REPhoto alloc]init];
-            photo.imageUrl=msg.msgPath;
-            photo.date=_routingTime.rtDate;
-            photo.isVedio=msg.isVedio;
-            photo.imageName=msg.msgNum;
-            [arrPhoto addObject:photo];
+        NSMutableArray *arrPhoto=[NSMutableArray array];
+        for (int i=0; i<_routingTime.rtPaths.count; i++) {
+            if (![_routingTime.rtSmallPaths[i] isVedio]) {
+                RoutingMsg *rtMsg=_routingTime.rtPaths[i];
+                REPhoto *photo=[[REPhoto alloc]init];
+                photo.imageUrl=rtMsg.msgPath;
+                photo.date=_routingTime.rtDate;
+                photo.isVedio=rtMsg.isVedio;
+                photo.imageName=rtMsg.msgNum;
+                [arrPhoto addObject:photo];
+            }
         }
         NSLog(@"tap--[%d]",gesture.view.tag);
         

@@ -8,7 +8,7 @@
 #import "LoginRegisterController.h"
 #import "ScannerViewController.h"
 #import "CCTextField.h"
-
+#import "PiFiiBaseTabBarController.h"
 
 typedef enum{
     LOGINTYPE,
@@ -505,7 +505,12 @@ typedef enum{
         stateView.labelText=@"正在绑定...请稍候!";
         [self performSelector:@selector(bindMac:) withObject:nil afterDelay:1.5];
     }else{
-        [self exitCurrentController];
+//        if (![self.navigationController popToRootViewControllerAnimated:YES]) {
+//            [self dismissViewControllerAnimated:YES completion:nil];
+//        }
+//        [self exitCurrentController];
+        PiFiiBaseTabBarController *tab=[[PiFiiBaseTabBarController alloc]init];
+        [self presentViewController:tab animated:YES completion:nil];
     }
 }
 
