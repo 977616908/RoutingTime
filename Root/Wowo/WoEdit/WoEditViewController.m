@@ -249,7 +249,7 @@
     params[@"username"] = userPhone;
     params[@"nickname"]=_user.nickname;
     params[@"gender"]=_user.gender;
-    params[@"isUpload"]=@(1);
+    params[@"isUpload"]=@"true";
     NSString *url=[NSString stringWithFormat:@"%@/updateUserInfo",ROUTINGTIMEURL];
     // 3.发送请求
     [mgr POST:url parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData> formData) { // 在发送请求之前调用这个block

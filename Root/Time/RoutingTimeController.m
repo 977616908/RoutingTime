@@ -208,6 +208,7 @@ typedef enum{
         [self.footer endRefreshing];
     }
     [self.rootTable reloadData];
+    [self performSelector:@selector(stopAnimation) withObject:nil afterDelay:0.5];
 }
 
 #pragma -mark  登录方法
@@ -280,7 +281,8 @@ typedef enum{
     }
 }
 
-#pragma -mark 拍照与相册
+#pragma -mark 传递数据
+
 -(void)pushViewDataSource:(id)dataSource{
     if ([dataSource isKindOfClass:[NSArray class]]) {
         [self performSelector:@selector(startIntent:) withObject:dataSource afterDelay:.2];
@@ -294,7 +296,17 @@ typedef enum{
 }
 
 -(void)updateDate:(NSNotification *)not{
-    [self removeRoutingClass:[RoutingTime class]];
+    NSDictionary *param=not.userInfo;
+    RoutingDown *down=nil;
+    for (id obj in _arrTime) {
+        if ([obj isKindOfClass:[RoutingDown class]]) {
+            if([param isEqualToDictionary:[obj params]]){
+                down=obj;
+            }
+        }
+    }
+    if(down)[_arrTime removeObject:down];
+//    [self removeRoutingClass:[RoutingTime class]];
     [self getRequestPage:1 mark:@"home"];
     [PSNotificationCenter removeObserver:self name:@"UPDATE" object:nil];
 }
@@ -311,6 +323,8 @@ typedef enum{
     PiFiiBaseNavigationController *nav=[[PiFiiBaseNavigationController alloc]initWithRootViewController:cp];
     [self presentViewController:nav animated:YES completion:nil];
 }
+
+#pragma -mark 拍照与相册
 // 打开相机
 - (void)openCamera {
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])

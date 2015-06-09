@@ -354,7 +354,7 @@
             if (_photoArr.count>0) {
                 [self uploadWithPhoto:_photoArr[0]];
             }else{
-               [PSNotificationCenter postNotificationName:@"UPDATE" object:nil userInfo:nil];
+               [PSNotificationCenter postNotificationName:@"UPDATE" object:nil userInfo:params];
             }
         }
     }];
@@ -376,7 +376,8 @@
 
         NSDictionary *param=@{@"count":@(_photoArr.count),
                               @"totalCount":@(downCount),
-                              @"progress":@(fraction*100)};
+                              @"progress":@(fraction*100),
+                              @"date":params[@"date"]};
         [PSNotificationCenter postNotificationName:@"DOWNPROGRESS" object:nil userInfo:param];
         PSLog(@"[%f]--[%@]--[%@]",fraction,localized,additional);
     }];

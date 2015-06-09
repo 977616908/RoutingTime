@@ -215,13 +215,17 @@
     NSInteger totalCount=[param[@"totalCount"] integerValue];
     NSInteger count=totalCount-[param[@"count"] integerValue]+1;
     CGFloat progress=[param[@"progress"] floatValue];
-    //    lbDown.text=@"上传中...(2/1)37.0%";
-    self.lbProgress.text=[NSString stringWithFormat:@"上传中...(%d/%d)%.2f%%",totalCount,count,progress];
-    if (progress>=100&&totalCount==count) {
-        [PSNotificationCenter removeObserver:self name:DOWNPROGRESS object:nil];
-        [self.lbView removeFromSuperview];
+    NSString *date=param[@"date"];
+    if ([date isEqualToString:_routingDown.params[@"date"]]) {
+        self.lbProgress.text=[NSString stringWithFormat:@"上传中...(%d/%d)%.2f%%",totalCount,count,progress];
+        if (progress>=100&&totalCount==count) {
+            [PSNotificationCenter removeObserver:self name:DOWNPROGRESS object:nil];
+            [self.lbView removeFromSuperview];
+        }
+        PSLog(@"--[%d]--[%f]-[%d]",totalCount,progress,count);
     }
-    PSLog(@"--[%d]--[%f]-[%d]",totalCount,progress,count);
+    //    lbDown.text=@"上传中...(2/1)37.0%";
+  
 }
 
 -(void)onTapClick:(UITapGestureRecognizer *)gesture{
