@@ -53,7 +53,7 @@
     bgPwd.layer.borderColor=RGBCommon(197, 197, 197).CGColor;
     [self.view addSubview:bgPwd];
     CCButton *btnPwd=CCButtonCreateWithFrame(CGRectMake(10, 13, 16, 16));
-    [btnPwd setImage:[UIImage imageNamed:@"hm_bhmm"] forState:UIControlStateNormal];
+    [btnPwd setImage:[UIImage imageNamed:@"hm_miyao02"] forState:UIControlStateNormal];
     [bgPwd addSubview:btnPwd];
     
     CCTextField *tfPwd=[[CCTextField alloc]initWithFrame:CGRectMake(53,85, 236, 42)];

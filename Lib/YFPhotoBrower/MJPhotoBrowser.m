@@ -749,8 +749,11 @@
         [playerLayer removeFromSuperlayer];
         _player=nil;
     }
-    [self showPhotos:YES];
-    [self updateTollbarState];
+    if (_photos.count>1) {
+        [self showPhotos:YES];
+        [self updateTollbarState];
+    }
+
     
 }
 

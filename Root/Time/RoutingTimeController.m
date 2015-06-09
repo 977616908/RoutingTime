@@ -31,6 +31,7 @@ typedef enum{
 }
 @property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *imgArr;
 @property (strong, nonatomic) IBOutletCollection(UILabel) NSArray *titileArr;
+@property (weak, nonatomic) IBOutlet UIView *bgLoad;
 
 @property (weak, nonatomic) IBOutlet UIButton *btnWifii;
 @property (weak, nonatomic) IBOutlet UITableView *rootTable;
@@ -49,13 +50,7 @@ typedef enum{
     [super viewDidLoad];
     [self setupRefreshView];
     [self judgeWithLogin];
-    self.topImg.userInteractionEnabled=YES;
-    [self.topImg addGestureRecognizer:[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(onCameraClick:)]];
-    UIImage *image=[[UIImage imageNamed:@"hm_top"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0,  130, 0) resizingMode:UIImageResizingModeStretch];
-    self.topImg.image=image;
-    navigationBar=self.navigationController.navigationBar;
-//    _rootScrollView.contentSize=CGSizeMake(0, CGRectGetHeight(self.view.frame)+14);
-    _rootScrollView.contentSize=CGSizeMake(0, CGRectGetHeight(self.view.frame)-14);
+    [self createImage];
 }
 
 
@@ -69,8 +64,19 @@ typedef enum{
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:sendBut];
 }
 
+-(void)createImage{
+    self.topImg.userInteractionEnabled=YES;
+    [self.topImg addGestureRecognizer:[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(onCameraClick:)]];
+    //    UIImage *image=[[UIImage imageNamed:@"hm_top"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0,  130, 0) resizingMode:UIImageResizingModeStretch];
+//    self.topImg.image=[UIImage imageNamed:@"hm_top"];
+    navigationBar=self.navigationController.navigationBar;
+    //    _rootScrollView.contentSize=CGSizeMake(0, CGRectGetHeight(self.view.frame)+14);
+    _rootScrollView.contentSize=CGSizeMake(0, CGRectGetHeight(self.view.frame)-14);
+}
+
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    self.bgLoad.hidden=YES;
     [self setNavBackground];
     BOOL isMacBouds=[GlobalShare isBindMac];
     if (isMacBouds) {
@@ -112,6 +118,8 @@ typedef enum{
     NSString *userPhone=userData[@"userPhone"];
     if (userPhone&&![userPhone isEqualToString:@""]) {
         [self initPostWithURL:ROUTINGTIMEURL path:@"mainPageVideo" paras:@{@"username":userPhone,@"page":@(page)} mark:mark autoRequest:YES];
+    }else{
+        self.bgLoad.hidden=NO;
     }
   
 }
@@ -179,6 +187,7 @@ typedef enum{
             }else{
                 pageCount+=1;
             }
+            if(_arrTime.count<=0)self.bgLoad.hidden=NO;
             [self.rootTable reloadData];
         }
 
@@ -589,36 +598,37 @@ typedef enum{
     NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
     NSDictionary *userData= [user objectForKey:USERDATA];
     NSString *userPhone=userData[@"userPhone"];
-    // 1.创建对象
-    AFHTTPRequestOperationManager *mgr=[AFHTTPRequestOperationManager manager];
-    // 2.封装请求参数
-    NSMutableDictionary *params = [NSMutableDictionary dictionary];
-    params[@"username"] = userPhone;
-    NSString *url=[NSString stringWithFormat:@"%@/uploadFiles",ROUTINGTIMEURL];
-    // 3.发送请求
-    [mgr POST:url parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData> formData) { // 在发送请求之前调用这个block
-        if (image) {
-            [formData appendPartWithFileData:UIImageJPEGRepresentation(image, 1) name:@"files" fileName:@"logo_bg.png" mimeType:@"image/jpeg"];
-        }
-    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
-//        PSLog(@"-[ld]-%@--",operation.expectedContentLength,responseObject);
-        //        [_dataImgArr removeObject:photo];
-        //        [_centerView setImagePhoto:_dataImgArr];
-        if ([responseObject[@"returnCode"] integerValue]==200) {
-            stateView.labelText=@"更换成功";
-//            self.topImg.image=image;
-            [self getRequestPage:1 mark:@"home"];
-           
-        }else{
-            stateView.labelText=responseObject[@"desc"];
-        }
-        [self performSelector:@selector(setStateView:) withObject:@"success" afterDelay:0.5];
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        PSLog(@"--%@--",error);
-        stateView.labelText=@"更换失败";
-        [self performSelector:@selector(setStateView:) withObject:@"fail" afterDelay:0.5];
-    }];
-
+    if (userPhone&&![userPhone isEqualToString:@""]) {
+        // 1.创建对象
+        AFHTTPRequestOperationManager *mgr=[AFHTTPRequestOperationManager manager];
+        // 2.封装请求参数
+        NSMutableDictionary *params = [NSMutableDictionary dictionary];
+        params[@"username"] = userPhone;
+        NSString *url=[NSString stringWithFormat:@"%@/uploadFiles",ROUTINGTIMEURL];
+        // 3.发送请求
+        [mgr POST:url parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData> formData) { // 在发送请求之前调用这个block
+            if (image) {
+                [formData appendPartWithFileData:UIImageJPEGRepresentation(image, 1) name:@"files" fileName:@"logo_bg.png" mimeType:@"image/jpeg"];
+            }
+        } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            //        PSLog(@"-[ld]-%@--",operation.expectedContentLength,responseObject);
+            //        [_dataImgArr removeObject:photo];
+            //        [_centerView setImagePhoto:_dataImgArr];
+            if ([responseObject[@"returnCode"] integerValue]==200) {
+                stateView.labelText=@"更换成功";
+                //            self.topImg.image=image;
+                [self getRequestPage:1 mark:@"home"];
+                
+            }else{
+                stateView.labelText=responseObject[@"desc"];
+            }
+            [self performSelector:@selector(setStateView:) withObject:@"success" afterDelay:0.5];
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            PSLog(@"--%@--",error);
+            stateView.labelText=@"更换失败";
+            [self performSelector:@selector(setStateView:) withObject:@"fail" afterDelay:0.5];
+        }];
+    }
 }
 
 -(void)setStateView:(NSString *)state{

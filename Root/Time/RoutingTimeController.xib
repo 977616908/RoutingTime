@@ -7,6 +7,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RoutingTimeController">
             <connections>
+                <outlet property="bgLoad" destination="mOs-84-ET9" id="ab7-Yr-g5P"/>
                 <outlet property="btnWifii" destination="UKj-Tf-rCj" id="IsK-6C-HTI"/>
                 <outlet property="rootScrollView" destination="SUR-Jl-eSZ" id="6pu-rx-pee"/>
                 <outlet property="rootTable" destination="sPl-xk-I81" id="Lk1-St-Abh"/>
@@ -95,6 +96,15 @@
                         </button>
                     </subviews>
                 </scrollView>
+                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mOs-84-ET9">
+                    <rect key="frame" x="0.0" y="20" width="320" height="548"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hm_load.png" translatesAutoresizingMaskIntoConstraints="NO" id="a3b-cE-T8Q">
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="548"/>
+                        </imageView>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                </view>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <nil key="simulatedTopBarMetrics"/>
@@ -109,6 +119,7 @@
     </objects>
     <resources>
         <image name="hm_dallun.png" width="19" height="19"/>
+        <image name="hm_load.png" width="320" height="548"/>
         <image name="hm_lunxian.png" width="49" height="23"/>
         <image name="hm_shipin.png" width="16" height="16"/>
         <image name="hm_top.png" width="320" height="186"/>

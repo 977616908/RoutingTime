@@ -249,18 +249,19 @@
     params[@"username"] = userPhone;
     params[@"nickname"]=_user.nickname;
     params[@"gender"]=_user.gender;
-    params[@"isUpload"]=@"true";
+    params[@"isUpload"]=@"false";
     NSString *url=[NSString stringWithFormat:@"%@/updateUserInfo",ROUTINGTIMEURL];
     // 3.发送请求
     [mgr POST:url parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData> formData) { // 在发送请求之前调用这个block
         if (_user.image) {
             [formData appendPartWithFileData:UIImageJPEGRepresentation(_user.image, 1) name:@"facephoto" fileName:@"face.png" mimeType:@"image/jpeg"];
-        }else{
-            NSData *data=[NSData dataWithContentsOfURL:[NSURL URLWithString:_user.facephotoUrl]];
-            if (data) {
-                [formData appendPartWithFileData:data name:@"facephoto" fileName:@"face.png" mimeType:@"image/jpeg"];
-            }
         }
+//        else{
+//            NSData *data=[NSData dataWithContentsOfURL:[NSURL URLWithString:_user.facephotoUrl]];
+//            if (data) {
+//                [formData appendPartWithFileData:data name:@"facephoto" fileName:@"face.png" mimeType:@"image/jpeg"];
+//            }
+//        }
     } success:^(AFHTTPRequestOperation *operation, id responseObject) {
         //        PSLog(@"-[ld]-%@--",operation.expectedContentLength,responseObject);
         //        [_dataImgArr removeObject:photo];
