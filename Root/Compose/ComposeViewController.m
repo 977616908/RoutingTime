@@ -354,6 +354,7 @@
             if (_photoArr.count>0) {
                 [self uploadWithPhoto:_photoArr[0]];
             }else{
+                PSLog(@"下载完成:%@",params);
                [PSNotificationCenter postNotificationName:@"UPDATE" object:nil userInfo:params];
             }
         }
@@ -371,15 +372,12 @@
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         NSProgress *progress = object;
         CGFloat fraction= progress.fractionCompleted;
-        NSString *localized=progress.localizedDescription;
-        NSString *additional=progress.localizedAdditionalDescription;
-
         NSDictionary *param=@{@"count":@(_photoArr.count),
                               @"totalCount":@(downCount),
                               @"progress":@(fraction*100),
                               @"date":params[@"date"]};
         [PSNotificationCenter postNotificationName:@"DOWNPROGRESS" object:nil userInfo:param];
-        PSLog(@"[%f]--[%@]--[%@]",fraction,localized,additional);
+//        PSLog(@"[%f]--[%@]--[%@]",fraction,localized,additional);
     }];
 }
 

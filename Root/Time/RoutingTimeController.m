@@ -314,10 +314,12 @@ typedef enum{
             }
         }
     }
-    if(down)[_arrTime removeObject:down];
+    if(down){
+       [_arrTime removeObject:down];
+       PSLog(@"---移除成功----");
+    }
 //    [self removeRoutingClass:[RoutingTime class]];
     [self getRequestPage:1 mark:@"home"];
-    [PSNotificationCenter removeObserver:self name:@"UPDATE" object:nil];
 }
 
 -(void)startIntent:(id)dataSource{
@@ -591,6 +593,7 @@ typedef enum{
     // 释放内存
     [self.header free];
     [self.footer free];
+    [PSNotificationCenter removeObserver:self name:@"UPDATE" object:nil];
 }
 
 #pragma -mark 上传头像
@@ -643,5 +646,6 @@ typedef enum{
         
     }];
 }
+
 
 @end

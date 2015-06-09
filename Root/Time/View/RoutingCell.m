@@ -88,12 +88,15 @@
             CGSize imgSize=image.frame.size;
             if (hasCachedImageWithString(path)) {
                 UIImage *img=[UIImage imageWithContentsOfFile:pathForString(path)];
-                image.image=img;
-//                if (img.size.width>imgSize.width&&img.size.height>imgSize.height) {
-//                    image.image=img;
-//                }else{
-//                   image.image=[[ImageCacher defaultCacher]scaleImage:img size:CGSizeMake(imgSize.width, imgSize.height)];
-//                }
+//                image.image=img;
+                if (img.size.width>imgSize.width&&img.size.height>imgSize.height) {
+                    image.image=img;
+                }else{
+//                image.image=[[ImageCacher defaultCacher]scaleImage:img size:CGSizeMake(imgSize.width*2, imgSize.height*2)];
+//                   image.image=[[ImageCacher defaultCacher]compressImage:img sizewidth:imgSize.width*2];
+//                image.image=[[ImageCacher defaultCacher]compressImage:img sizeheight:imgSize.height*2];
+                image.image=[[ImageCacher defaultCacher]imageByScalingAndCroppingForSize:CGSizeMake(imgSize.width*2, imgSize.height*2) sourceImage:img];
+                }
             }else{
                 NSValue *size=[NSValue valueWithCGSize:imgSize];
                 NSDictionary *dict=@{@"url":path,@"imageView":image,@"size":size};
@@ -116,9 +119,10 @@
         for (int i=0; i<arrImgs.count; i++) {
             UIImageView *image=arrImgs[i];
             REPhoto *photo=arr[i];
-//            CGSize size=image.frame.size;
+            CGSize size=image.frame.size;
 //            UIImage *scaleImg=[[ImageCacher defaultCacher]scaleImage:photo.image size:CGSizeMake(size.width*2, size.height*2)];
-            image.image=photo.image;
+            image.image=[[ImageCacher defaultCacher]imageByScalingAndCroppingForSize:CGSizeMake(size.width*2, size.height*2) sourceImage:photo.image];
+//            image.image=scaleImg;
             if (photo.isVedio) {
                 [self addVedioImg:image duration:photo.duration];
             }
@@ -222,7 +226,7 @@
             [PSNotificationCenter removeObserver:self name:DOWNPROGRESS object:nil];
             [self.lbView removeFromSuperview];
         }
-        PSLog(@"--[%d]--[%f]-[%d]",totalCount,progress,count);
+//        PSLog(@"--[%d]--[%f]-[%d]",totalCount,progress,count);
     }
     //    lbDown.text=@"上传中...(2/1)37.0%";
   

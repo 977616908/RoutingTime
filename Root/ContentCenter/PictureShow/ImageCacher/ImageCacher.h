@@ -22,4 +22,5 @@
 - (UIImage*)scaleImage:(UIImage *)image size:(CGSize )size;
 - (UIImage *) compressImage:(UIImage *)image sizewidth:(float)sizewidth;
 - (UIImage *) compressImage:(UIImage *)image sizeheight:(float)sizeheight;
+- (UIImage*)imageByScalingAndCroppingForSize:(CGSize)targetSize sourceImage:(UIImage *)sourceImage;
 @end
