@@ -81,8 +81,8 @@ typedef enum {
             [group enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
                 if([[result valueForProperty:ALAssetPropertyType] isEqualToString:ALAssetTypePhoto]) {
                     REPhoto *photo = [[REPhoto alloc] init];
-//                    photo.image = [UIImage imageWithCGImage:result.thumbnail];
-                    photo.image = [UIImage imageWithCGImage:result.aspectRatioThumbnail];//高清
+                    photo.image = [UIImage imageWithCGImage:result.thumbnail];
+//                    photo.image = [UIImage imageWithCGImage:result.aspectRatioThumbnail];//高清
                     NSString *fileName=[[result defaultRepresentation]filename];
                     photo.imageName=fileName;
                     photo.imageUrl=[NSString stringWithFormat:@"%@",[result valueForProperty:ALAssetPropertyAssetURL]];
@@ -90,8 +90,8 @@ typedef enum {
                     [_datasource addObject:photo];
                 }else if([[result valueForProperty:ALAssetPropertyType] isEqualToString:ALAssetTypeVideo]){
                     REPhoto *photo = [[REPhoto alloc] init];
-//                    photo.image = [UIImage imageWithCGImage:result.thumbnail];//高清
-                    photo.image = [UIImage imageWithCGImage:result.aspectRatioThumbnail];
+                    photo.image = [UIImage imageWithCGImage:result.thumbnail];
+//                    photo.image = [UIImage imageWithCGImage:result.aspectRatioThumbnail];//高清
                     NSString *fileName=[[result defaultRepresentation]filename];
                     photo.imageName=fileName;
                     photo.imageUrl=[NSString stringWithFormat:@"%@",[result valueForProperty:ALAssetPropertyAssetURL]];

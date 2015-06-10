@@ -40,8 +40,10 @@ typedef enum{
 @property (nonatomic,assign)CameraType type;
 
 @property(nonatomic,weak)MJRefreshHeaderView *header;
+
 @property (nonatomic, weak) MJRefreshFooterView *footer;
 @property (weak, nonatomic) IBOutlet UIScrollView *rootScrollView;
+
 @end
 
 @implementation RoutingTimeController
@@ -72,6 +74,7 @@ typedef enum{
     navigationBar=self.navigationController.navigationBar;
     //    _rootScrollView.contentSize=CGSizeMake(0, CGRectGetHeight(self.view.frame)+14);
     _rootScrollView.contentSize=CGSizeMake(0, CGRectGetHeight(self.view.frame)-14);
+    _rootScrollView.delegate=self;
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -412,18 +415,21 @@ typedef enum{
 
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    [self moveAnimation:YES];
-    CGFloat y=scrollView.contentOffset.y;
-    if (y>lastScrollOffset) {
-//        PSLog(@"--向下滚动--");
-        angle=angle>0?angle:-angle;
-    }else{
-//        PSLog(@"--向上滚动--");
-        angle=angle>0?-angle:angle;
+    if (![scrollView isMemberOfClass:[_rootScrollView class]]) {
+        [self moveAnimation:YES];
+        CGFloat y=scrollView.contentOffset.y;
+        if (y>lastScrollOffset) {
+            //        PSLog(@"--向下滚动--");
+            angle=angle>0?angle:-angle;
+        }else{
+            //        PSLog(@"--向上滚动--");
+            angle=angle>0?-angle:angle;
+        }
+        lastScrollOffset=y;
+        [self startAnimation];
+        [self scrollViewBottomScroll:scrollView];
     }
-    lastScrollOffset=y;
-    [self startAnimation];
-    [self scrollViewBottomScroll:scrollView];
+   
 }
 
 
@@ -444,9 +450,11 @@ typedef enum{
     }
 }
 -(void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView{
-    [UIView animateWithDuration:0.5 animations:^{
-        _rootScrollView.contentOffset=CGPointMake(0, 35);
-    }];
+    if (![scrollView isMemberOfClass:[_rootScrollView class]]) {
+        [UIView animateWithDuration:0.5 animations:^{
+            _rootScrollView.contentOffset=CGPointMake(0, 35);
+        }];
+    }
 }
 
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
@@ -460,6 +468,12 @@ typedef enum{
         [self stopAnimation];
     }
     
+}
+
+-(void)scrollViewWithTouch:(NSSet *)touches withEvent:(UIEvent *)event scrollView:(id)scrollView{
+    PSLog(@"--scrollView--");
+    _rootScrollView.scrollEnabled=YES;
+//    _rootScrollView.contentOffset=[[touches anyObject]locationInView:self.view];
 }
 
 

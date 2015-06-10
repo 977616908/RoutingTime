@@ -10,7 +10,7 @@
 #import "CCTabBar.h"
 #import "PiFiiBaseNavigationController.h"
 #import "RoutingTimeController.h"
-#import "MoPiiViewController.h"
+#import "ApplyViewController.h"
 #import "WowoViewController.h"
 
 @interface PiFiiBaseTabBarController ()<CCTabBarDelegate>
@@ -87,7 +87,7 @@
     [self setupChildViewController:time title:@"时光游" imageName:@"hm_sgy" selectedImageName:@"hm_sgy_selected"];
     
     // 2.应用
-    MoPiiViewController *message = [[MoPiiViewController alloc] init];
+    ApplyViewController *message = [[ApplyViewController alloc] init];
     [self setupChildViewController:message title:@"应用" imageName:@"hm_yyon" selectedImageName:@"hm_yyon_selected"];
     
     // 3.我
