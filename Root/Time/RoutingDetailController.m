@@ -306,7 +306,8 @@
         //        [cell.imgView setImageWithURL:[path urlInstance]];
         if (hasCachedImageWithString(path)) {
             UIImage *image=[UIImage imageWithContentsOfFile:pathForString(path)];
-            UIImage *scaleImag=[[ImageCacher defaultCacher]scaleImage:image size:CGSizeMake(144, 144)];
+//            UIImage *scaleImag=[[ImageCacher defaultCacher]scaleImage:image size:CGSizeMake(144, 144)];
+            UIImage *scaleImag=[[ImageCacher defaultCacher]imageByScalingAndCroppingForSize:CGSizeMake(144, 144) sourceImage:image];
             [self.photosView addImage:scaleImag duration:msg.msgDuration];
         }else{
             UIImageView *image=[self.photosView addImage:nil duration:msg.msgDuration];
