@@ -137,6 +137,14 @@ typedef enum{
                 RoutingTime *time=[[RoutingTime alloc]initWithData:param];
                 [_arrTime addObject:time];
             }
+            NSString *path=[response objectForKey:@"logo_bg"];
+            if (hasCachedImageWithString(path)) {
+                self.topImg.image=[UIImage imageWithContentsOfFile:pathForString(path)];
+            }else{
+                NSValue *size=[NSValue valueWithCGSize:self.topImg.frame.size];
+                NSDictionary *dict=@{@"url":path,@"imageView":self.topImg,@"size":size};
+                [NSThread detachNewThreadSelector:@selector(cacheImage:) toTarget:[ImageCacher defaultCacher] withObject:dict];
+            }
             NSInteger count=[[response objectForKey:@"pages"]integerValue];
             if (pageCount==count||pageCount>count) {
                 pageCount=-1;

@@ -333,8 +333,8 @@
             PSLog(@"下载图片");
         }else{
             PSLog(@"删除图片");
+            NSMutableString *sb=[NSMutableString string];
             if (_deleteArr.count>0) {
-                NSMutableString *sb=[NSMutableString string];
                 for (int i=0; i<_deleteArr.count; i++) {
                         REPhoto *photo=_deleteArr[i];
                         if (i!=0) {
@@ -342,11 +342,11 @@
                         }
                         [sb appendString:photo.imageName];
                 }
-                NSDictionary *param=@{
-                                       @"resId":sb,
-                                       @"timeId":@(_routingTime.rtId)};
-                [self initPostWithURL:ROUTINGTIMEURL path:@"deleteFiles" paras:param mark:@"delete" autoRequest:YES];
             }
+            NSDictionary *param=@{
+                                  @"resId":sb,
+                                  @"timeId":@(_routingTime.rtId)};
+            [self initPostWithURL:ROUTINGTIMEURL path:@"deleteFiles" paras:param mark:@"delete" autoRequest:YES];
         }
     }
 }
