@@ -24,6 +24,7 @@
 
 @interface RoutingDetailController ()<UITextViewDelegate,PhotosViewDelegate,PiFiiBaseViewDelegate,UIActionSheetDelegate>{
     NSMutableArray  *_photoArr;
+    NSMutableArray  *_imageArr;
     MBProgressHUD           *stateView;
     NSString *pathArchtive;
     NSMutableOrderedSet     *_saveSet;
@@ -60,14 +61,15 @@
     [self createTextView];
     [self createView];
     if (_routingTime) {
-        NSArray *arr=_routingTime.rtSmallPaths;
-        [self addImage:arr];
+        _imageArr=[NSMutableArray arrayWithArray:_routingTime.rtSmallPaths];
+        [self addImage:_imageArr];
         _textView.text=_routingTime.rtTitle;
         _lbDate.text=[NSString stringWithFormat:@"创建时间: %@",_routingTime.rtDate];
         for (int i=0; i<_routingTime.rtPaths.count; i++) {
             if (![_routingTime.rtSmallPaths[i] isVedio]) {
                 RoutingMsg *msg=_routingTime.rtPaths[i];
                 REPhoto *photo=[[REPhoto alloc]init];
+                photo.routingId=[NSString stringWithFormat:@"%d",_routingTime.rtId];
                 photo.imageUrl=msg.msgPath;
                 photo.date=_routingTime.rtDate;
                 photo.isVedio=msg.isVedio;
@@ -290,7 +292,7 @@
             photo.isPhoto=NO;
             photo.currentPhotoIndex=index-1;
             photo.photos=_photoArr;
-            //    photo.pifiiDelegate=self;
+            photo.pifiiDelegate=self;
             [self.navigationController.view.layer addAnimation:[self customAnimationType:kCATransitionFade upDown:NO]  forKey:@"animation"];
             [self.navigationController pushViewController:photo animated:NO];
         }
@@ -433,6 +435,27 @@
     }
 }
 
+
+-(void)removeViewDataSources:(id)dataSource{
+    if ([dataSource count]!=_imageArr.count) {
+        NSMutableArray *arrImg=[NSMutableArray array];
+        for (int i=0; i<[dataSource count]; i++) {
+            REPhoto *photo=dataSource[i];
+            for (int j=0; j<_imageArr.count; j++) {
+                RoutingMsg *msg=_imageArr[j];
+                if ([msg.msgNum isEqualToString:photo.imageName]) {
+                    [arrImg addObject:msg];
+                    break;
+                }
+            }
+        }
+        for (UIImageView *image in self.photosView.totalImages) {
+            [image removeFromSuperview];
+        }
+        _imageArr=arrImg;
+        [self addImage:_imageArr];
+    }
+}
 
 -(void)textViewDidChange:(UITextView *)textView{
     self.navigationItem.rightBarButtonItem.enabled = (self.textView.text.length != 0);

@@ -29,7 +29,7 @@
                     <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                     <subviews>
                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hm_top_db.png" translatesAutoresizingMaskIntoConstraints="NO" id="uFu-2n-bkL">
-                            <rect key="frame" x="0.0" y="-219" width="320" height="155"/>
+                            <rect key="frame" x="0.0" y="-164" width="320" height="100"/>
                         </imageView>
                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hm_top.png" translatesAutoresizingMaskIntoConstraints="NO" id="nu3-vW-DC2">
                             <rect key="frame" x="0.0" y="-64" width="320" height="186"/>
@@ -123,7 +123,7 @@
         <image name="hm_lunxian.png" width="49" height="23"/>
         <image name="hm_shipin.png" width="16" height="16"/>
         <image name="hm_top.png" width="320" height="186"/>
-        <image name="hm_top_db.png" width="320" height="105"/>
+        <image name="hm_top_db.png" width="320" height="100"/>
         <image name="hm_wifi.png" width="17" height="14"/>
         <image name="hm_xiaolun.png" width="13" height="13"/>
         <image name="hm_xing.png" width="16" height="16"/>

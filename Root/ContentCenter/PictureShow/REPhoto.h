@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface REPhoto : NSObject
+@property(nonatomic,copy)NSString *routingId;
 @property(nonatomic,copy) NSString *imageUrl;
 @property(nonatomic,strong) UIImage *image;
 @property(nonatomic,copy)NSString *date;

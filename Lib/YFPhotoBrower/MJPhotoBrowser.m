@@ -167,7 +167,6 @@
     }else{
         _currentPhotoIndex = _currentPhotoIndex - 1;
     }
-    MJPhoto *photo=_photos[ThisImageIndex];
     if(_isPhoto){
 //        [library assetForURL:photo.url resultBlock:^(ALAsset *asset)
 //         {
@@ -182,18 +181,28 @@
 //                failureBlock:^(NSError *error)
 //         {}];
     }else{
-        [self deleteWithPhoto:photo];
+//        [self deleteWithPhoto:_photos[ThisImageIndex]];
+        [self deletePhoto:_removePhoto[ThisImageIndex]];
     }
     [_photos removeObjectAtIndex: ThisImageIndex];
     [_removePhoto removeObjectAtIndex:ThisImageIndex];
     [self setCurrentPhotoIndex: _currentPhotoIndex ];
-    
-    
+    if (_photos.count==0) {
+        [self performSelector:@selector(exitCurrentController) withObject:nil afterDelay:0.2];
+    }
 }
 
 -(void)deleteWithPhoto:(MJPhoto *)photo{
     NSDictionary *param=@{@"path":photo.path,@"root":@"syncbox"};
     [self initPostWithURL:ROUTER_FILE_DELETE path:nil paras:param mark:@"delete" autoRequest:YES];
+    
+}
+
+-(void)deletePhoto:(REPhoto *)photo{
+    NSDictionary *param=@{
+                          @"resId":photo.imageName,
+                          @"timeId":photo.routingId};
+    [self initPostWithURL:ROUTINGTIMEURL path:@"deleteFiles" paras:param mark:@"delete" autoRequest:YES];
 }
 
 #pragma -mark 备份图片
@@ -389,9 +398,13 @@
         
     }];
 }
-
+#pragma -mark 网络处理
 -(void)handleRequestOK:(id)response mark:(NSString *)mark{
     PSLog(@"response:%@",response);
+}
+
+-(void)handleRequestFail:(NSError *)error mark:(NSString *)mark{
+    
 }
 
 #pragma mark 创建UIScrollView

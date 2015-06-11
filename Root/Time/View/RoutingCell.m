@@ -252,6 +252,7 @@
                 photo.date=_routingTime.rtDate;
                 photo.isVedio=rtMsg.isVedio;
                 photo.imageName=rtMsg.msgNum;
+                photo.routingId=[NSString stringWithFormat:@"%d",_routingTime.rtId];
                 [arrPhoto addObject:photo];
             }
         }
