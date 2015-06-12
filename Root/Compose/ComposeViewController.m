@@ -346,6 +346,7 @@
         if(progress)[progress removeObserver:self forKeyPath:NSStringFromSelector(@selector(fractionCompleted))];
         if (error) {
             PSLog(@"Error: %@", error);
+            [PSNotificationCenter postNotificationName:@"UPDATE" object:nil userInfo:params];
         } else {
             photo.isBackup=YES;
             [_saveSet addObject:photo.imageName];

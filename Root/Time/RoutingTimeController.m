@@ -75,6 +75,8 @@ typedef enum{
     //    _rootScrollView.contentSize=CGSizeMake(0, CGRectGetHeight(self.view.frame)+14);
     _rootScrollView.contentSize=CGSizeMake(0, CGRectGetHeight(self.view.frame)-14);
     _rootScrollView.delegate=self;
+    pageCount=1;
+    [self getRequestPage:1 mark:@"home"];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -88,8 +90,6 @@ typedef enum{
     }else{
         [self.btnWifii setTitle:@" 未绑定" forState:UIControlStateNormal];
     }
-    pageCount=1;
-    [self getRequestPage:1 mark:@"home"];
 }
 
 
@@ -198,7 +198,7 @@ typedef enum{
             }else{
                 pageCount+=1;
             }
-            if(_arrTime.count<=0)self.bgLoad.hidden=NO;
+//            if(_arrTime.count<=0)self.bgLoad.hidden=NO;
             [self.rootTable reloadData];
         }
 
@@ -313,6 +313,11 @@ typedef enum{
         [PSNotificationCenter addObserver:self selector:@selector(updateDate:) name:@"UPDATE" object:nil];
     }
     PSLog(@"---pushView---");
+}
+
+-(void)removeViewDataSources:(id)dataSource{
+    NSInteger page=pageCount>1?pageCount:1;
+    [self getRequestPage:page mark:@"home"];
 }
 
 -(void)updateDate:(NSNotification *)not{
@@ -436,6 +441,8 @@ typedef enum{
         lastScrollOffset=y;
         [self startAnimation];
         [self scrollViewBottomScroll:scrollView];
+    }else{
+        [self scrollViewTopScroll:scrollView];
     }
    
 }
@@ -457,6 +464,22 @@ typedef enum{
         }
     }
 }
+
+-(void)scrollViewTopScroll:(UIScrollView *)scrollView{
+    CGPoint offset=scrollView.contentOffset;
+//    UIEdgeInsets inset = scrollView.contentInset;
+//    float y=offset.y+inset.top+50;
+    float y=offset.y+114;
+    if (y<=0) {
+        if (![UIApplication sharedApplication].isNetworkActivityIndicatorVisible) {
+            PSLog(@"--到顶部了---");
+            [UIApplication sharedApplication].networkActivityIndicatorVisible=YES;
+            pageCount=1;
+            [self getRequestPage:1 mark:@"home"];
+        }
+    }
+}
+
 -(void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView{
     if (![scrollView isMemberOfClass:[_rootScrollView class]]) {
         [UIView animateWithDuration:0.5 animations:^{
@@ -468,6 +491,7 @@ typedef enum{
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     [self moveAnimation:NO];
     [self stopAnimation];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible=NO;
 }
 
 -(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{

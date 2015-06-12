@@ -367,6 +367,7 @@
                 if(delImg.subviews.count>0)[delImg removeFromSuperview];
             }
         }
+        [self.pifiiDelegate removeViewDataSources:nil];
     }
 }
 
@@ -390,7 +391,7 @@
                                                 image:[ShareSDK imageWithUrl:url]
                                                 title:@"时光路游 - 美好记忆的开始"
                                                   url:url
-                                          description:@"这是一条演示信息"
+                                          description:@"来自于www.pifii.com"
                                             mediaType:SSPublishContentMediaTypeNews];
     //1+创建弹出菜单容器（iPad必要）
     id<ISSContainer> container = [ShareSDK container];

@@ -388,7 +388,7 @@ typedef enum{
                    autoRequest:YES];
     }else{
         stateView.labelText=@"正在注册...";
-        NSString *mac=@"";
+        NSString *mac=@"00A2F51122A1";
         NSString *wifiName=@"";
         if (_echo) {
             wifiName=_echo.name;

@@ -263,7 +263,7 @@
         photo.isPhoto=NO;
         photo.currentPhotoIndex=gesture.view.tag;
         photo.photos=arrPhoto;
-        //    photo.pifiiDelegate=self;
+        photo.pifiiDelegate=self.superController;
         [controller.navigationController.view.layer addAnimation:[self customAnimationType:kCATransitionFade upDown:NO]  forKey:@"animation"];
         [controller.navigationController pushViewController:photo animated:NO];
     }
@@ -278,6 +278,7 @@
     }
     RoutingDetailController *detailController=[[RoutingDetailController alloc]init];
     detailController.routingTime=_routingTime;
+    detailController.pifiiDelegate=self.superController;
     [controller.navigationController pushViewController:detailController animated:YES];
 }
 

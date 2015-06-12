@@ -27,35 +27,18 @@
 
 -(void)coustomNav{
    self.navigationItem.title=@"家庭应用";
-    
+   CCButton *sendBut = CCButtonCreateWithValue(CGRectMake(10, 0, 30, 20), @selector(onAddClick:), self);
+   sendBut.tag=1;
+   [sendBut setImage:[UIImage imageNamed:@"hm_add"] forState:UIControlStateNormal];
+   [sendBut setImage:[UIImage imageNamed:@"hm_add_select"] forState:UIControlStateSelected];
+   self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:sendBut];
 }
 
 
-
-- (void)startAnimation
-{
- 
-    
-    [UIView animateWithDuration:1.5 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-        for (int i=0; i<_imgArr.count; i++) {
-            UIImageView *image=(UIImageView *)_imgArr[i];
-            image.image=[UIImage imageNamed:[NSString stringWithFormat:@"%@_select",arrImg[i]]];
-            image.alpha=1.0;
-        }
-    } completion:^(BOOL finished) {
-    
-        [UIView animateWithDuration:0.3 animations:^{
-            for (int i=0; i<_imgArr.count; i++) {
-                UIImageView *image=(UIImageView *)_imgArr[i];
-                image.image=[UIImage imageNamed:arrImg[i]];
-                image.alpha=0.3;
-            }
-        } completion:^(BOOL finished) {
-            [self startAnimation];
-        }];
-    }];
+-(void)onAddClick:(id)sendar{
     
 }
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -78,7 +61,7 @@
 -(void)startController:(NSInteger)tag{
     switch (tag) {
         case 1:
-            
+            [self showToast:@"暂未连接到摄像头" Long:1.5];
             break;
             
         case 2:{
@@ -88,9 +71,34 @@
         }
             break;
         case 3:
-            
+            [self showToast:@"暂未连接到该设备" Long:1.5];
             break;
             
     }
+}
+
+- (void)startAnimation
+{
+    
+    
+    [UIView animateWithDuration:1.5 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        for (int i=0; i<_imgArr.count; i++) {
+            UIImageView *image=(UIImageView *)_imgArr[i];
+            image.image=[UIImage imageNamed:[NSString stringWithFormat:@"%@_select",arrImg[i]]];
+            image.alpha=1.0;
+        }
+    } completion:^(BOOL finished) {
+        
+        [UIView animateWithDuration:0.3 animations:^{
+            for (int i=0; i<_imgArr.count; i++) {
+                UIImageView *image=(UIImageView *)_imgArr[i];
+                image.image=[UIImage imageNamed:arrImg[i]];
+                image.alpha=0.3;
+            }
+        } completion:^(BOOL finished) {
+            [self startAnimation];
+        }];
+    }];
+    
 }
 @end

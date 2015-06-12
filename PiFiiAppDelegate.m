@@ -176,7 +176,7 @@ void uncaughtExceptionHandler(NSException *exception)
 -(void)shareSDK{
     [ShareSDK registerApp:@"7ab47a6975cc"];
     
-    [ShareSDK connectSinaWeiboWithAppKey:@"568898243" appSecret:@"38a4f8204cc784f81f9f0daaf31e02e3" redirectUri:@"http://www.sharesdk.cn" weiboSDKCls:[WeiboSDK class]];
+    [ShareSDK connectSinaWeiboWithAppKey:@"568898243" appSecret:@"38a4f8204cc784f81f9f0daaf31e02e3" redirectUri:@"www.pifii.com" weiboSDKCls:[WeiboSDK class]];
     
     [ShareSDK connectWeChatWithAppId:@"wxca95672398f19838"
                            appSecret:@"04383b3f8824135f303343c57b1c62e1"
