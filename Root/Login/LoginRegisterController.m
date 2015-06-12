@@ -627,6 +627,7 @@ typedef enum{
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     [userDefaults setObject:data forKey:USERDATA];
     [userDefaults setObject:@YES forKey:ISLOGIN];
+    [userDefaults setObject:@YES forKey:ISLOADING];
     [userDefaults synchronize];
     
 }

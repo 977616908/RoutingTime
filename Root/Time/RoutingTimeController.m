@@ -81,7 +81,6 @@ typedef enum{
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    self.bgLoad.hidden=YES;
     [self setNavBackground];
     BOOL isMacBouds=[GlobalShare isBindMac];
     if (isMacBouds) {
@@ -121,8 +120,6 @@ typedef enum{
     NSString *userPhone=userData[@"userPhone"];
     if (userPhone&&![userPhone isEqualToString:@""]) {
         [self initPostWithURL:ROUTINGTIMEURL path:@"mainPageVideo" paras:@{@"username":userPhone,@"page":@(page)} mark:mark autoRequest:YES];
-    }else{
-        self.bgLoad.hidden=NO;
     }
   
 }
@@ -198,7 +195,6 @@ typedef enum{
             }else{
                 pageCount+=1;
             }
-//            if(_arrTime.count<=0)self.bgLoad.hidden=NO;
             [self.rootTable reloadData];
         }
 
@@ -244,6 +240,12 @@ typedef enum{
         [loginController setCustomAnimation:YES];
         [self.navigationController pushViewController:loginController animated:NO];
     }
+    BOOL isLoading=[[userDefaultes objectForKey:ISLOADING]boolValue];
+    if(isLoading){
+        self.bgLoad.hidden=NO;
+    }else{
+        self.bgLoad.hidden=YES;
+    }
 }
 
 -(void)onCameraClick:(id)sendar{
@@ -253,6 +255,13 @@ typedef enum{
         _type=CameraPhoto;
     }
     [action showInView:self.view];
+    if (!self.bgLoad.isHidden) {
+        self.bgLoad.hidden=YES;
+        NSUserDefaults *userDefaultes = [NSUserDefaults standardUserDefaults];
+        [userDefaultes setObject:@NO forKey:ISLOADING];
+        [userDefaultes synchronize];
+    }
+    
 }
 
 
