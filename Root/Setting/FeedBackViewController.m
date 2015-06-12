@@ -15,6 +15,7 @@
 }
 
 @property (weak, nonatomic) CCTextView *feedbackText;
+@property (weak, nonatomic) CCTextField *txtMsg;
 
 @end
 
@@ -66,6 +67,7 @@
     txtMsg.textColor=RGBCommon(52, 52, 52);
     txtMsg.backgroundColor=[UIColor whiteColor];
     txtMsg.contentVerticalAlignment=UIControlContentVerticalAlignmentCenter;
+    self.txtMsg=txtMsg;
     [scrollView addSubview:txtMsg];
 }
 
@@ -94,12 +96,14 @@
     stateView.labelText = @"正在提交...";
     NSDictionary *userData=[[NSUserDefaults standardUserDefaults] objectForKey:USERDATA];
     NSString *userPhone=userData[@"userPhone"];
+    NSString *contactinfo=[NSString stringWithFormat:@"%@",_txtMsg.text];
     [self initPostWithPath:@"feedBack"
                      paras:@{@"tradeCode": @(1103),
                              @"user": userPhone,
                              @"platfrom": @(2),
                               @"advice": _feedbackText.text,
-                             @"version":[App shortVersion]}
+                             @"version":[App shortVersion],
+                             @"contactinfo":contactinfo}
                       mark:@"feek"
                autoRequest:YES];
     PSLog(@"updateSql--%@",userPhone);

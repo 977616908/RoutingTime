@@ -222,7 +222,7 @@
                                                 image:[ShareSDK imageWithPath:imagePath]
                                                 title:@"时光路游 - 美好记忆的开始"
                                                   url:@"http://www.pifii.com"
-                                          description:@"这是一条演示信息"
+                                          description:@"来自时光路游"
                                             mediaType:SSPublishContentMediaTypeNews];
     //1+创建弹出菜单容器（iPad必要）
     id<ISSContainer> container = [ShareSDK container];
