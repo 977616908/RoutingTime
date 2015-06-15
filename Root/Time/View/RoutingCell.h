@@ -16,4 +16,5 @@
 @property(nonatomic,strong)RoutingTime *routingTime;
 @property(nonatomic,strong)RoutingDown *routingDown;
 @property(nonatomic,copy)NSString *imgName;
+@property(nonatomic,assign)BOOL isAdd;
 @end

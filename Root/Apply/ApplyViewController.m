@@ -8,13 +8,14 @@
 
 #import "ApplyViewController.h"
 #import "MediaCenterViewController.h"
+#import "ApplyView.h"
 
 @interface ApplyViewController (){
     NSArray *arrImg;
 }
 - (IBAction)onClick:(id)sender;
 @property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *imgArr;
-
+@property (nonatomic,weak)ApplyView *applyView;
 @end
 
 @implementation ApplyViewController
@@ -34,8 +35,18 @@
    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:sendBut];
 }
 
-
 -(void)onAddClick:(id)sendar{
+    if (!_applyView) {
+        CGFloat gh=0;
+        if(is_iOS7())gh=50;
+        ApplyView *applyView=[[ApplyView alloc]initWithFrame:CGRectMake(0,0, CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame)-gh)];
+        self.applyView=applyView;
+        [self.view addSubview:applyView];
+    }
+    [self.applyView moveTransiton:YES];
+    _applyView.type=^(NSInteger tag){
+        [self.applyView moveTransiton:NO];
+    };
     
 }
 

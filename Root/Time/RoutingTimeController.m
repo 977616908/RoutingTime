@@ -75,6 +75,7 @@ typedef enum{
     //    _rootScrollView.contentSize=CGSizeMake(0, CGRectGetHeight(self.view.frame)+14);
     _rootScrollView.contentSize=CGSizeMake(0, CGRectGetHeight(self.view.frame)-14);
     _rootScrollView.delegate=self;
+    _rootScrollView.delaysContentTouches=NO;
     pageCount=1;
     [self getRequestPage:1 mark:@"home"];
 }
@@ -251,7 +252,7 @@ typedef enum{
 -(void)onCameraClick:(id)sendar{
     UIActionSheet *action=[[UIActionSheet alloc]initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:@"拍照" otherButtonTitles:@"从手机相册中选择", nil];
     self.type=CameraNone;
-    if (![sendar isKindOfClass:[CCButton class]]) {
+    if (![sendar isKindOfClass:[CCButton class]]&&[[sendar view] tag]!=10) {
         _type=CameraPhoto;
     }
     [action showInView:self.view];
@@ -266,7 +267,11 @@ typedef enum{
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return _arrTime.count;
+    if(_arrTime.count==0){
+        return 1;
+    }else{
+        return _arrTime.count;
+    }
 }
 
 // Row display. Implementers should *always* try to reuse cells by setting each cell's reuseIdentifier and querying for available reusable cells with dequeueReusableCellWithIdentifier:
@@ -274,12 +279,17 @@ typedef enum{
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     RoutingCell *cell=[RoutingCell cellWithTarget:self tableView:tableView];
-    id data=_arrTime[indexPath.row];
-    if ([data isKindOfClass:[RoutingDown class]]) {
-        [cell setRoutingDown:data];
+    if (_arrTime.count>0) {
+        id data=_arrTime[indexPath.row];
+        if ([data isKindOfClass:[RoutingDown class]]) {
+            [cell setRoutingDown:data];
+        }else{
+            [cell setRoutingTime:data];
+        }
     }else{
-        [cell setRoutingTime:data];
+        cell.isAdd=YES;
     }
+
     cell.imgName=arrImgs[indexPath.row%6];
     return cell;
 }

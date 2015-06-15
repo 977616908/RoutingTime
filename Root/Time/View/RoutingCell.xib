@@ -35,12 +35,6 @@
                     <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HtH-OF-SFC">
                         <rect key="frame" x="43" y="0.0" width="272" height="181"/>
                         <subviews>
-                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hm_tupian.png" translatesAutoresizingMaskIntoConstraints="NO" id="gCX-gc-wKS">
-                                <rect key="frame" x="2" y="2" width="164" height="156"/>
-                            </imageView>
-                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hm_tupian.png" translatesAutoresizingMaskIntoConstraints="NO" id="60J-82-kVQ">
-                                <rect key="frame" x="169" y="2" width="100" height="77"/>
-                            </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="外出游玩" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9fu-3t-6LW">
                                 <rect key="frame" x="5" y="158" width="212" height="19"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -56,9 +50,6 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hm_zhaopianz.png" translatesAutoresizingMaskIntoConstraints="NO" id="v2c-hK-c8a">
                                 <rect key="frame" x="230" y="161" width="12" height="10"/>
                             </imageView>
-                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hm_tupian.png" translatesAutoresizingMaskIntoConstraints="NO" id="luA-D1-cyl">
-                                <rect key="frame" x="169" y="80" width="100" height="78"/>
-                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BPw-DH-95l">
                                 <rect key="frame" x="0.0" y="158" width="272" height="25"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -69,6 +60,9 @@
                                     <action selector="onDetailClick:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="AGl-xO-VDi"/>
                                 </connections>
                             </button>
+                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hm_add_img.png" translatesAutoresizingMaskIntoConstraints="NO" id="gCX-gc-wKS">
+                                <rect key="frame" x="2" y="2" width="268" height="177"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                     </view>
@@ -91,6 +85,7 @@
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             <connections>
                 <outlet property="bgView" destination="HtH-OF-SFC" id="qNQ-5K-U8J"/>
+                <outlet property="imageAdd" destination="gCX-gc-wKS" id="ASb-HM-u5L"/>
                 <outlet property="imgTag" destination="AFp-Ib-Q2k" id="8Fp-3G-3EZ"/>
                 <outlet property="lbCount" destination="8nB-dK-aBj" id="mzg-Yk-hsh"/>
                 <outlet property="lbDay" destination="GSZ-NY-F1Z" id="lw1-m9-G9n"/>
@@ -106,10 +101,10 @@
         </activityIndicatorView>
     </objects>
     <resources>
+        <image name="hm_add_img.png" width="266" height="181"/>
         <image name="hm_diana.png" width="9" height="9"/>
         <image name="hm_jiao.png" width="5" height="8"/>
         <image name="hm_shijian.png" width="23" height="30"/>
-        <image name="hm_tupian.png" width="72" height="72"/>
         <image name="hm_zhaopianz.png" width="12" height="10"/>
     </resources>
 </document>

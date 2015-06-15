@@ -30,6 +30,7 @@
 @property (weak, nonatomic) UILabel *lbProgress;
 @property (weak, nonatomic) UIView *lbView;
 @property(nonatomic,strong)id superController;
+@property (weak, nonatomic) IBOutlet UIImageView *imageAdd;
 - (IBAction)onDetailClick:(id)sender;
 
 @end
@@ -194,6 +195,18 @@
     [bgVedio addSubview:txtDuration];
     
     [image addSubview:bgVedio];
+}
+
+-(void)setIsAdd:(BOOL)isAdd{
+    if (isAdd) {
+        self.imageAdd.hidden=!isAdd;
+        self.lbMM.text=[self getDate:nil type:@"MM月"];
+        self.lbDay.text=[self getDate:nil type:@"dd"];
+        self.imageAdd.userInteractionEnabled=YES;
+        self.imageAdd.tag=10;
+        RoutingTimeController *controller=self.superController;
+        [self.imageAdd addGestureRecognizer:[[UITapGestureRecognizer alloc]initWithTarget:controller.self action:NSSelectorFromString(@"onCameraClick:")]];
+    }
 }
 
 -(void)setImgName:(NSString *)imgName{
