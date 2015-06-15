@@ -313,7 +313,8 @@
             [self.photosView addImage:scaleImag duration:msg.msgDuration];
         }else{
             UIImageView *image=[self.photosView addImage:nil duration:msg.msgDuration];
-            NSValue *size=[NSValue valueWithCGSize:image.frame.size];
+//            NSValue *size=[NSValue valueWithCGSize:image.frame.size];
+            NSValue *size =[NSValue valueWithCGSize:CGSizeMake(268, 150)];
             NSDictionary *dict=@{@"url":path,@"imageView":image,@"size":size};
             [NSThread detachNewThreadSelector:@selector(cacheImage:) toTarget:[ImageCacher defaultCacher] withObject:dict];
         }

@@ -98,7 +98,8 @@
                 image.image=[[ImageCacher defaultCacher]imageByScalingAndCroppingForSize:CGSizeMake(imgSize.width*2, imgSize.height*2) sourceImage:img];
                 }
             }else{
-                NSValue *size=[NSValue valueWithCGSize:imgSize];
+                NSValue *size=[NSValue valueWithCGSize:CGSizeMake(WEITH, HEIGHT)];
+//                NSValue *size=[NSValue valueWithCGSize:imgSize];
                 NSDictionary *dict=@{@"url":path,@"imageView":image,@"size":size};
                 [NSThread detachNewThreadSelector:@selector(cacheImage:) toTarget:[ImageCacher defaultCacher] withObject:dict];
             }
