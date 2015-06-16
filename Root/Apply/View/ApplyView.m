@@ -9,7 +9,7 @@
 #import "ApplyView.h"
 
 #define HEIGHT 202
-@interface ApplyView()<UITableViewDataSource,UITableViewDelegate>{
+@interface ApplyView()<UITableViewDataSource,UITableViewDelegate,UIGestureRecognizerDelegate>{
     NSArray *_arrTitle;
 }
 
@@ -22,9 +22,10 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor =RGBAlpha(0, 0, 0, 0.6);
-//        self.userInteractionEnabled = YES;
-//        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hiddenSelfView:)];
-//        [self addGestureRecognizer:tap];
+        self.userInteractionEnabled = YES;
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hiddenSelfView:)];
+        tap.delegate=self;
+        [self addGestureRecognizer:tap];
         [self createApply];
 
     }
@@ -105,6 +106,11 @@
     self.type(indexPath.row);
 }
 
-
+-(BOOL)gestureRecognizer:(UIGestureRecognizer*)gestureRecognizer shouldReceiveTouch:(UITouch*)touch {
+    if([touch.view isKindOfClass:NSClassFromString(@"UITableViewCellContentView")])
+        return NO;
+    else
+        return YES;
+}
 
 @end
