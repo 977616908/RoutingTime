@@ -8,11 +8,12 @@
 
 #import "ApplyView.h"
 
-#define HEIGHT 166
-@interface ApplyView()
+#define HEIGHT 202
+@interface ApplyView()<UITableViewDataSource,UITableViewDelegate>{
+    NSArray *_arrTitle;
+}
 
 @property(nonatomic,weak)UIScrollView *moveView;
-
 @end
 @implementation ApplyView
 
@@ -35,8 +36,23 @@
 
 
 -(void)createApply{
-    UIView * childView =[[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.frame)-HEIGHT, 320 , HEIGHT)];
-    childView.backgroundColor=[UIColor whiteColor];
+    _arrTitle=@[@{@"icon":@"hm_shigxc",@"title":@"时光相册"},
+                @{@"icon":@"hm_shext",@"title":@"智能摄像头"},
+                @{@"icon":@"hm_wqswkj",@"title":@"安全上网控件"},
+                @{@"icon":@"hm_sgmore",@"title":@"其它"}];
+    UIView * childView =[[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.frame)-HEIGHT+3, 320 , HEIGHT)];
+//    childView.backgroundColor=[UIColor whiteColor];
+    CCTableView *table=CCTableViewCreateStylePlain(CGRectMake(0, 0, CGRectGetWidth(childView.frame), CGRectGetHeight(childView.frame)), self, NO);
+    table.backgroundColor=[UIColor clearColor];
+    UIView *headView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, CGRectGetWidth(table.frame), 30)];
+    headView.backgroundColor=[UIColor clearColor];
+    CCLabel *lbMsg=CCLabelCreateWithNewValue(@"选择要连接的设备", 16.0, CGRectMake(15, 0, CGRectGetWidth(headView.frame)-15, CGRectGetHeight(headView.frame)));
+    lbMsg.textColor=[UIColor whiteColor];
+    [headView addSubview:lbMsg];
+    
+    table.tableHeaderView=headView;
+    
+    [childView addSubview:table];
     [_moveView addSubview:childView];
 }
 
@@ -56,13 +72,42 @@
 
 - (void)hiddenSelfView
 {
-    self.type(0);
+    self.type(-1);
 }
 
--(void)goBind:(CCButton *)sendar
-{
 
-    
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return _arrTitle.count;
 }
+
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    static NSString *cellID=@"cellID";
+    UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:cellID];
+    if (!cell) {
+        cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+        cell.accessoryView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"hm_jiantou"]];
+    }
+    NSDictionary *param=_arrTitle[indexPath.row];
+    cell.imageView.image=[UIImage imageNamed:param[@"icon"]];
+    cell.textLabel.text=param[@"title"];
+    cell.textLabel.textColor=RGBCommon(52, 52, 52);
+    return cell;
+}
+
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return 43.0f;
+}
+
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    self.type(indexPath.row);
+}
+
+
 
 @end

@@ -45,6 +45,7 @@
     }
     [self.applyView moveTransiton:YES];
     _applyView.type=^(NSInteger tag){
+        PSLog(@"---[%d]---",tag);
         [self.applyView moveTransiton:NO];
     };
     
