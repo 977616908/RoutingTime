@@ -13,7 +13,7 @@
     NSArray *_arrTitle;
 }
 
-@property(nonatomic,weak)UIScrollView *moveView;
+@property(nonatomic,weak)UIView *moveView;
 @end
 @implementation ApplyView
 
@@ -22,12 +22,9 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor =RGBAlpha(0, 0, 0, 0.6);
-        self.userInteractionEnabled = YES;
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hiddenSelfView)];
-        [self addGestureRecognizer:tap];
-        UIScrollView *scrollView=[[UIScrollView alloc]initWithFrame:CGRectMake(0, HEIGHT, 320, CGRectGetHeight(self.frame))];
-        _moveView=scrollView;
-        [self addSubview:scrollView];
+//        self.userInteractionEnabled = YES;
+//        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hiddenSelfView:)];
+//        [self addGestureRecognizer:tap];
         [self createApply];
 
     }
@@ -40,8 +37,7 @@
                 @{@"icon":@"hm_shext",@"title":@"智能摄像头"},
                 @{@"icon":@"hm_wqswkj",@"title":@"安全上网控件"},
                 @{@"icon":@"hm_sgmore",@"title":@"其它"}];
-    UIView * childView =[[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.frame)-HEIGHT+3, 320 , HEIGHT)];
-//    childView.backgroundColor=[UIColor whiteColor];
+    UIView * childView =[[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.frame), 320 , HEIGHT)];
     CCTableView *table=CCTableViewCreateStylePlain(CGRectMake(0, 0, CGRectGetWidth(childView.frame), CGRectGetHeight(childView.frame)), self, NO);
     table.backgroundColor=[UIColor clearColor];
     UIView *headView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, CGRectGetWidth(table.frame), 30)];
@@ -53,7 +49,8 @@
     table.tableHeaderView=headView;
     
     [childView addSubview:table];
-    [_moveView addSubview:childView];
+    self.moveView=childView;
+    [self addSubview:childView];
 }
 
 
@@ -61,7 +58,7 @@
     self.hidden=NO;
     [UIView animateWithDuration:0.25 animations:^{
         if (isAnimation) {
-            _moveView.transform=CGAffineTransformMakeTranslation(0, -_moveView.frame.origin.y);
+            _moveView.transform=CGAffineTransformMakeTranslation(0, 2-HEIGHT);
         }else{
             _moveView.transform=CGAffineTransformIdentity;
         }
@@ -70,9 +67,9 @@
     }];
 }
 
-- (void)hiddenSelfView
+- (void)hiddenSelfView:(UITapGestureRecognizer *)gesture
 {
-    self.type(-1);
+   self.type(-1);
 }
 
 

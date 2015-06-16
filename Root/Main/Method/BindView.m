@@ -78,7 +78,6 @@
 {
     UIView * childView =[[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.frame)-UNBINDHEIGHT, 320 , UNBINDHEIGHT)];
     childView.backgroundColor=[UIColor whiteColor];
-    childView.userInteractionEnabled=YES;
     UIImageView *bgImage=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"login_hm_sruk"]];
     bgImage.frame=CGRectMake(22, 20, 266, 42);
     CCImageView *imgPwd=CCImageViewCreateWithNewValue(@"hm_miyao02", CGRectMake(10, 11, 12, 20));

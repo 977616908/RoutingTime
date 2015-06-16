@@ -183,6 +183,7 @@ typedef enum{
                 ((UILabel *)_titileArr[i]).text=arr[i];
             }
             NSString *path=[response objectForKey:@"logo_bg"];
+//            self.topImg.image=[UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:path]]];
             if (hasCachedImageWithString(path)) {
                 self.topImg.image=[UIImage imageWithContentsOfFile:pathForString(path)];
             }else{
@@ -427,9 +428,11 @@ typedef enum{
             stateView.hidden=NO;
             stateView.labelText=@"正在更换封面...";
             CGSize size=self.topImg.frame.size;
-            
-            UIImage *customImg=[[ImageCacher defaultCacher]scaleImage:theImage size:CGSizeMake(size.width*1.5, size.height*2)];
-            //        UIImage *customImg=[[ImageCacher defaultCacher]compressImage:theImage sizeheight:186];
+//            UIImage *customImg=[[ImageCacher defaultCacher]scaleImage:theImage size:size];
+//            UIImage *customImg=[[ImageCacher defaultCacher]compressImage:theImage sizeheight:size.height*2];
+            ImageCacher *cacher=[ImageCacher defaultCacher];
+            cacher.isCenter=YES;
+            UIImage *customImg=[cacher imageByScalingAndCroppingForSize:CGSizeMake(size.width*2, size.height*2) sourceImage:theImage];
             [self uploadImage:customImg];
 //            self.topImg.image=theImage;
         }else{

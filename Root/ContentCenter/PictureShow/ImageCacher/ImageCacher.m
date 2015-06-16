@@ -7,6 +7,12 @@
 //  单例类
 
 #import "ImageCacher.h"
+@interface ImageCacher (){
+    
+}
+
+
+@end
 
 @implementation ImageCacher
 
@@ -73,12 +79,30 @@ static ImageCacher *defaultCacher=nil;
     if (image==nil) {
         return;
     }
+    UIView *view=[aDic objectForKey:@"imageView"];
+    //判断view是否还存在 如果tablecell已经移出屏幕会被回收 那么什么都不用做，下次滚到该cell 缓存已存在 不需要执行此方法
+    if (view!=nil) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+//            CATransition *transtion = [CATransition animation];
+//            transtion.duration = 0.1;
+//            [transtion setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+//            [transtion setType:_type];
+//            [transtion setSubtype:kCATransitionFromRight];
+//            
+//            [view.layer addAnimation:transtion forKey:@"transtionKey"];
+            UIImage *showImg=[self imageByScalingAndCroppingForSize:CGSizeMake(CGRectGetWidth(view.frame)*2,CGRectGetHeight(view.frame)*2) sourceImage:image];
+            [(UIImageView*)view setImage:showImg];
+        });
+   
+    }
+    
     NSValue *value=[aDic objectForKey:@"size"];
     UIImage *small;
     if(value){
         CGSize size=[value CGSizeValue];
         PSLog(@"--%f--%f",size.width,size.height);
-        small=[self scaleImage:image size:CGSizeMake(size.width*2,size.height*2)];
+        //        small=[self scaleImage:image size:CGSizeMake(size.width*2,size.height*2)];
+        small=[self imageByScalingAndCroppingForSize:CGSizeMake(size.width*2,size.height*2) sourceImage:image];
     }else{
         small=[self scaleImage:image size:CGSizeMake(144, 144)];
     }
@@ -98,21 +122,6 @@ static ImageCacher *defaultCacher=nil;
             [fileManager createFileAtPath:pathUrl contents:smallData attributes:nil];
             //        PSLog(@"--%@---%d--%d-",pathUrl,isFile,isWrite);
         }
-    }
-    UIView *view=[aDic objectForKey:@"imageView"];
-    //判断view是否还存在 如果tablecell已经移出屏幕会被回收 那么什么都不用做，下次滚到该cell 缓存已存在 不需要执行此方法
-    if (view!=nil) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-//            CATransition *transtion = [CATransition animation];
-//            transtion.duration = 0.1;
-//            [transtion setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
-//            [transtion setType:_type];
-//            [transtion setSubtype:kCATransitionFromRight];
-//            
-//            [view.layer addAnimation:transtion forKey:@"transtionKey"];
-            [(UIImageView*)view setImage:small];
-        });
-   
     }
   
     
@@ -244,7 +253,12 @@ static ImageCacher *defaultCacher=nil;
         // center the image
         if (widthFactor > heightFactor)
         {
-            thumbnailPoint.y = (targetHeight - scaledHeight) * 0.5;
+            if (_isCenter) {
+               thumbnailPoint.y = (targetHeight - scaledHeight) * 0.2;
+            }else{
+               thumbnailPoint.y = (targetHeight - scaledHeight) * 0.5;
+            }
+            
         }
         else
             if (widthFactor < heightFactor)

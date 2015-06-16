@@ -89,14 +89,15 @@
             CGSize imgSize=image.frame.size;
             if (hasCachedImageWithString(path)) {
                 UIImage *img=[UIImage imageWithContentsOfFile:pathForString(path)];
-//                image.image=img;
-                if (img.size.width>imgSize.width&&img.size.height>imgSize.height) {
-                    image.image=img;
+////                image.image=img;
+                if (img.size.width>(imgSize.width+10)||img.size.height>(imgSize.height+10)) {
+                    //                    image.image=[[ImageCacher defaultCacher]scaleImage:img size:CGSizeMake(imgSize.width, imgSize.height)];
+                    //                   image.image=[[ImageCacher defaultCacher]compressImage:img sizewidth:imgSize.width*2];
+                    //                image.image=[[ImageCacher defaultCacher]compressImage:img sizeheight:imgSize.height*2];
+                    image.image=[[ImageCacher defaultCacher]imageByScalingAndCroppingForSize:CGSizeMake(imgSize.width*2, imgSize.height*2) sourceImage:img];
                 }else{
-//                image.image=[[ImageCacher defaultCacher]scaleImage:img size:CGSizeMake(imgSize.width*2, imgSize.height*2)];
-//                   image.image=[[ImageCacher defaultCacher]compressImage:img sizewidth:imgSize.width*2];
-//                image.image=[[ImageCacher defaultCacher]compressImage:img sizeheight:imgSize.height*2];
-                image.image=[[ImageCacher defaultCacher]imageByScalingAndCroppingForSize:CGSizeMake(imgSize.width*2, imgSize.height*2) sourceImage:img];
+
+                    image.image=img;
                 }
             }else{
                 NSValue *size=[NSValue valueWithCGSize:CGSizeMake(WEITH, HEIGHT)];

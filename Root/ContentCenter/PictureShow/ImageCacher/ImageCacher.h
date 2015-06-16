@@ -13,6 +13,7 @@
 @interface ImageCacher : NSObject
 
 @property (retain,nonatomic) NSString *type;
+@property(nonatomic,assign) BOOL isCenter;
 +(ImageCacher*)defaultCacher;
 -(void)cacheImage:(NSDictionary*)aDic;
 -(void)downImage:(NSString *)url;
