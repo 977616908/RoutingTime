@@ -10,6 +10,7 @@
 #import "WWTagsCloudView.h"
 #import "CCTextField.h"
 #import "NetBackPwdViewController.h"
+#import "ApplyViewController.h"
 
 @interface NetSaveViewController (){
     BOOL isOff;//NO表示关闭,YES开启
@@ -84,7 +85,11 @@
 }
 
 -(void)exitCurrentController{
-    [self.navigationController popToRootViewControllerAnimated:YES];
+    for (UIViewController *controller in self.navigationController.viewControllers) {
+        if ([controller isKindOfClass:[ApplyViewController class]]) {
+            [self.navigationController popToViewController:controller animated:YES];
+        }
+    }
 }
 
 
@@ -139,7 +144,7 @@
     [startView addSubview:btnBack];
     
     CCButton *btnStart=CCButtonCreateWithValue(CGRectMake(80, CGRectGetMaxY(imgShow.frame)+15, 160, 42), @selector(onTypeClick:), self);
-    btnStart.backgroundColor=RGBCommon(53, 172, 232);
+    btnStart.backgroundColor=RGBCommon(63, 205, 225);
     btnStart.tag=2;
     [btnStart alterFontSize:20];
     [btnStart alterNormalTitle:@"开启"];

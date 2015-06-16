@@ -46,7 +46,7 @@
 
     CCButton *btnOk=CCButtonCreateWithValue(CGRectMake(15, CGRectGetMaxY(lbMessage.frame)+15, CGRectGetWidth(self.view.frame)-30, 42), @selector(restartRouting:), self);
     [btnOk alterFontSize:18.0];
-    btnOk.backgroundColor=RGBCommon(53, 172, 232);
+    btnOk.backgroundColor=RGBCommon(63, 205, 225);
     [btnOk alterNormalTitle:@"确定"];
     [self.view addSubview:btnOk];
     

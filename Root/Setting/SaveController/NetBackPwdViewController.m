@@ -72,7 +72,7 @@
     
     
     CCButton *btnBind=CCButtonCreateWithValue(CGRectMake(27, 144, 266, 42), @selector(onClick:), self);
-    btnBind.backgroundColor=RGBCommon(53, 172, 232);
+    btnBind.backgroundColor=RGBCommon(63, 205, 225);
     [btnBind alterFontSize:18];
     [btnBind alterNormalTitle:@"确定"];
     [self.view addSubview:btnBind];

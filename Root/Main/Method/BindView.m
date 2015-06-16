@@ -65,7 +65,7 @@
     [childView addSubview:btnType];
     
     CCButton *btnBind=CCButtonCreateWithValue(CGRectMake(22, CGRectGetHeight(childView.frame)-57, 266, 42), @selector(goBind:), self);
-    btnBind.backgroundColor=RGBCommon(53, 172, 232);
+    btnBind.backgroundColor=RGBCommon(63, 205, 225);
     btnBind.tag=2;
     [btnBind alterFontSize:20];
     [btnBind alterNormalTitle:@"绑定"];
@@ -93,7 +93,7 @@
 
     
     CCButton *btnBind=CCButtonCreateWithValue(CGRectMake(22, CGRectGetHeight(childView.frame)-62, 266, 42), @selector(goBind:), self);
-    btnBind.backgroundColor=RGBCommon(53, 172, 232);
+    btnBind.backgroundColor=RGBCommon(63, 205, 225);
     btnBind.tag=3;
     [btnBind alterFontSize:20];
     [btnBind alterNormalTitle:@"解除绑定"];

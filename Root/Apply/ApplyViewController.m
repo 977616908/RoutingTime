@@ -9,6 +9,9 @@
 #import "ApplyViewController.h"
 #import "MediaCenterViewController.h"
 #import "ApplyView.h"
+#import "CameraViewController.h"
+#import "NetSaveViewController.h"
+#import "NetWorkViewController.h"
 
 @interface ApplyViewController (){
     NSArray *arrImg;
@@ -46,6 +49,32 @@
     [self.applyView moveTransiton:YES];
     _applyView.type=^(NSInteger tag){
         PSLog(@"---[%d]---",tag);
+        switch (tag) {
+            case 0:{
+              
+            }
+                break;
+            case 1:{
+                CameraViewController *cameraController=[[CameraViewController alloc]init];
+                [self.navigationController pushViewController:cameraController animated:YES];
+            }
+                break;
+            case 2:{
+                NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+                id password=[user objectForKey:NETPASSWORD];
+                if ([password length]>0) {
+                    NetSaveViewController *saveController=[[NetSaveViewController alloc]init];
+                    [self.navigationController pushViewController:saveController animated:YES];
+                }else{
+                    NetWorkViewController *workController=[[NetWorkViewController alloc]init];
+                    [self.navigationController pushViewController:workController animated:YES];
+                }
+//                [self setMacBounds];
+            }
+                break;
+            default:
+                break;
+        }
         [self.applyView moveTransiton:NO];
     };
     
@@ -112,5 +141,23 @@
         }];
     }];
     
+}
+
+
+/**
+ * 判断是否绑定与连接PIFii路由
+ */
+-(BOOL)setMacBounds{
+    BOOL isBound=[GlobalShare isBindMac];
+    if (!isBound) {
+        [[[UIAlertView alloc]initWithTitle:@"提示" message:@"网络异常或未绑定PiFii路由" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil] show];
+    }else{
+        BOOL isConnect=[[[NSUserDefaults standardUserDefaults]objectForKey:ISCONNECT]boolValue];
+        if (!isConnect) {
+            [[[UIAlertView alloc]initWithTitle:@"提示" message:@"未连接绑定PiFii路由" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil] show];
+            isBound=NO;
+        }
+    }
+    return isBound;
 }
 @end
