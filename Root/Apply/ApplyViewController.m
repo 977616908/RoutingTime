@@ -26,7 +26,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    arrImg=@[@"hm_asxl",@"hm_aphc",@"hm_aap"];
+    arrImg=@[@"hm_asxl",@"hm_aphc",@"hm_aap",@"hm_save"];
     [self startAnimation];
 }
 

@@ -11,6 +11,7 @@
                 <outletCollection property="imgArr" destination="bWE-wy-I6V" id="xQa-6u-0ft"/>
                 <outletCollection property="imgArr" destination="r1J-3z-Oyl" id="D4a-ec-Cr9"/>
                 <outletCollection property="imgArr" destination="euI-cP-8Bt" id="J7f-p2-Kef"/>
+                <outletCollection property="imgArr" destination="PBc-Cw-skH" id="Zbq-H3-amS"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
@@ -27,7 +28,10 @@
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hm_aphc.png" translatesAutoresizingMaskIntoConstraints="NO" id="r1J-3z-Oyl">
                     <rect key="frame" x="160" y="139" width="27" height="22"/>
                 </imageView>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hm_app.png" translatesAutoresizingMaskIntoConstraints="NO" id="euI-cP-8Bt">
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hm_save.png" translatesAutoresizingMaskIntoConstraints="NO" id="PBc-Cw-skH">
+                    <rect key="frame" x="82" y="50" width="24" height="27"/>
+                </imageView>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hm_aap.png" translatesAutoresizingMaskIntoConstraints="NO" id="euI-cP-8Bt">
                     <rect key="frame" x="218" y="78" width="25" height="20"/>
                 </imageView>
                 <button opaque="NO" tag="1" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LiM-UP-uhl">
@@ -57,17 +61,28 @@
                         <action selector="onClick:" destination="-1" eventType="touchUpInside" id="U5h-aJ-EF9"/>
                     </connections>
                 </button>
+                <button opaque="NO" tag="4" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CdN-2P-waf">
+                    <rect key="frame" x="63" y="40" width="63" height="47"/>
+                    <state key="normal">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="onClick:" destination="-1" eventType="touchUpInside" id="pfr-Bi-77k"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
             <simulatedTabBarMetrics key="simulatedBottomBarMetrics" translucent="NO"/>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+            <point key="canvasLocation" x="104" y="267"/>
         </view>
     </objects>
     <resources>
+        <image name="hm_aap.png" width="24" height="20"/>
         <image name="hm_aphc.png" width="27" height="22"/>
-        <image name="hm_app.png" width="24" height="20"/>
         <image name="hm_apply.png" width="320" height="450"/>
         <image name="hm_asxl.png" width="22" height="23"/>
+        <image name="hm_save.png" width="24" height="27"/>
     </resources>
 </document>
