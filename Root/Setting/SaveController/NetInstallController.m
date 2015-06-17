@@ -105,48 +105,24 @@
     self.downMsg.hidden=NO;
     self.downIndicator.hidden=NO;
     downloadedBytes = 0;
-    [self updateViewOneTime];
-    __weak typeof(self) weakself = self;
-    double delayInSeconds = 1;
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        [weakself updateView:10.0f];
-    });
-    
-    double delayInSeconds1 = delayInSeconds + 1;
-    dispatch_time_t popTime1 = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds1 * NSEC_PER_SEC));
-    dispatch_after(popTime1, dispatch_get_main_queue(), ^(void){
-        [weakself updateView:30.0f];
-    });
-    
-    double delayInSeconds2 = delayInSeconds1 + 1;
-    dispatch_time_t popTime2 = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds2 * NSEC_PER_SEC));
-    dispatch_after(popTime2, dispatch_get_main_queue(), ^(void){
-        [weakself updateView:10.0f];
-    });
-    
-    double delayInSeconds3 = delayInSeconds2 + 1;
-    dispatch_time_t popTime3 = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds3 * NSEC_PER_SEC));
-    dispatch_after(popTime3, dispatch_get_main_queue(), ^(void){
-        [weakself updateView:50.0f];
-        self.btnStart.enabled=YES;
-    });
-//    timer=[NSTimer timerWithTimeInterval:<#(NSTimeInterval)#> target:<#(id)#> selector:<#(SEL)#> userInfo:<#(id)#> repeats:<#(BOOL)#>];
+    timer=[NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(updateView) userInfo:nil repeats:YES];
 }
 
-- (void)updateView:(CGFloat)val
+- (void)updateView
 {
-    downloadedBytes+=val;
-    _downMsg.text=[NSString stringWithFormat:@"正在为您连接中...(%f%%)",downloadedBytes];
+    downloadedBytes+=arc4random()%5;
+    downloadedBytes=downloadedBytes>100?100:downloadedBytes;
+    _downMsg.text=[NSString stringWithFormat:@"正在为您安装中...(%.0f%%)",downloadedBytes];
     [_downIndicator updateWithTotalBytes:100 downloadedBytes:downloadedBytes];
+    if(downloadedBytes>=100){
+        [timer invalidate];
+        timer=nil;
+        self.btnStart.enabled=YES;
+        _downMsg.text=@"安装成功";
+        [self performSelector:@selector(exitCurrentController) withObject:nil afterDelay:0.7];
+    }
 }
 
-- (void)updateViewOneTime
-{
-    [_downIndicator setIndicatorAnimationDuration:1.0];
-    
-    [_downIndicator updateWithTotalBytes:100 downloadedBytes:100];
-}
 
 
 

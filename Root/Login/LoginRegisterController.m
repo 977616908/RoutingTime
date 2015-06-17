@@ -83,7 +83,7 @@ typedef enum{
     [navTopView addSubview:btnBack];
     [self.view addSubview:navTopView];
     
-    UIView *bgView=[[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(navTopView.frame)+15, 320, 36)];
+    UIView *bgView=[[UIView alloc]initWithFrame:CGRectMake(0, 44, 320, 36)];
     bgView.backgroundColor=[UIColor clearColor];
     [self.view addSubview:bgView];
     
@@ -119,12 +119,12 @@ typedef enum{
 #pragma mark -创建登录
 -(void)createLoginView{
     UIImageView *bgUser=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"hm_login_kuang"]];
-    bgUser.frame=CGRectMake(27, 25, 266, 50);
+    bgUser.frame=CGRectMake(27, 60, 266, 50);
     [_rootScrollView addSubview:bgUser];
     CCImageView *imgUser=CCImageViewCreateWithNewValue(@"hm_shoujii", CGRectMake(8, 17, 20, 20));
     [bgUser addSubview:imgUser];
     
-    CCTextField *tfUser=[[CCTextField alloc]initWithFrame:CGRectMake(53,25, 236, 50)];
+    CCTextField *tfUser=[[CCTextField alloc]initWithFrame:CGRectMake(53,60, 236, 50)];
     [tfUser setBackgroundColor:[UIColor clearColor]];
 //    tfUser.textColor=RGBCommon(100, 192, 237);
     tfUser.textColor=[UIColor whiteColor];
@@ -172,7 +172,7 @@ typedef enum{
 #pragma mark -创建注册
 -(void)createRegisterView{
     CGFloat wh=CGRectGetWidth(self.view.frame);
-    CCButton *btnSao=CCButtonCreateWithValue(CGRectMake(129+wh, 15, 64, 64), @selector(onBind), self);
+    CCButton *btnSao=CCButtonCreateWithValue(CGRectMake(129+wh, 15+30, 64, 64), @selector(onBind), self);
     [btnSao alterNormalBackgroundImage:@"hm_sao"];
     [_rootScrollView addSubview:btnSao];
     
