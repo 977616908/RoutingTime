@@ -270,7 +270,7 @@
     }
     stateView.hidden=NO;
     stateView.labelText=@"正在分享...";
-    
+    downCount=_photoArr.count;
     NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
     NSDictionary *userData= [user objectForKey:USERDATA];
     NSString *userPhone=userData[@"userPhone"];
@@ -280,12 +280,13 @@
     //    params[@"date"]=@"2015-5-28";
     //    params[@"date"]=@"20150529150816";
     params[@"date"]=[self getDate];
+//    params[@"totalCount"]=@(downCount);
     RoutingDown *down=[[RoutingDown alloc]init];
     down.params=params;
     down.downList=_photoArr;
     
     [self.pifiiDelegate pushViewDataSource:down];
-    downCount=_photoArr.count;
+  
     [self uploadWithPhoto:_photoArr[0]];
     [self performSelector:@selector(setStateView:) withObject:@"success" afterDelay:0.2];
    
@@ -400,7 +401,7 @@
 
 -(NSString *)getDate{
     NSDateFormatter *sdf=[[NSDateFormatter alloc]init];
-    [sdf setDateFormat:@"yyyyMMddHHmmss"];
+    [sdf setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     return [sdf stringFromDate:[NSDate date]];
 }
 

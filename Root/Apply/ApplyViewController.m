@@ -12,6 +12,7 @@
 #import "CameraViewController.h"
 #import "NetSaveViewController.h"
 #import "NetWorkViewController.h"
+#import "NetInstallController.h"
 
 @interface ApplyViewController (){
     NSArray *arrImg;
@@ -51,7 +52,8 @@
         PSLog(@"---[%d]---",tag);
         switch (tag) {
             case 0:{
-              
+                NetInstallController *installController=[[NetInstallController alloc]init];
+                [self.navigationController pushViewController:installController animated:YES];
             }
                 break;
             case 1:{
