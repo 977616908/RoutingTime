@@ -14,7 +14,7 @@
 #import "NetWorkViewController.h"
 #import "NetInstallController.h"
 
-@interface ApplyViewController (){
+@interface ApplyViewController ()<PiFiiBaseViewDelegate>{
     NSArray *arrImg;
     NSInteger showCount;
 }
@@ -30,8 +30,25 @@
     [super viewDidLoad];
     arrImg=@[@"hm_asxl",@"hm_aphc",@"hm_aap",@"hm_save"];
     showCount=0;
-    [self startAnimation];
     [self startWifiiAnimation];
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    self.navigationController.navigationBarHidden=NO;
+    // 删除系统自动生成的UITabBarButton
+    for (UIView *child in self.tabBarController.tabBar.subviews) {
+        if ([child isKindOfClass:[UIControl class]]) {
+            [child removeFromSuperview];
+        }
+    }
+    if([GlobalShare isBindMac]){
+        UIImageView *image=_imgArr[1];
+        if (image.tag!=2) {
+            image.tag=2;
+            [self startAnimation:image];
+        }
+    }
 }
 
 -(void)coustomNav{
@@ -66,6 +83,7 @@
                 break;
             case 2:{
                 NetInstallController *installController=[[NetInstallController alloc]init];
+                installController.pifiiDelegate=self;
                 [self.navigationController pushViewController:installController animated:YES];
             }
                 break;
@@ -86,20 +104,29 @@
 
 
 - (IBAction)onClick:(id)sender {
+    NSArray *arr=@[@"暂未添加摄像头连接",@"暂未绑定路由",@"暂未添加时光相册",@"暂未添加安全上网控件"];
     UIImageView *image=((UIImageView *)_imgArr[[sender tag]-1]);
-    [UIView animateWithDuration:0.5 animations:^{
-        image.transform=CGAffineTransformMakeScale(1.5, 1.5);
-    } completion:^(BOOL finished) {
-        image.transform=CGAffineTransformIdentity;
-        [self startController:[sender tag]];
-    }];
+    if(image.tag==[sender tag]){
+        [sender setEnabled:NO];
+        [UIView animateWithDuration:0.5 animations:^{
+            image.transform=CGAffineTransformMakeScale(1.5, 1.5);
+        } completion:^(BOOL finished) {
+            image.transform=CGAffineTransformIdentity;
+            [sender setEnabled:YES];
+            [self startController:[sender tag]];
+        }];
+    }else{
+       [self showToast:arr[[sender tag]-1] Long:1.5];
+        NetWorkViewController *workController=[[NetWorkViewController alloc]init];
+        [self.navigationController pushViewController:workController animated:YES];
+    }
+
 
 }
 
 -(void)startController:(NSInteger)tag{
     switch (tag) {
         case 1:
-            [self showToast:@"暂未连接到摄像头" Long:1.5];
             break;
             
         case 2:{
@@ -109,7 +136,7 @@
         }
             break;
         case 3:
-            [self showToast:@"暂未连接到该设备" Long:1.5];
+
             break;
         case 4:{
             NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
@@ -148,26 +175,27 @@
     }];
 }
 
-- (void)startAnimation
+- (void)startAnimation:(UIImageView *)image
 {
     [UIView animateWithDuration:1.5 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-        for (int i=0; i<_imgArr.count; i++) {
-            UIImageView *image=(UIImageView *)_imgArr[i];
-            image.image=[UIImage imageNamed:[NSString stringWithFormat:@"%@_select",arrImg[i]]];
-            image.alpha=1.0;
-        }
+        image.image=[UIImage imageNamed:[NSString stringWithFormat:@"%@_select",arrImg[[_imgArr indexOfObject:image]]]];
+        image.alpha=1.0;
     } completion:^(BOOL finished) {
         [UIView animateWithDuration:0.3 animations:^{
-            for (int i=0; i<_imgArr.count; i++) {
-                UIImageView *image=(UIImageView *)_imgArr[i];
-                image.image=[UIImage imageNamed:arrImg[i]];
-                image.alpha=0.3;
-            }
+            image.image=[UIImage imageNamed:arrImg[[_imgArr indexOfObject:image]]];
+            image.alpha=0.3;
         } completion:^(BOOL finished) {
-            [self startAnimation];
+            [self startAnimation:image];
         }];
     }];
     
+}
+
+-(void)pushViewDataSource:(id)dataSource{
+    NSInteger count=[dataSource integerValue];
+    UIImageView *image=_imgArr[count];
+    image.tag=count+1;
+    [self startAnimation:image];
 }
 
 

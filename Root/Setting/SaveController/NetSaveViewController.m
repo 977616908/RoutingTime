@@ -132,9 +132,9 @@
     txtPwd.placeholder=@"请输入密码关闭健康模式";
     self.txtPwd=txtPwd;
     UIBarButtonItem *doneBarButton=txtPwd.toolbar.items[1];
-    [doneBarButton setTitle:@"关闭"];
-    [doneBarButton setTarget:self];
-    [doneBarButton setAction:@selector(onClick)];
+    CCButton *done=(CCButton *)doneBarButton.customView;
+    [done alterNormalTitle:@"关闭"];
+    [done addTarget:self action:@selector(onClick) forControlEvents:UIControlEventTouchUpInside];
     [startView addSubview:txtPwd];
     
     CCButton *btnBack=CCButtonCreateWithValue(CGRectMake(CGRectGetMaxX(txtPwd.frame)-80, CGRectGetMaxY(txtPwd.frame)+5, 80, 20), @selector(onTypeClick:), self);

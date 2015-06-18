@@ -35,7 +35,7 @@
     
     CCTextField *tfUser=[[CCTextField alloc]initWithFrame:CGRectMake(53,25, 236, 42)];
     [tfUser setBackgroundColor:[UIColor clearColor]];
-    tfUser.textColor=RGBCommon(100, 192, 237);
+    tfUser.textColor=RGBCommon(63, 205, 225);
     tfUser.font=[UIFont systemFontOfSize:16.0f];
     tfUser.contentVerticalAlignment=UIControlContentVerticalAlignmentCenter;
     [tfUser setKeyboardType:UIKeyboardTypeNumberPad];
@@ -54,7 +54,7 @@
     
     CCTextField *tfPwd=[[CCTextField alloc]initWithFrame:CGRectMake(53,85, 236, 42)];
     [tfPwd setBackgroundColor:[UIColor clearColor]];
-    tfPwd.textColor=RGBCommon(100, 192, 237);
+    tfPwd.textColor=RGBCommon(63, 205, 225);
     tfPwd.font=[UIFont systemFontOfSize:16.0f];
     tfPwd.contentVerticalAlignment=UIControlContentVerticalAlignmentCenter;
     tfPwd.placeholder=@"启用密码";
@@ -73,7 +73,7 @@
     CCLabel *lbMsg=CCLabelCreateWithNewValue(@"开启后,您将无法访问这些网站:\n 色情、恐怖、反动、暴力", 16,rectMsg);
     lbMsg.textAlignment=NSTextAlignmentCenter;
     lbMsg.numberOfLines=0;
-    lbMsg.textColor=[UIColor whiteColor];
+    lbMsg.textColor=RGBCommon(165, 165, 165);
     [self.view addSubview:lbMsg];
 }
 

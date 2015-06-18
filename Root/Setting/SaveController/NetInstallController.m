@@ -119,6 +119,7 @@
         timer=nil;
         self.btnStart.enabled=YES;
         _downMsg.text=@"安装成功";
+        [self.pifiiDelegate pushViewDataSource:@(3)];
         [self performSelector:@selector(exitCurrentController) withObject:nil afterDelay:0.7];
     }
 }

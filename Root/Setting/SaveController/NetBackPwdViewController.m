@@ -66,6 +66,7 @@
     
     CCButton *btnMsg=CCButtonCreateWithValue(CGRectMake(CGRectGetMaxX(bgUser.frame)+5, 85, 95, 42), @selector(onSend:), self);
     [btnMsg alterFontSize:15.0f];
+    [btnMsg alterNormalTitleColor:RGBCommon(63, 205, 225)];
     [btnMsg alterNormalTitle:@"获取验证码"];
     self.btnSend=btnMsg;
     [self.view addSubview:btnMsg];
