@@ -12,6 +12,10 @@
                 <outletCollection property="imgArr" destination="r1J-3z-Oyl" id="D4a-ec-Cr9"/>
                 <outletCollection property="imgArr" destination="euI-cP-8Bt" id="J7f-p2-Kef"/>
                 <outletCollection property="imgArr" destination="PBc-Cw-skH" id="Zbq-H3-amS"/>
+                <outletCollection property="wfImgs" destination="Opj-Tf-OgW" id="NQw-k3-8cB"/>
+                <outletCollection property="wfImgs" destination="fXa-fh-GOo" id="PCz-xh-pgz"/>
+                <outletCollection property="wfImgs" destination="sZj-MK-CzY" id="jSQ-XD-WzE"/>
+                <outletCollection property="wfImgs" destination="vj8-Bb-h3e" id="DGB-Lb-pXd"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
@@ -33,6 +37,18 @@
                 </imageView>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hm_aap.png" translatesAutoresizingMaskIntoConstraints="NO" id="euI-cP-8Bt">
                     <rect key="frame" x="218" y="78" width="25" height="20"/>
+                </imageView>
+                <imageView userInteractionEnabled="NO" alpha="0.10000000000000001" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hm_wf01.png" translatesAutoresizingMaskIntoConstraints="NO" id="vj8-Bb-h3e">
+                    <rect key="frame" x="0.0" y="67" width="320" height="91"/>
+                </imageView>
+                <imageView userInteractionEnabled="NO" alpha="0.10000000000000001" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hm_wf02.png" translatesAutoresizingMaskIntoConstraints="NO" id="sZj-MK-CzY">
+                    <rect key="frame" x="5" y="115" width="311" height="82"/>
+                </imageView>
+                <imageView userInteractionEnabled="NO" alpha="0.10000000000000001" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hm_wf03.png" translatesAutoresizingMaskIntoConstraints="NO" id="fXa-fh-GOo">
+                    <rect key="frame" x="40" y="185" width="241" height="71"/>
+                </imageView>
+                <imageView userInteractionEnabled="NO" alpha="0.10000000000000001" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hm_wf04.png" translatesAutoresizingMaskIntoConstraints="NO" id="Opj-Tf-OgW">
+                    <rect key="frame" x="77" y="237" width="167" height="50"/>
                 </imageView>
                 <button opaque="NO" tag="1" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LiM-UP-uhl">
                     <rect key="frame" x="43" y="174" width="63" height="47"/>
@@ -84,5 +100,9 @@
         <image name="hm_apply.png" width="320" height="450"/>
         <image name="hm_asxl.png" width="22" height="23"/>
         <image name="hm_save.png" width="24" height="27"/>
+        <image name="hm_wf01.png" width="320" height="91"/>
+        <image name="hm_wf02.png" width="311" height="82"/>
+        <image name="hm_wf03.png" width="241" height="71"/>
+        <image name="hm_wf04.png" width="167" height="50"/>
     </resources>
 </document>

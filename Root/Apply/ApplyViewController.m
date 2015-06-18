@@ -16,10 +16,12 @@
 
 @interface ApplyViewController (){
     NSArray *arrImg;
+    NSInteger showCount;
 }
 - (IBAction)onClick:(id)sender;
 @property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *imgArr;
 @property (nonatomic,weak)ApplyView *applyView;
+@property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *wfImgs;
 @end
 
 @implementation ApplyViewController
@@ -27,7 +29,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     arrImg=@[@"hm_asxl",@"hm_aphc",@"hm_aap",@"hm_save"];
+    showCount=0;
     [self startAnimation];
+    [self startWifiiAnimation];
 }
 
 -(void)coustomNav{
@@ -52,8 +56,7 @@
         PSLog(@"---[%d]---",tag);
         switch (tag) {
             case 0:{
-                NetInstallController *installController=[[NetInstallController alloc]init];
-                [self.navigationController pushViewController:installController animated:YES];
+                
             }
                 break;
             case 1:{
@@ -62,16 +65,8 @@
             }
                 break;
             case 2:{
-                NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
-                id password=[user objectForKey:NETPASSWORD];
-                if ([password length]>0) {
-                    NetSaveViewController *saveController=[[NetSaveViewController alloc]init];
-                    [self.navigationController pushViewController:saveController animated:YES];
-                }else{
-                    NetWorkViewController *workController=[[NetWorkViewController alloc]init];
-                    [self.navigationController pushViewController:workController animated:YES];
-                }
-//                [self setMacBounds];
+                NetInstallController *installController=[[NetInstallController alloc]init];
+                [self.navigationController pushViewController:installController animated:YES];
             }
                 break;
             default:
@@ -116,14 +111,45 @@
         case 3:
             [self showToast:@"暂未连接到该设备" Long:1.5];
             break;
+        case 4:{
+            NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+            id password=[user objectForKey:NETPASSWORD];
+            if ([password length]>0) {
+                NetSaveViewController *saveController=[[NetSaveViewController alloc]init];
+                [self.navigationController pushViewController:saveController animated:YES];
+            }else{
+                NetWorkViewController *workController=[[NetWorkViewController alloc]init];
+                [self.navigationController pushViewController:workController animated:YES];
+            }
+            //                [self setMacBounds];
+        }
+            break;
             
     }
 }
 
+#pragma mark 启动动画
+-(void)startWifiiAnimation{
+    [UIView animateWithDuration:0.65 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        UIImageView *image=(UIImageView *)_wfImgs[showCount];
+        image.alpha=1.0;
+    } completion:^(BOOL finished) {
+        showCount+=1;
+        if (showCount==_wfImgs.count) {
+            showCount=0;
+            for (UIImageView *image in _wfImgs) {
+                image.alpha=0.1;
+            }
+        }else{
+            UIImageView *image=(UIImageView *)_wfImgs[showCount];
+            image.alpha=0.1;
+        }
+        [self startWifiiAnimation];
+    }];
+}
+
 - (void)startAnimation
 {
-    
-    
     [UIView animateWithDuration:1.5 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         for (int i=0; i<_imgArr.count; i++) {
             UIImageView *image=(UIImageView *)_imgArr[i];
@@ -131,7 +157,6 @@
             image.alpha=1.0;
         }
     } completion:^(BOOL finished) {
-        
         [UIView animateWithDuration:0.3 animations:^{
             for (int i=0; i<_imgArr.count; i++) {
                 UIImageView *image=(UIImageView *)_imgArr[i];
