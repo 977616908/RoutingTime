@@ -69,7 +69,7 @@
     downIndicator.radiusPercent = 0.45;
     
     self.downIndicator=downIndicator;
-    downIndicator.hidden=YES;
+//    downIndicator.hidden=YES;
     [self.view addSubview:downIndicator];
     [downIndicator loadIndicator];
     

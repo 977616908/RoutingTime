@@ -82,8 +82,8 @@
         // set the fill color
         _fillColor = [UIColor clearColor];
         _strokeColor = [UIColor whiteColor];
-        _closedIndicatorBackgroundStrokeColor = [UIColor grayColor];
-        _coverWidth = 2.0;
+        _closedIndicatorBackgroundStrokeColor = RGBCommon(201, 201, 201);
+        _coverWidth = 1.0;
     }
     else
     {
