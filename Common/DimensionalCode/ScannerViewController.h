@@ -17,8 +17,9 @@ typedef enum{
     ScannerOther
 }ScannerType;
 @protocol ScannerMacDelegate <NSObject>
-
+@optional
 -(void)scannerMacWithDeviceEcho:(DeviceEcho *)echo;
+-(void)scannerMessage:(NSString *)msg;
 
 @end
 

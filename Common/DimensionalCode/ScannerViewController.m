@@ -111,7 +111,7 @@
 {
     [self.readview stop];
     [self.readview flushCache];
-    if (self.type==ScannerMac) {
+    if (self.type==ScannerMac||self.type==ScannerOther) {
         CATransition *animation = [CATransition animation];
         animation.duration = 0.5f ;
         animation.timingFunction = UIViewAnimationCurveEaseInOut;
@@ -137,7 +137,15 @@
     PSLog(@"myDim:%@",myContent);
     if (self.type==ScannerMac) {
         [self performSelector:@selector(bindMac:) withObject:myContent afterDelay:1.5];
-    }else{
+    }else if(self.type==ScannerOther){
+        [self.readview stop];
+        [self.readview flushCache];
+        //    [self.scanLine.layer removeAllAnimations];
+        self.scanLine.hidden=YES;
+        [self.delegate scannerMessage:myContent];
+        [self performSelector:@selector(exitCurrentController) withObject:nil afterDelay:1.5];
+    }
+    else{
         if (tipView.frame.origin.y == (org_Y - 180)) {
             return;
         }

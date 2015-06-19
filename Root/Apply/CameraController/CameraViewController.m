@@ -8,16 +8,18 @@
 
 #import "CameraViewController.h"
 #import "PFDownloadIndicator.h"
+#import "ScannerViewController.h"
 
 
-@interface CameraViewController (){
+@interface CameraViewController ()<ScannerMacDelegate>{
     CGFloat downloadedBytes;
     NSTimer *timer;
+    BOOL isConnect;
 }
 @property(nonatomic,weak)PFDownloadIndicator *downIndicator;
 @property(nonatomic,weak)CCLabel *downMsg;
 @property(nonatomic,weak)CCButton *btnStart;
-
+@property(nonatomic,weak)CCLabel *lbMsg;
 @end
 
 @implementation CameraViewController
@@ -57,6 +59,7 @@
     CCLabel *msg=CCLabelCreateWithNewValue(@"接通电源，设备指示灯闪烁时点击下一步", 13, CGRectMake(0,CGRectGetMaxY(title.frame)+10,CGRectGetWidth(bgView.frame),14));
     msg.textColor=RGBCommon(155, 155, 155);
     msg.textAlignment=NSTextAlignmentCenter;
+    self.lbMsg=msg;
     [bgView addSubview:msg];
     
     CCImageView *img=CCImageViewCreateWithNewValue(@"hm_camera", CGRectMake(132,CGRectGetMaxY(msg.frame)+60, 56, 76));
@@ -69,7 +72,7 @@
     downIndicator.radiusPercent = 0.45;
     
     self.downIndicator=downIndicator;
-    downIndicator.hidden=YES;
+//    downIndicator.hidden=YES;
     [self.view addSubview:downIndicator];
     [downIndicator loadIndicator];
     
@@ -87,7 +90,7 @@
     btnStart.backgroundColor=RGBCommon(63, 205, 225);
     btnStart.tag=2;
     [btnStart alterFontSize:20];
-    [btnStart alterNormalTitle:@"开始智能连接"];
+    [btnStart alterNormalTitle:@"扫一扫"];
     self.btnStart=btnStart;
     [bgView addSubview:btnStart];
 
@@ -98,8 +101,17 @@
 
 -(void)onTypeClick:(CCButton *)sendar{
 //    [self showToast:@"暂未找到可连接的设置" Long:1.5];
-    self.btnStart.enabled=NO;
-    [self startAnimation];
+    if (isConnect) {
+        self.btnStart.enabled=NO;
+        [self startAnimation];
+    }else{
+        [self.navigationController.view.layer addAnimation:[self customAnimation1:self.view upDown:YES] forKey:@"animation1"];
+        ScannerViewController *svc = [[ScannerViewController alloc]init];
+        svc.type=ScannerOther;
+        svc.delegate=self;
+        [self.navigationController pushViewController:svc animated:NO];
+    }
+
 }
 
 
@@ -129,6 +141,14 @@
 }
 
 
+-(void)scannerMessage:(NSString *)msg{
+    if (![msg isEqualToString:@""]) {
+        isConnect=YES;
+        self.lbMsg.text=[NSString stringWithFormat:@"连接摄像机设备ID:%@",msg];
+        [self.btnStart alterNormalTitle:@"开始智能连接"];
+    }
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -139,6 +159,22 @@
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     self.navigationController.navigationBarHidden=NO;
+}
+
+-(CATransition *)customAnimation1:(UIView *)viewNum upDown:(BOOL )boolUpDown{
+    CATransition *animation = [CATransition animation];
+    animation.duration = 0.5f ;
+    animation.timingFunction = UIViewAnimationCurveEaseInOut;
+    animation.fillMode = kCAFillModeForwards;
+    animation.endProgress = 1;
+    animation.removedOnCompletion = NO;
+    animation.type = @"oglFlip";//101
+    if (boolUpDown) {
+        animation.subtype = kCATransitionFromRight;
+    }else{
+        animation.subtype = kCATransitionFromLeft;
+    }
+    return animation;
 }
 
 @end
