@@ -117,8 +117,6 @@
         }];
     }else{
        [self showToast:arr[[sender tag]-1] Long:1.5];
-        NetWorkViewController *workController=[[NetWorkViewController alloc]init];
-        [self.navigationController pushViewController:workController animated:YES];
     }
 
 
@@ -194,8 +192,10 @@
 -(void)pushViewDataSource:(id)dataSource{
     NSInteger count=[dataSource integerValue];
     UIImageView *image=_imgArr[count];
-    image.tag=count+1;
-    [self startAnimation:image];
+    if(image.tag!=count+1){
+        image.tag=count+1;
+        [self startAnimation:image];
+    }
 }
 
 

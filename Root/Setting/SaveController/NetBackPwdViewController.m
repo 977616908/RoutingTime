@@ -33,12 +33,12 @@
     bgPwd.frame=CGRectMake(27, 25, 266, 42);
     [self.view addSubview:bgPwd];
     CCButton *btnPwd=CCButtonCreateWithFrame(CGRectMake(10, 13, 16, 16));
-    [btnPwd setImage:[UIImage imageNamed:@"hm_bhmm"] forState:UIControlStateNormal];
+    [btnPwd setImage:[UIImage imageNamed:@"hm_miyao02"] forState:UIControlStateNormal];
     [bgPwd addSubview:btnPwd];
     
     CCTextField *tfPwd=[[CCTextField alloc]initWithFrame:CGRectMake(53,25, 236, 42)];
     [tfPwd setBackgroundColor:[UIColor clearColor]];
-    tfPwd.textColor=RGBCommon(100, 192, 237);
+    tfPwd.textColor=RGBCommon(63, 205, 225);
     tfPwd.font=[UIFont systemFontOfSize:16.0f];
     tfPwd.contentVerticalAlignment=UIControlContentVerticalAlignmentCenter;
     tfPwd.placeholder=@"新密码";
@@ -50,11 +50,11 @@
     bgUser.frame=CGRectMake(27, 85, 176, 42);
     [self.view addSubview:bgUser];
     CCButton *btnUser=CCButtonCreateWithFrame(CGRectMake(10, 13, 16, 16));
-    [btnUser setImage:[UIImage imageNamed:@"hm_shoujii"] forState:UIControlStateNormal];
+    [btnUser setImage:[UIImage imageNamed:@"hm_shoujii02"] forState:UIControlStateNormal];
     [bgUser addSubview:btnUser];
     
     CCTextField *tfUser=[[CCTextField alloc]initWithFrame:CGRectMake(53,85, 160, 42)];
-    tfUser.textColor=RGBCommon(100, 192, 237);
+    tfUser.textColor=RGBCommon(63, 205, 225);
     tfUser.font=[UIFont systemFontOfSize:16.0f];
     tfUser.contentVerticalAlignment=UIControlContentVerticalAlignmentCenter;
     [tfUser setKeyboardType:UIKeyboardTypeNumberPad];

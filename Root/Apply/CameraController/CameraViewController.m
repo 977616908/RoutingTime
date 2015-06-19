@@ -57,7 +57,7 @@
 
 
 -(void)onTypeClick:(CCButton *)sendar{
-
+    [self showToast:@"暂未找到可连接的设置" Long:1.5];
 
 }
 

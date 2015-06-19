@@ -130,7 +130,8 @@ typedef enum{
     if([mark isEqualToString:@"header"]){
         if ([returnCode integerValue]==200) {
             NSArray *data=[response objectForKey:@"data"];
-            [self removeRoutingClass:[RoutingDown class]];
+//            [self removeRoutingClass:[RoutingDown class]];
+            [_arrTime removeAllObjects];
             for (NSDictionary *param in data) {
                 RoutingTime *time=[[RoutingTime alloc]initWithData:param];
                 [_arrTime addObject:time];
@@ -170,8 +171,27 @@ typedef enum{
         [self performSelector:@selector(updateMark:) withObject:mark afterDelay:.2];
     }else{
         if ([returnCode integerValue]==200) {
+            NSString *path=[response objectForKey:@"logo_bg"];
+            //            self.topImg.image=[UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:path]]];
+            if (hasCachedImageWithString(path)) {
+                self.topImg.image=[UIImage imageWithContentsOfFile:pathForString(path)];
+            }else{
+                NSValue *size=[NSValue valueWithCGSize:self.topImg.frame.size];
+                NSDictionary *dict=@{@"url":path,@"imageView":self.topImg,@"size":size};
+                [NSThread detachNewThreadSelector:@selector(cacheImage:) toTarget:[ImageCacher defaultCacher] withObject:dict];
+            }
+            
             NSArray *data=[response objectForKey:@"data"];
-            [self removeRoutingClass:[RoutingDown class]];
+//            [self removeRoutingClass:[RoutingDown class]];
+            NSMutableArray *arrs=[NSMutableArray array];
+            for (id obj in _arrTime) {
+                if ([obj isKindOfClass:[RoutingDown class]]) {
+                    [arrs addObject:obj];
+                }
+            }
+            if (arrs.count>0)return;
+            [_arrTime removeAllObjects];
+//            [_arrTime addObjectsFromArray:arrs];
             for (NSDictionary *param in data) {
                 RoutingTime *time=[[RoutingTime alloc]initWithData:param];
                 [_arrTime addObject:time];
@@ -181,15 +201,6 @@ typedef enum{
                            [NSString stringWithFormat:@"视频 %@",response[@"video_counts"]]];
             for (int i=0; i<arr.count; i++) {
                 ((UILabel *)_titileArr[i]).text=arr[i];
-            }
-            NSString *path=[response objectForKey:@"logo_bg"];
-//            self.topImg.image=[UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:path]]];
-            if (hasCachedImageWithString(path)) {
-                self.topImg.image=[UIImage imageWithContentsOfFile:pathForString(path)];
-            }else{
-                NSValue *size=[NSValue valueWithCGSize:self.topImg.frame.size];
-                NSDictionary *dict=@{@"url":path,@"imageView":self.topImg,@"size":size};
-                [NSThread detachNewThreadSelector:@selector(cacheImage:) toTarget:[ImageCacher defaultCacher] withObject:dict];
             }
             NSInteger count=[[response objectForKey:@"pages"]integerValue];
             if (pageCount==count||pageCount>count) {
@@ -203,16 +214,16 @@ typedef enum{
     }
 }
 
--(void)removeRoutingClass:(Class)class{
-    NSMutableArray *arrs=[NSMutableArray array];
-    for (id obj in _arrTime) {
-        if ([obj isKindOfClass:class]) {
-            [arrs addObject:obj];
-        }
-    }
-    [_arrTime removeAllObjects];
-    [_arrTime addObjectsFromArray:arrs];
-}
+//-(void)removeRoutingClass:(Class)class{
+//    NSMutableArray *arrs=[NSMutableArray array];
+//    for (id obj in _arrTime) {
+//        if ([obj isKindOfClass:class]) {
+//            [arrs addObject:obj];
+//        }
+//    }
+//    [_arrTime removeAllObjects];
+//    [_arrTime addObjectsFromArray:arrs];
+//}
 
 -(void)handleRequestFail:(NSError *)error mark:(NSString *)mark{
     [self performSelector:@selector(updateMark:) withObject:mark afterDelay:.2];
