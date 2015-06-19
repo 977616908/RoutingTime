@@ -13,6 +13,7 @@
 #import "NetSaveViewController.h"
 #import "NetWorkViewController.h"
 #import "NetInstallController.h"
+#import "AlbumInstallController.h"
 
 @interface ApplyViewController ()<PiFiiBaseViewDelegate>{
     NSArray *arrImg;
@@ -73,18 +74,21 @@
         PSLog(@"---[%d]---",tag);
         switch (tag) {
             case 0:{
-                
+                AlbumInstallController  *albumController=[[AlbumInstallController alloc]init];
+                albumController.pifiiDelegate=self;
+                [self.navigationController pushViewController:albumController animated:YES];
             }
                 break;
             case 1:{
                 CameraViewController *cameraController=[[CameraViewController alloc]init];
+                cameraController.pifiiDelegate=self;
                 [self.navigationController pushViewController:cameraController animated:YES];
             }
                 break;
             case 2:{
-                NetInstallController *installController=[[NetInstallController alloc]init];
-                installController.pifiiDelegate=self;
-                [self.navigationController pushViewController:installController animated:YES];
+                NetInstallController *netController=[[NetInstallController alloc]init];
+                netController.pifiiDelegate=self;
+                [self.navigationController pushViewController:netController animated:YES];
             }
                 break;
             default:

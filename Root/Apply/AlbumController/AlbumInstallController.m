@@ -6,21 +6,21 @@
 //  Copyright (c) 2015年 广州因孚网络科技有限公司. All rights reserved.
 //
 
-#import "CameraViewController.h"
+#import "AlbumInstallController.h"
 #import "PFDownloadIndicator.h"
 
 
-@interface CameraViewController (){
+@interface AlbumInstallController (){
     CGFloat downloadedBytes;
     NSTimer *timer;
 }
+
 @property(nonatomic,weak)PFDownloadIndicator *downIndicator;
 @property(nonatomic,weak)CCLabel *downMsg;
 @property(nonatomic,weak)CCButton *btnStart;
-
 @end
 
-@implementation CameraViewController
+@implementation AlbumInstallController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -49,20 +49,20 @@
     [bgView addSubview:navTopView];
     
     
-    CCLabel *title=CCLabelCreateWithNewValue(@"连接智能摄像头", 16, CGRectMake(0,CGRectGetMaxY(navTopView.frame)+10,CGRectGetWidth(bgView.frame),16));
+    CCLabel *title=CCLabelCreateWithNewValue(@"连接时光相册", 16, CGRectMake(0,CGRectGetMaxY(navTopView.frame)+10,CGRectGetWidth(bgView.frame),16));
     title.textColor=RGBCommon(63, 205, 225);
     title.textAlignment=NSTextAlignmentCenter;
     [bgView addSubview:title];
     
-    CCLabel *msg=CCLabelCreateWithNewValue(@"接通电源，设备指示灯闪烁时点击下一步", 13, CGRectMake(0,CGRectGetMaxY(title.frame)+10,CGRectGetWidth(bgView.frame),14));
+    CCLabel *msg=CCLabelCreateWithNewValue(@"把照片串成记忆的画册，捧在手心里永久珍藏", 13, CGRectMake(0,CGRectGetMaxY(title.frame)+10,CGRectGetWidth(bgView.frame),14));
     msg.textColor=RGBCommon(155, 155, 155);
     msg.textAlignment=NSTextAlignmentCenter;
     [bgView addSubview:msg];
     
-    CCImageView *img=CCImageViewCreateWithNewValue(@"hm_camera", CGRectMake(132,CGRectGetMaxY(msg.frame)+60, 56, 76));
+    CCImageView *img=CCImageViewCreateWithNewValue(@"hm_album", CGRectMake(120,CGRectGetMaxY(msg.frame)+100, 81, 75));
     [bgView addSubview:img];
     
-    PFDownloadIndicator *downIndicator = [[PFDownloadIndicator alloc]initWithFrame:CGRectMake(90, CGRectGetMaxY(msg.frame)+50, 140, 140) type:kRMClosedIndicator];
+    PFDownloadIndicator *downIndicator = [[PFDownloadIndicator alloc]initWithFrame:CGRectMake(90, CGRectGetMaxY(msg.frame)+90, 140, 140) type:kRMClosedIndicator];
     [downIndicator setBackgroundColor:[UIColor clearColor]];
     [downIndicator setFillColor:RGBCommon(201, 201, 201)];
     [downIndicator setStrokeColor:RGBCommon(63, 205, 225)];
@@ -73,21 +73,18 @@
     [self.view addSubview:downIndicator];
     [downIndicator loadIndicator];
     
-    CCLabel *downMsg=CCLabelCreateWithNewValue(@"正在为您下载模板中...", 15, CGRectMake(0,CGRectGetMaxY(downIndicator.frame)-10,CGRectGetWidth(bgView.frame),15));
+    CCLabel *downMsg=CCLabelCreateWithNewValue(@"正在为您下载模板中...", 15, CGRectMake(0,CGRectGetMaxY(downIndicator.frame)+15,CGRectGetWidth(bgView.frame),15));
     downMsg.textColor=RGBCommon(123, 123, 123);
     downMsg.textAlignment=NSTextAlignmentCenter;
     self.downMsg=downMsg;
     downMsg.hidden=YES;
     [bgView addSubview:downMsg];
     
-    CCImageView *imgConn=CCImageViewCreateWithNewValue(@"hm_camera_conn", CGRectMake(0,CGRectGetMaxY(downMsg.frame), 320, 158));
-    [bgView addSubview:imgConn];
-    
-    CCButton *btnStart=CCButtonCreateWithValue(CGRectMake(20, CGRectGetMaxY(imgConn.frame)+10, CGRectGetWidth(self.view.frame)-40, 42), @selector(onTypeClick:), self);
+    CCButton *btnStart=CCButtonCreateWithValue(CGRectMake(20, CGRectGetMaxY(downMsg.frame)+50, CGRectGetWidth(self.view.frame)-40, 42), @selector(onTypeClick:), self);
     btnStart.backgroundColor=RGBCommon(63, 205, 225);
     btnStart.tag=2;
     [btnStart alterFontSize:20];
-    [btnStart alterNormalTitle:@"开始智能连接"];
+    [btnStart alterNormalTitle:@"开始制作"];
     self.btnStart=btnStart;
     [bgView addSubview:btnStart];
 
@@ -97,7 +94,6 @@
 
 
 -(void)onTypeClick:(CCButton *)sendar{
-//    [self showToast:@"暂未找到可连接的设置" Long:1.5];
     self.btnStart.enabled=NO;
     [self startAnimation];
 }
@@ -116,17 +112,18 @@
 {
     downloadedBytes+=arc4random()%5;
     downloadedBytes=downloadedBytes>100?100:downloadedBytes;
-    _downMsg.text=[NSString stringWithFormat:@"正在为您连接摄像头...(%.0f%%)",downloadedBytes];
+    _downMsg.text=[NSString stringWithFormat:@"正在为您制作中...(%.0f%%)",downloadedBytes];
     [_downIndicator updateWithTotalBytes:100 downloadedBytes:downloadedBytes];
     if(downloadedBytes>=100){
         [timer invalidate];
         timer=nil;
         self.btnStart.enabled=YES;
-        _downMsg.text=@"摄像头连接成功";
-        [self.pifiiDelegate pushViewDataSource:@(0)];
+        _downMsg.text=@"制作成功";
+        [self.pifiiDelegate pushViewDataSource:@(2)];
         [self performSelector:@selector(exitCurrentController) withObject:nil afterDelay:0.7];
     }
 }
+
 
 
 

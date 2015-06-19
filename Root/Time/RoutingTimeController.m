@@ -32,17 +32,20 @@ typedef enum{
 @property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *imgArr;
 @property (strong, nonatomic) IBOutletCollection(UILabel) NSArray *titileArr;
 @property (weak, nonatomic) IBOutlet UIView *bgLoad;
-
+@property (weak, nonatomic) IBOutlet UIScrollView *rootScrollView;
 @property (weak, nonatomic) IBOutlet UIButton *btnWifii;
 @property (weak, nonatomic) IBOutlet UITableView *rootTable;
 @property (weak, nonatomic) IBOutlet UIImageView *topImg;
+@property (weak, nonatomic) IBOutlet UIImageView *showImg;
+
+
 @property (nonatomic,strong)UIImagePickerController *imagePicker;
 @property (nonatomic,assign)CameraType type;
 
 @property(nonatomic,weak)MJRefreshHeaderView *header;
 
 @property (nonatomic, weak) MJRefreshFooterView *footer;
-@property (weak, nonatomic) IBOutlet UIScrollView *rootScrollView;
+@property (nonatomic, weak) UIActivityIndicatorView *startView;
 
 @end
 
@@ -53,6 +56,8 @@ typedef enum{
     [self setupRefreshView];
     [self judgeWithLogin];
     [self createImage];
+    pageCount=1;
+    [self getRequestPage:1 mark:@"home"];
 }
 
 
@@ -76,8 +81,15 @@ typedef enum{
     _rootScrollView.contentSize=CGSizeMake(0, CGRectGetHeight(self.view.frame)-14);
     _rootScrollView.delegate=self;
     _rootScrollView.delaysContentTouches=NO;
-    pageCount=1;
-    [self getRequestPage:1 mark:@"home"];
+    
+    UIActivityIndicatorView *start=[[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    start.frame=CGRectMake(97, CGRectGetHeight(self.showImg.frame)-22, 10, 10);
+    start.transform=CGAffineTransformMakeScale(0.6, 0.6);
+//    start.color=[UIColor blackColor];
+    self.startView=start;
+    [self.showImg addSubview:start];
+    
+  
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -506,9 +518,9 @@ typedef enum{
 //    float y=offset.y+inset.top+50;
     float y=offset.y+114;
     if (y<=0) {
-        if (![UIApplication sharedApplication].isNetworkActivityIndicatorVisible) {
+        if (!self.startView.isAnimating) {
             PSLog(@"--到顶部了---");
-            [UIApplication sharedApplication].networkActivityIndicatorVisible=YES;
+            [self.startView startAnimating];
             pageCount=1;
             [self getRequestPage:1 mark:@"home"];
         }
@@ -526,7 +538,7 @@ typedef enum{
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     [self moveAnimation:NO];
     [self stopAnimation];
-    [UIApplication sharedApplication].networkActivityIndicatorVisible=NO;
+    [self.startView stopAnimating];
 }
 
 -(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{

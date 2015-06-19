@@ -11,6 +11,7 @@
                 <outlet property="btnWifii" destination="UKj-Tf-rCj" id="IsK-6C-HTI"/>
                 <outlet property="rootScrollView" destination="SUR-Jl-eSZ" id="6pu-rx-pee"/>
                 <outlet property="rootTable" destination="sPl-xk-I81" id="Lk1-St-Abh"/>
+                <outlet property="showImg" destination="uFu-2n-bkL" id="A9G-yP-QUl"/>
                 <outlet property="topImg" destination="nu3-vW-DC2" id="US5-9g-Oey"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
                 <outletCollection property="imgArr" destination="6f7-kx-ueT" id="9XA-35-Mwp"/>
