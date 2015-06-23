@@ -140,14 +140,14 @@
     // value labels
     _labelOnThumb = [[UILabel alloc] init];
     _labelOnThumb.backgroundColor = [UIColor clearColor];
-    _labelOnThumb.textAlignment = UITextAlignmentCenter;
+    _labelOnThumb.textAlignment = NSTextAlignmentCenter;
     _labelOnThumb.text = [NSString stringWithFormat:[self valueStringFormat], _value];
     _labelOnThumb.textColor = [UIColor whiteColor];
     [self addSubview:_labelOnThumb];
     
     _labelAboveThumb = [[UILabel alloc] init];
     _labelAboveThumb.backgroundColor = [UIColor clearColor];
-    _labelAboveThumb.textAlignment = UITextAlignmentCenter;
+    _labelAboveThumb.textAlignment = NSTextAlignmentCenter;
     _labelAboveThumb.text = [NSString stringWithFormat:[self valueStringFormat], _value];
     _labelAboveThumb.textColor = [UIColor colorWithRed:232.f/255.f green:151.f/255.f blue:79.f/255.f alpha:1.f];
     [self addSubview:_labelAboveThumb];
