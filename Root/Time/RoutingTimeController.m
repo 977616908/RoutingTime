@@ -336,7 +336,7 @@ typedef enum{
                 PhotoSelectController *photoController=[[PhotoSelectController alloc]init];
                 photoController.pifiiDelegate=self;
                 PiFiiBaseNavigationController *nav=[[PiFiiBaseNavigationController alloc]initWithRootViewController:photoController];
-                [self presentViewController:nav animated:NO completion:nil];
+                [self presentViewController:nav animated:YES completion:nil];
             }else{
                 [self openPics];
             }

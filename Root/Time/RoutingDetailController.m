@@ -24,6 +24,7 @@
 
 @interface RoutingDetailController ()<UITextViewDelegate,PhotosViewDelegate,PiFiiBaseViewDelegate,UIActionSheetDelegate>{
     NSMutableArray  *_photoArr;
+    NSMutableArray  *_vedioArr;
     NSMutableArray  *_imageArr;
     MBProgressHUD           *stateView;
     NSString *pathArchtive;
@@ -49,6 +50,7 @@
     [super viewDidLoad];
     self.title=@"时光片段";
     _photoArr=[NSMutableArray array];
+    _vedioArr=[NSMutableArray array];
     _deleteArr=[NSMutableOrderedSet orderedSet];
     pathArchtive= pathInCacheDirectory(@"AppCache/SavePhotoName.archiver");
     NSArray *array=[NSKeyedUnarchiver unarchiveObjectWithFile:pathArchtive];
@@ -66,16 +68,19 @@
         _textView.text=_routingTime.rtTitle;
         _lbDate.text=[NSString stringWithFormat:@"创建时间: %@",_routingTime.rtDate];
         for (int i=0; i<_routingTime.rtPaths.count; i++) {
-            if (![_routingTime.rtSmallPaths[i] isVedio]) {
-                RoutingMsg *msg=_routingTime.rtPaths[i];
-                REPhoto *photo=[[REPhoto alloc]init];
-                photo.routingId=[NSString stringWithFormat:@"%d",_routingTime.rtId];
-                photo.imageUrl=msg.msgPath;
-                photo.date=_routingTime.rtDate;
-                photo.isVedio=msg.isVedio;
-                photo.imageName=msg.msgNum;
+            RoutingMsg *msg=_routingTime.rtPaths[i];
+            REPhoto *photo=[[REPhoto alloc]init];
+            photo.routingId=[NSString stringWithFormat:@"%d",_routingTime.rtId];
+            photo.imageUrl=msg.msgPath;
+            photo.date=_routingTime.rtDate;
+            photo.isVedio=[_routingTime.rtSmallPaths[i] isVedio];
+            photo.imageName=msg.msgNum;
+            if (photo.isVedio) {
+                [_vedioArr addObject:photo];
+            }else{
                 [_photoArr addObject:photo];
             }
+            
         }
     }
 }
@@ -264,7 +269,12 @@
     PSLog(@"--add--[%d]",index);
     if (isDelete) {
         UIImageView *delImg=self.photosView.totalImages[index-1];
-        REPhoto *photo=_photoArr[index-1];
+        REPhoto *photo;
+        if ([_routingTime.rtSmallPaths[index-1] isVedio]) {
+            photo=_vedioArr[index-1];
+        }else{
+            photo=_photoArr[index-1];
+        }
         if ([_deleteArr containsObject:photo]) {
             delImg.alpha=1.0;
             [_deleteArr removeObject:photo];
@@ -356,11 +366,16 @@
 
 -(void)handleRequestOK:(id)response mark:(NSString *)mark{
     if ([[response objectForKey:@"returnCode"]integerValue]==200) {
-        if (_deleteArr.count==_photoArr.count) {
+        NSInteger count=_photoArr.count+_vedioArr.count;
+        if (_deleteArr.count==count) {
             [self performSelector:@selector(exitCurrentController) withObject:nil afterDelay:1.5];
         }else{
             for (REPhoto *photo in _deleteArr) {
-                [_photoArr removeObject:photo];
+                if (photo.isVedio) {
+                   [_vedioArr removeObject:photo];
+                }else{
+                   [_photoArr removeObject:photo];
+                }
             }
             [_deleteArr removeAllObjects];
             for (UIImageView *delImg in _photosView.totalImages) {
@@ -439,7 +454,7 @@
 
 
 -(void)removeViewDataSources:(id)dataSource{
-    if ([dataSource count]!=_imageArr.count) {
+    if ([dataSource count]!=_photoArr.count) {
         NSMutableArray *arrImg=[NSMutableArray array];
         for (int i=0; i<[dataSource count]; i++) {
             REPhoto *photo=dataSource[i];

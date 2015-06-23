@@ -166,7 +166,7 @@ typedef enum {
 {
     [self.pifiiDelegate pushViewDataSource:_upArray.array];
     // 关闭控制器
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:NO completion:nil];
 }
 
 
