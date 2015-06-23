@@ -59,6 +59,8 @@
 }
 
 - (IBAction)onSilderChange:(id)sender {
+    
+    
 }
 
 -(void)viewWillDisappear:(BOOL)animated{

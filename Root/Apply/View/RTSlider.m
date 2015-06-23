@@ -53,13 +53,13 @@
 - (void)layoutSubviews
 {
     // the track background
-    _trackImageViewNormal.frame = self.bounds;
-    _trackImageViewHighlighted.frame = self.bounds;
+    _trackImageViewNormal.frame = CGRectMake(-20, 0, CGRectGetWidth(self.frame)+65, CGRectGetHeight(self.frame));
+    _trackImageViewHighlighted.frame = CGRectMake(-20, 0, CGRectGetWidth(self.frame)+65, CGRectGetHeight(self.frame));
     
     // the thumb
-    CGFloat thumbHeight = 98.f *  _trackImageViewNormal.bounds.size.height / 64.f;   // thumb height is relative to track height
-    CGFloat thumbWidth = 91.f * thumbHeight / 98.f; // thumb width and height keep the same ratio as the original image size
-    _thumbImageView.frame = CGRectMake(0, 0, thumbWidth, thumbHeight);
+//    CGFloat thumbHeight = 98.f *  _trackImageViewNormal.bounds.size.height / 64.f;   // thumb height is relative to track height
+//    CGFloat thumbWidth = 91.f * thumbHeight / 98.f; // thumb width and height keep the same ratio as the original image size
+    _thumbImageView.frame = CGRectMake(0, -2, 43, 16);
     _thumbImageView.center = CGPointMake([self xForValue:_value], CGRectGetMidY(_trackImageViewNormal.frame));
     
     // the labels
@@ -108,7 +108,8 @@
     
     _thumbImageView.center = CGPointMake([self xForValue:value], _thumbImageView.center.y);
     
-    _labelOnThumb.text = [NSString stringWithFormat:[self valueStringFormat], _value];
+//    _labelOnThumb.text = [NSString stringWithFormat:[self valueStringFormat], _value];
+    _labelOnThumb.text=[NSString stringWithFormat:@"%.0f/%.0f",_value,_maximumValue];
     _labelAboveThumb.text = [NSString stringWithFormat:[self valueStringFormat], _value];
     
     [self setNeedsDisplay];
@@ -141,7 +142,9 @@
     _labelOnThumb = [[UILabel alloc] init];
     _labelOnThumb.backgroundColor = [UIColor clearColor];
     _labelOnThumb.textAlignment = NSTextAlignmentCenter;
+    _labelOnThumb.font=[UIFont systemFontOfSize:10.0f];
     _labelOnThumb.text = [NSString stringWithFormat:[self valueStringFormat], _value];
+    
     _labelOnThumb.textColor = [UIColor whiteColor];
     [self addSubview:_labelOnThumb];
     
@@ -221,7 +224,8 @@
             [self setNeedsDisplay];
         }
         _value = [self valueForX:_thumbImageView.center.x];
-        _labelOnThumb.text = [NSString stringWithFormat:[self valueStringFormat], _value];
+//        _labelOnThumb.text = [NSString stringWithFormat:[self valueStringFormat], _value];
+        _labelOnThumb.text=[NSString stringWithFormat:@"%.0f/%.0f",_value,_maximumValue];
         _labelAboveThumb.text = [NSString stringWithFormat:[self valueStringFormat], _value];
         [self sendActionsForControlEvents:UIControlEventValueChanged];
     }
@@ -237,7 +241,8 @@
     
     if (_continuous && !_stepped) {
         _value = [self valueForX:_thumbImageView.center.x];
-        _labelOnThumb.text = [NSString stringWithFormat:[self valueStringFormat], _value];
+//        _labelOnThumb.text = [NSString stringWithFormat:[self valueStringFormat], _value];
+        _labelOnThumb.text=[NSString stringWithFormat:@"%.0f/%.0f",_value,_maximumValue];
         _labelAboveThumb.text = [NSString stringWithFormat:[self valueStringFormat], _value];
         [self sendActionsForControlEvents:UIControlEventValueChanged];
     }
