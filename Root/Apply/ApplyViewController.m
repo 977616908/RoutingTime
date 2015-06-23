@@ -14,6 +14,7 @@
 #import "NetWorkViewController.h"
 #import "NetInstallController.h"
 #import "AlbumInstallController.h"
+#import "RoutingCameraController.h"
 
 @interface ApplyViewController ()<PiFiiBaseViewDelegate>{
     NSArray *arrImg;
@@ -128,7 +129,9 @@
 
 -(void)startController:(NSInteger)tag{
     switch (tag) {
-        case 1:
+        case 1:{
+           
+        }
             break;
             
         case 2:{
@@ -137,8 +140,10 @@
             [self.navigationController pushViewController:mediaController animated:YES];
         }
             break;
-        case 3:
-
+        case 3:{
+            RoutingCameraController *routingController=[[RoutingCameraController alloc]init];
+            [self presentViewController:routingController animated:YES completion:nil];
+        }
             break;
         case 4:{
             NSUserDefaults *user = [NSUserDefaults standardUserDefaults];

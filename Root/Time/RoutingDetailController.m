@@ -87,7 +87,7 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-
+    
 }
 
 
@@ -124,12 +124,12 @@
     textView.textColor=RGBCommon(52, 52, 52);
     textView.placeholderColor=RGBCommon(181, 181, 181);
     textView.frame = CGRectMake(5, -5, CGRectGetWidth(bgView.frame)-10, CGRectGetHeight(bgView.frame)-32);
-//    textView.textContainerInset=UIEdgeInsetsMake(15, 10, 0, 10);
+    //    textView.textContainerInset=UIEdgeInsetsMake(15, 10, 0, 10);
     // 垂直方向上永远可以拖拽
     textView.alwaysBounceVertical = YES;
     textView.delegate = self;
     textView.editable=NO;
-//    textView.placeholder = @"这一刻的想法...";
+    //    textView.placeholder = @"这一刻的想法...";
     self.textView = textView;
     textView.backgroundColor=[UIColor clearColor];
     [bgView addSubview:textView];
@@ -159,7 +159,7 @@
     [btnEdit alterNormalTitle:@" 编辑"];
     [bgTool addSubview:btnEdit];
     [bgView addSubview:bgTool];
-  
+    
     
     [self.view addSubview:bgView];
 }
@@ -267,13 +267,23 @@
 
 -(void)photosTapWithIndex:(NSInteger)index{
     PSLog(@"--add--[%d]",index);
+    RoutingMsg *msg=_imageArr[index-1];
     if (isDelete) {
         UIImageView *delImg=self.photosView.totalImages[index-1];
         REPhoto *photo;
-        if ([_routingTime.rtSmallPaths[index-1] isVedio]) {
-            photo=_vedioArr[index-1];
+        if (msg.isVedio) {
+            //            photo=_vedioArr[index-1];
+            for(photo in _vedioArr){
+                if([photo.imageName isEqualToString:msg.msgNum]){
+                    break;
+                }
+            }
         }else{
-            photo=_photoArr[index-1];
+            for(photo in _photoArr){
+                if([photo.imageName isEqualToString:msg.msgNum]){
+                    break;
+                }
+            }
         }
         if ([_deleteArr containsObject:photo]) {
             delImg.alpha=1.0;
@@ -290,7 +300,7 @@
             delImg.alpha=0.7;
         }
     }else{
-        if ([_routingTime.rtSmallPaths[index-1] isVedio]) {
+        if (msg.isVedio) {
             MPMoviePlayerViewController *playerController=[[MPMoviePlayerViewController alloc]init];
             NSURL *url=[_routingTime.rtPaths[index-1] msgPath].urlInstance;
             playerController.moviePlayer.contentURL = url;
@@ -300,7 +310,14 @@
         }else{
             MJPhotoBrowser *photo=[[MJPhotoBrowser alloc]init];
             photo.isPhoto=NO;
-            photo.currentPhotoIndex=index-1;
+            NSInteger count=0;
+            for (int i=0; i<_photoArr.count; i++) {
+                if ([[_photoArr[i] imageName]isEqualToString:msg.msgNum]) {
+                    count=i;
+                    break;
+                }
+            }
+            photo.currentPhotoIndex=count;
             photo.photos=_photoArr;
             photo.pifiiDelegate=self;
             [self.navigationController.view.layer addAnimation:[self customAnimationType:kCATransitionFade upDown:NO]  forKey:@"animation"];
@@ -318,12 +335,12 @@
         //        [cell.imgView setImageWithURL:[path urlInstance]];
         if (hasCachedImageWithString(path)) {
             UIImage *image=[UIImage imageWithContentsOfFile:pathForString(path)];
-//            UIImage *scaleImag=[[ImageCacher defaultCacher]scaleImage:image size:CGSizeMake(144, 144)];
+            //            UIImage *scaleImag=[[ImageCacher defaultCacher]scaleImage:image size:CGSizeMake(144, 144)];
             UIImage *scaleImag=[[ImageCacher defaultCacher]imageByScalingAndCroppingForSize:CGSizeMake(144, 144) sourceImage:image];
             [self.photosView addImage:scaleImag duration:msg.msgDuration];
         }else{
             UIImageView *image=[self.photosView addImage:nil duration:msg.msgDuration];
-//            NSValue *size=[NSValue valueWithCGSize:image.frame.size];
+            //            NSValue *size=[NSValue valueWithCGSize:image.frame.size];
             NSValue *size =[NSValue valueWithCGSize:CGSizeMake(268, 150)];
             NSDictionary *dict=@{@"url":path,@"imageView":image,@"size":size};
             [NSThread detachNewThreadSelector:@selector(cacheImage:) toTarget:[ImageCacher defaultCacher] withObject:dict];
@@ -349,11 +366,11 @@
             NSMutableString *sb=[NSMutableString string];
             if (_deleteArr.count>0) {
                 for (int i=0; i<_deleteArr.count; i++) {
-                        REPhoto *photo=_deleteArr[i];
-                        if (i!=0) {
-                            [sb appendString:@","];
-                        }
-                        [sb appendString:photo.imageName];
+                    REPhoto *photo=_deleteArr[i];
+                    if (i!=0) {
+                        [sb appendString:@","];
+                    }
+                    [sb appendString:photo.imageName];
                 }
             }
             NSDictionary *param=@{
@@ -372,9 +389,9 @@
         }else{
             for (REPhoto *photo in _deleteArr) {
                 if (photo.isVedio) {
-                   [_vedioArr removeObject:photo];
+                    [_vedioArr removeObject:photo];
                 }else{
-                   [_photoArr removeObject:photo];
+                    [_photoArr removeObject:photo];
                 }
             }
             [_deleteArr removeAllObjects];
@@ -454,8 +471,14 @@
 
 
 -(void)removeViewDataSources:(id)dataSource{
-    if ([dataSource count]!=_photoArr.count) {
+    NSInteger count=_imageArr.count-_vedioArr.count;
+    if ([dataSource count]!=count) {
         NSMutableArray *arrImg=[NSMutableArray array];
+        for (RoutingMsg *msg in _imageArr) {
+            if (msg.isVedio) {
+                [arrImg addObject:msg];
+            }
+        }
         for (int i=0; i<[dataSource count]; i++) {
             REPhoto *photo=dataSource[i];
             for (int j=0; j<_imageArr.count; j++) {
@@ -471,6 +494,7 @@
         }
         _imageArr=arrImg;
         [self addImage:_imageArr];
+        [self.pifiiDelegate removeViewDataSources:nil];
     }
 }
 
