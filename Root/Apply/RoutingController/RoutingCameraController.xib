@@ -7,6 +7,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RoutingCameraController">
             <connections>
+                <outlet property="pageView" destination="OPL-b5-DcH" id="myH-ux-din"/>
                 <outlet property="slider" destination="n4K-H2-Fmq" id="8XQ-Kg-H2y"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -19,9 +20,10 @@
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="rt_camera.png" translatesAutoresizingMaskIntoConstraints="NO" id="2Db-x9-U4y">
                     <rect key="frame" x="0.0" y="0.0" width="568" height="320"/>
                 </imageView>
-                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UTk-Ds-Tn8">
-                    <rect key="frame" x="33" y="43" width="500" height="225"/>
-                </scrollView>
+                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OPL-b5-DcH">
+                    <rect key="frame" x="33" y="43" width="499" height="224"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                </view>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="点击图片进入编辑" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jdl-4h-jEJ">
                     <rect key="frame" x="208" y="8" width="150" height="21"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
