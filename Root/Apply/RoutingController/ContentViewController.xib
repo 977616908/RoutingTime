@@ -11,7 +11,7 @@
             </connections>
         </placeholder>
         <view contentMode="scaleToFill" id="NFs-73-2V5">
-            <rect key="frame" x="0.0" y="0.0" width="264" height="244"/>
+            <rect key="frame" x="0.0" y="0.0" width="250" height="244"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             <nil key="simulatedStatusBarMetrics"/>
