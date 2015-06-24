@@ -37,7 +37,7 @@
 
 -(void)initBase{
     _arrCamera=[NSMutableArray array];
-    for (int i=0; i<25; i++) {
+    for (int i=0; i<26; i++) {
         RoutingCamera *rc=[[RoutingCamera alloc]init];
         rc.rtContent=[NSString stringWithFormat:@"第%d条测试数据,hellow word!!!",i+1];
         rc.rtDate=@"2015-6-20";
@@ -98,10 +98,10 @@
 #pragma mark 创建Controller
 
 - (ContentViewController *)viewCintrollerAtIndex:(NSUInteger)index{
-    if ([_arrCamera count] == 0 || (index >= [_arrCamera count]-1)) {
+    if ([_arrCamera count] == 0 || (index >= [_arrCamera count])) {
         return nil;
     }
-    ContentViewController * dataViewController =[[ContentViewController alloc]init];
+    ContentViewController * dataViewController =[[ContentViewController alloc]initWithNibName:@"ContentViewController" bundle:nil];
     dataViewController.dataObject = [_arrCamera objectAtIndex:index];
     return dataViewController;
 }

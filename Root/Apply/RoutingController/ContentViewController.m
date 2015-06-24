@@ -29,8 +29,11 @@
 
 -(void)initView{
     RoutingCamera *routing=self.dataObject;
-    self.lbTitle.text=routing.rtContent;
-    self.imgTitle.image=[UIImage imageNamed:routing.rtPath];
+    if (routing) {
+        self.lbTitle.text=routing.rtContent;
+        self.imgTitle.image=[UIImage imageNamed:routing.rtPath];
+    }
+ 
 }
 
 

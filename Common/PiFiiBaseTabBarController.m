@@ -29,6 +29,7 @@
     
     // 初始化所有的子控制器
     [self setupAllChildViewControllers];
+    self.selectedIndex=1;
 }
 
 - (void)viewWillAppear:(BOOL)animated
