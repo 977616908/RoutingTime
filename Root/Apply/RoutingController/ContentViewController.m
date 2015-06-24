@@ -8,10 +8,10 @@
 
 #import "ContentViewController.h"
 #import "RoutingCamera.h"
+#import "HgView.h"
+#import "WgView.h"
 
 @interface ContentViewController ()
-@property (weak, nonatomic) IBOutlet UILabel *lbTitle;
-@property (weak, nonatomic) IBOutlet UIImageView *imgTitle;
 
 @end
 
@@ -29,11 +29,20 @@
 
 -(void)initView{
     RoutingCamera *routing=self.dataObject;
-    if (routing) {
-        self.lbTitle.text=routing.rtContent;
-        self.imgTitle.image=[UIImage imageNamed:routing.rtPath];
+    UIImage *image=[UIImage imageNamed:routing.rtPath];
+    if (image.size.width>image.size.height) {
+        WgView *wgView=[[WgView alloc]initWithFrame:self.view.bounds];
+        wgView.imgIcon.image=[UIImage imageNamed:routing.rtPath];
+        wgView.lbTitle.text=routing.rtContent;
+        [self.view addSubview:wgView];
+    }else{
+        HgView *hgView=[[HgView alloc]initWithFrame:self.view.bounds];
+        hgView.imgIcon.image=[UIImage imageNamed:routing.rtPath];
+        hgView.lbTitle.text=routing.rtContent;
+        [self.view addSubview:hgView];
     }
- 
+
+    
 }
 
 

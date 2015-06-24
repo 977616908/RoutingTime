@@ -14,7 +14,7 @@
     if (self=[super init]) {
         if (data) {
             _rtId=[data[@"id"] integerValue];
-            _rtNums=data[@"nums"];
+            _rtNums=[data[@"nums"] stringValue];
             _rtDate=data[@"record_date"];
             _rtTitle=data[@"title"];
             NSMutableArray *arrPath=[NSMutableArray array];
