@@ -53,7 +53,7 @@
                 RoutingMsg *msg=[[RoutingMsg alloc]initWithSmallData:param];
                 [arrPath addObject:msg];
             }
-            _rtPaths=arrSmallPath;
+            _rtPaths=arrPath;
         }
     }
     return self;

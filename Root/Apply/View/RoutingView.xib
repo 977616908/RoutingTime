@@ -23,17 +23,16 @@
                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="rt_test00.png" translatesAutoresizingMaskIntoConstraints="NO" id="ccz-88-sUj">
                             <rect key="frame" x="25" y="38" width="180" height="119"/>
                         </imageView>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="如果爱因斯坦还健在，或许可以让我走进时间的流里，寻找你忽隐忽现的踪迹；如果流星划过天际，真的可以实现愿望，我会毫不犹豫选择遗留在有你陪伴的时空" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YXM-cz-ho3">
-                            <rect key="frame" x="25" y="160" width="180" height="46"/>
-                            <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="8"/>
-                            <color key="textColor" red="0.46274509800000002" green="0.46274509800000002" blue="0.46274509800000002" alpha="1" colorSpace="calibratedRGB"/>
-                            <nil key="highlightedColor"/>
-                            <size key="shadowOffset" width="0.0" height="0.0"/>
-                        </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="2015-06-23" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FCT-Tu-QRC">
                             <rect key="frame" x="33" y="19" width="136" height="12"/>
                             <fontDescription key="fontDescription" type="system" pointSize="8"/>
                             <color key="textColor" red="0.68235294117647061" green="0.68235294117647061" blue="0.68235294117647061" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="如果爱因斯坦还健在，或许可以让我走进时间的流里，寻找你忽隐忽现的踪迹；如果流星划过天际，真的可以实现愿望，我会毫不犹豫选择遗留在有你陪伴的时空" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0lg-df-lOs">
+                            <rect key="frame" x="25" y="164" width="180" height="51"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="8"/>
+                            <color key="textColor" red="0.46274509803921571" green="0.46274509803921571" blue="0.46274509803921571" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
@@ -48,7 +47,7 @@
                 <outlet property="bgView" destination="zHf-Vg-Shv" id="eWf-zO-6g0"/>
                 <outlet property="imgIcon" destination="ccz-88-sUj" id="CF9-sY-K1M"/>
                 <outlet property="lbDate" destination="FCT-Tu-QRC" id="KF2-WM-p9K"/>
-                <outlet property="lbTitle" destination="YXM-cz-ho3" id="nwX-lt-90G"/>
+                <outlet property="lbTitle" destination="0lg-df-lOs" id="Qc8-in-eOG"/>
             </connections>
             <point key="canvasLocation" x="283" y="118"/>
         </view>
@@ -74,12 +73,11 @@
                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="rt_test01.png" translatesAutoresizingMaskIntoConstraints="NO" id="0J0-ig-Xgf">
                             <rect key="frame" x="18" y="27" width="123" height="185"/>
                         </imageView>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="如果爱因斯坦还健在，或许可以让我走进时间的流里，寻找你忽隐忽现的踪迹；如果流星划过天际，真的可以实现愿望，我会毫不犹豫选择遗留在有你陪伴的时空" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ucZ-w9-oAx">
-                            <rect key="frame" x="153" y="28" width="69" height="185"/>
-                            <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="8"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="如果爱因斯坦还健在，或许可以让我走进时间的流里，寻找你忽隐忽现的踪迹；如果流星划过天际，真的可以实现愿望，我会毫不犹豫选择遗留在有你陪伴的时空" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BrS-bV-Reh">
+                            <rect key="frame" x="153" y="27" width="69" height="185"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="8"/>
                             <color key="textColor" red="0.46274509800000002" green="0.46274509800000002" blue="0.46274509800000002" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
-                            <size key="shadowOffset" width="0.0" height="0.0"/>
                         </label>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -93,7 +91,7 @@
                 <outlet property="bgView" destination="x4Y-kP-oqd" id="HuA-dM-bA5"/>
                 <outlet property="imgIcon" destination="0J0-ig-Xgf" id="QCo-tS-j1a"/>
                 <outlet property="lbDate" destination="Bed-52-Lf5" id="XHV-re-aQ3"/>
-                <outlet property="lbTitle" destination="ucZ-w9-oAx" id="DzY-tN-RV6"/>
+                <outlet property="lbTitle" destination="BrS-bV-Reh" id="fMX-7K-AW9"/>
             </connections>
             <point key="canvasLocation" x="623" y="118"/>
         </view>

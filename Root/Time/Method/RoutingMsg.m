@@ -21,6 +21,9 @@
     if (self=[super init]) {
         _msgNum=isNIL(data[@"id"])?@"":[data[@"id"] stringValue];
         _msgPath=isNIL(data[@"smallpath"])?@"":data[@"smallpath"];
+        if ([_msgPath isEqualToString:@""]) {
+            _msgPath=isNIL(data[@"path"])?@"":data[@"path"];
+        }
         _msgDuration=isNIL(data[@"duration"])?@"":data[@"duration"];
         _msgStory=isNIL(data[@"story"])?@"":data[@"story"];
         if (![_msgDuration isEqualToString:@""]&&![_msgDuration isEqualToString:@"null"]){

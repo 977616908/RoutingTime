@@ -59,7 +59,7 @@
     // the thumb
 //    CGFloat thumbHeight = 98.f *  _trackImageViewNormal.bounds.size.height / 64.f;   // thumb height is relative to track height
 //    CGFloat thumbWidth = 91.f * thumbHeight / 98.f; // thumb width and height keep the same ratio as the original image size
-    _thumbImageView.frame = CGRectMake(0, -2, 43, 16);
+    _thumbImageView.frame = CGRectMake(0, 0, 42, 14);
     _thumbImageView.center = CGPointMake([self xForValue:_value], CGRectGetMidY(_trackImageViewNormal.frame));
     
     // the labels

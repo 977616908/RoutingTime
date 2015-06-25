@@ -139,7 +139,6 @@
 
 - (void)exitCurrentController
 {
-    [self.pifiiDelegate removeViewDataSources:_removePhoto];
     CATransition *animation = [CATransition animation];
     animation.duration = 0.5f ;
     animation.type = kCATransitionFade;//101
@@ -187,6 +186,7 @@
     [_photos removeObjectAtIndex: ThisImageIndex];
     [_removePhoto removeObjectAtIndex:ThisImageIndex];
     [self setCurrentPhotoIndex: _currentPhotoIndex ];
+    [self.pifiiDelegate removeViewDataSources:_removePhoto];
     if (_photos.count==0) {
         [self performSelector:@selector(exitCurrentController) withObject:nil afterDelay:0.2];
     }
