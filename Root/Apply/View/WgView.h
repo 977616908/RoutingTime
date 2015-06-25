@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface WgView : UIView
+@property (weak, nonatomic) IBOutlet UILabel *lbDate;
 @property (weak, nonatomic) IBOutlet UIImageView *imgIcon;
 @property (weak, nonatomic) IBOutlet UILabel *lbTitle;
 @property (weak, nonatomic) IBOutlet UIView *bgView;

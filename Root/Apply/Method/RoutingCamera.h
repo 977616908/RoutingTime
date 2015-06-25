@@ -12,6 +12,7 @@
 @property(nonatomic,copy)NSString *rtPath;
 @property(nonatomic,copy)NSString *rtContent;
 @property(nonatomic,copy)NSString *rtDate;
+@property(nonatomic,copy)NSString *rtId;
 @property(nonatomic,assign)NSInteger rtTag;
 
 @end

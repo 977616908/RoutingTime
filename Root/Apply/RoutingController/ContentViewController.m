@@ -39,12 +39,14 @@
         wgView.moveX=moveX;
         wgView.imgIcon.image=[UIImage imageNamed:routing.rtPath];
         wgView.lbTitle.text=routing.rtContent;
+        wgView.lbDate.text=routing.rtDate;
         [self.view addSubview:wgView];
     }else{
         HgView *hgView=[[HgView alloc]initWithFrame:self.view.bounds];
         hgView.moveX=moveX;
         hgView.imgIcon.image=[UIImage imageNamed:routing.rtPath];
         hgView.lbTitle.text=routing.rtContent;
+        hgView.lbDate.text=routing.rtDate;
         [self.view addSubview:hgView];
     }
 

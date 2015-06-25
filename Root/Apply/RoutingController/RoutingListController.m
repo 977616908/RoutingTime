@@ -28,6 +28,7 @@
 #import "RoutingCameraController.h"
 #import "RoutingTime.h"
 #import "RoutingMsg.h"
+#import "RoutingCamera.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 
 #define BARHEIGHT 44
@@ -94,7 +95,19 @@
 }
 
 -(void)onSelectPhoto{
+    NSMutableArray *arr=[NSMutableArray array];
+    for (int i=0; i<_upArray.count; i++) {
+        REPhoto *photo=_upArray[i];
+        RoutingCamera *camera=[[RoutingCamera alloc]init];
+        camera.rtDate=photo.date;
+        camera.rtTag=i;
+        camera.rtId=photo.routingId;
+        camera.rtContent=photo.rtContent;
+        camera.rtPath=photo.imageName;
+        [arr addObject:camera];
+    }
     RoutingCameraController *routingController=[[RoutingCameraController alloc]init];
+    routingController.arrCamera=arr;
     [self presentViewController:routingController animated:YES completion:nil];
     
 }
@@ -142,11 +155,12 @@
         for (int i=0; i<time.rtSmallPaths.count; i++) {
             RoutingMsg *msg=time.rtSmallPaths[i];
             REPhoto *photo=[[REPhoto alloc]init];
-            photo.routingId=[NSString stringWithFormat:@"%d",time.rtId];
+            photo.routingId=msg.msgNum;
             photo.date=time.rtDate;
             photo.photoDate=[CCDate timeDate:time.rtDate formatter:@"yyyy-MM-dd HH:mm:ss"];
             photo.imageUrl=msg.msgPath;
-            photo.imageName=msg.msgNum;
+            photo.imageName=[time.rtPaths[i] msgPath];;
+            photo.rtContent=[time.rtPaths[i] msgStory];
             [arrType addObject:photo];
         }
     }

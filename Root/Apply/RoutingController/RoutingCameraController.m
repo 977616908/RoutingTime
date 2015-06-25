@@ -12,7 +12,6 @@
 #import "RoutingCamera.h"
 
 @interface RoutingCameraController ()<UIPageViewControllerDataSource>{
-    NSMutableArray *_arrCamera;
     NSInteger valueChange;
 }
 
@@ -31,22 +30,22 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
-    [self initBase];
+//    [self initBase];
     [self initView];
     
 }
 
--(void)initBase{
-    _arrCamera=[NSMutableArray array];
-    for (int i=0; i<26; i++) {
-        RoutingCamera *rc=[[RoutingCamera alloc]init];
-        rc.rtContent=[NSString stringWithFormat:@"第%d条测试数据,hellow word!!!",i+1];
-        rc.rtDate=@"2015-6-20";
-        rc.rtTag=i;
-        rc.rtPath=[NSString stringWithFormat:@"rt_test0%d",arc4random()%2];
-        [_arrCamera addObject:rc];
-    }
-}
+//-(void)initBase{
+//    _arrCamera=[NSMutableArray array];
+//    for (int i=0; i<26; i++) {
+//        RoutingCamera *rc=[[RoutingCamera alloc]init];
+//        rc.rtContent=[NSString stringWithFormat:@"第%d条测试数据,hellow word!!!",i+1];
+//        rc.rtDate=@"2015-6-20";
+//        rc.rtTag=i;
+//        rc.rtPath=[NSString stringWithFormat:@"rt_test0%d",arc4random()%2];
+//        [_arrCamera addObject:rc];
+//    }
+//}
 
 -(void)initView{
     self.slider.minimumValue = 1;

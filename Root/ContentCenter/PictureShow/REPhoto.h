@@ -16,6 +16,7 @@
 @property(nonatomic,copy)NSDate  *photoDate;
 @property(nonatomic,copy)NSString *duration;
 @property(nonatomic,copy)NSString *imageName;
+@property(nonatomic,copy)NSString *rtContent;
 @property(nonatomic,assign)BOOL isVedio;
 @property(nonatomic,assign)BOOL isBackup;
 
