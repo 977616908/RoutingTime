@@ -30,13 +30,19 @@
 -(void)initView{
     RoutingCamera *routing=self.dataObject;
     UIImage *image=[UIImage imageNamed:routing.rtPath];
+    CGFloat moveX=0;
+    if (routing.rtTag%2!=0) {
+        moveX=20;
+    }
     if (image.size.width>image.size.height) {
         WgView *wgView=[[WgView alloc]initWithFrame:self.view.bounds];
+        wgView.moveX=moveX;
         wgView.imgIcon.image=[UIImage imageNamed:routing.rtPath];
         wgView.lbTitle.text=routing.rtContent;
         [self.view addSubview:wgView];
     }else{
         HgView *hgView=[[HgView alloc]initWithFrame:self.view.bounds];
+        hgView.moveX=moveX;
         hgView.imgIcon.image=[UIImage imageNamed:routing.rtPath];
         hgView.lbTitle.text=routing.rtContent;
         [self.view addSubview:hgView];

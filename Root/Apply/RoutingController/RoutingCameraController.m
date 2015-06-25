@@ -13,6 +13,7 @@
 
 @interface RoutingCameraController ()<UIPageViewControllerDataSource>{
     NSMutableArray *_arrCamera;
+    NSInteger valueChange;
 }
 
 @property (weak, nonatomic) IBOutlet RTSlider *slider;
@@ -41,15 +42,17 @@
         RoutingCamera *rc=[[RoutingCamera alloc]init];
         rc.rtContent=[NSString stringWithFormat:@"第%d条测试数据,hellow word!!!",i+1];
         rc.rtDate=@"2015-6-20";
-        rc.rtPath=[NSString stringWithFormat:@"rt_test0%d",i%2];
+        rc.rtTag=i;
+        rc.rtPath=[NSString stringWithFormat:@"rt_test0%d",arc4random()%2];
         [_arrCamera addObject:rc];
     }
 }
 
 -(void)initView{
     self.slider.minimumValue = 1;
-    self.slider.maximumValue = 25;
-    self.slider.value = 2;
+    self.slider.maximumValue = _arrCamera.count;
+    self.slider.value = 1;
+    valueChange=1;
     //    _steppedSlider.labelOnThumb.hidden = YES;
     self.slider.labelAboveThumb.font = [UIFont systemFontOfSize:16.0];
     self.slider.labelAboveThumb.hidden=YES;
@@ -91,8 +94,21 @@
 }
 
 - (IBAction)onSilderChange:(id)sender {
-    
-    
+//    _slider 
+    int value=(int)floor(_slider.value+0.5);
+    if (value!=valueChange) {
+        PSLog(@"---[%d]---[%d]",[sender tag],(int)_slider.value);
+        if(value==_arrCamera.count)value=_arrCamera.count-1;
+        NSArray *viewControllers=@[[self viewCintrollerAtIndex:value-1],[self viewCintrollerAtIndex:value]];
+        if (value<valueChange) {
+            [self.pageController setViewControllers:viewControllers direction:(UIPageViewControllerNavigationDirectionReverse) animated:YES completion:nil];
+            ;
+        }else{
+            [self.pageController setViewControllers:viewControllers direction:(UIPageViewControllerNavigationDirectionForward) animated:YES completion:nil];
+            ;
+        }
+    }
+    valueChange=value;
 }
 
 #pragma mark 创建Controller
@@ -117,7 +133,10 @@
     if (index == 0 || (index == NSNotFound)) {
         return nil;
     }
-    index --;
+    index--;
+    [UIView animateWithDuration:0.2 animations:^{
+        self.slider.value=index;
+    }];
     return [self viewCintrollerAtIndex:index];
 }
 
@@ -130,6 +149,10 @@
     if (index == [_arrCamera count]) {
         return nil;
     }
+    [UIView animateWithDuration:0.2 animations:^{
+        self.slider.value=index;
+    }];
+    
     return [self viewCintrollerAtIndex:index];
 }
 

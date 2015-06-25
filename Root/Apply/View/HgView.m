@@ -17,4 +17,11 @@
     }
     return self;
 }
+
+-(void)layoutSubviews{
+    [super layoutSubviews];
+    CGRect bgFrame=self.bgView.frame;
+    bgFrame.origin.x=self.moveX;
+    self.bgView.frame=bgFrame;
+}
 @end

@@ -12,5 +12,6 @@
 @property (weak, nonatomic) IBOutlet UIImageView *imgIcon;
 
 @property (weak, nonatomic) IBOutlet UILabel *lbTitle;
-
+@property (weak, nonatomic) IBOutlet UIView *bgView;
+@property (nonatomic,assign)CGFloat moveX;
 @end

@@ -109,7 +109,7 @@
     _thumbImageView.center = CGPointMake([self xForValue:value], _thumbImageView.center.y);
     
 //    _labelOnThumb.text = [NSString stringWithFormat:[self valueStringFormat], _value];
-    _labelOnThumb.text=[NSString stringWithFormat:@"%.0f/%.0f",_value,_maximumValue];
+    _labelOnThumb.text=[NSString stringWithFormat:@"%d/%d",(int)floor(_value+0.5),(int)_maximumValue];
     _labelAboveThumb.text = [NSString stringWithFormat:[self valueStringFormat], _value];
     
     [self setNeedsDisplay];
@@ -225,7 +225,7 @@
         }
         _value = [self valueForX:_thumbImageView.center.x];
 //        _labelOnThumb.text = [NSString stringWithFormat:[self valueStringFormat], _value];
-        _labelOnThumb.text=[NSString stringWithFormat:@"%.0f/%.0f",_value,_maximumValue];
+        _labelOnThumb.text=[NSString stringWithFormat:@"%d/%d",(int)floor(_value+0.5),(int)_maximumValue];
         _labelAboveThumb.text = [NSString stringWithFormat:[self valueStringFormat], _value];
         [self sendActionsForControlEvents:UIControlEventValueChanged];
     }
@@ -242,7 +242,7 @@
     if (_continuous && !_stepped) {
         _value = [self valueForX:_thumbImageView.center.x];
 //        _labelOnThumb.text = [NSString stringWithFormat:[self valueStringFormat], _value];
-        _labelOnThumb.text=[NSString stringWithFormat:@"%.0f/%.0f",_value,_maximumValue];
+        _labelOnThumb.text=[NSString stringWithFormat:@"%d/%d",(int)floor(_value+0.5),(int)_maximumValue];
         _labelAboveThumb.text = [NSString stringWithFormat:[self valueStringFormat], _value];
         [self sendActionsForControlEvents:UIControlEventValueChanged];
     }
