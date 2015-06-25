@@ -25,6 +25,9 @@
 
 #import "RoutingListController.h"
 #import "REPhotoThumbnailsCell.h"
+#import "RoutingCameraController.h"
+#import "RoutingTime.h"
+#import "RoutingMsg.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 
 #define BARHEIGHT 44
@@ -36,9 +39,9 @@
     NSMutableArray *_datasource;
     NSMutableOrderedSet  *_upArray;
     MBProgressHUD   *stateView;
+    UIView       *_toolbar;
 }
 
-@property(nonatomic,weak)CCButton *btnSelect;
 
 @end
 
@@ -48,8 +51,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.view.backgroundColor=RGBCommon(234, 234, 234);
     [self initView];
+    [self getRequest];
+}
 
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
 }
 
 -(void)initView{
@@ -57,20 +65,40 @@
     if (is_iOS7()) {
         gh+=20;
     }
-    tableImg=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame)-gh)];
+    tableImg=[[UITableView alloc]initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame)-gh-BARHEIGHT)];
     tableImg.separatorStyle=UITableViewCellSeparatorStyleNone;
     tableImg.showsVerticalScrollIndicator=NO;
     tableImg.delegate=self;
     tableImg.dataSource=self;
+    tableImg.backgroundColor=[UIColor clearColor];
     [self.view addSubview:tableImg];
     self.title=@"选择照片";
-}
-
-
--(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
+    
+    _toolbar = [[UIView alloc] init];
+    _toolbar.backgroundColor=[UIColor whiteColor];
+    _toolbar.frame = CGRectMake(0, CGRectGetHeight(self.view.frame)-BARHEIGHT, CGRectGetWidth(self.view.frame), BARHEIGHT);
+    _toolbar.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
+    
+    CCLabel *lbSelect=CCLabelCreateWithNewValue(@"请选择25张照片", 15.0f, CGRectMake(10, 12,120, 20));
+    lbSelect.textColor=RGBCommon(63, 205, 225);
+    self.lbSelect=lbSelect;
+    [_toolbar addSubview:lbSelect];
+    
+    CCButton *btnSelect = CCButtonCreateWithValue(CGRectMake(CGRectGetWidth(self.view.frame)-65, 12, 55, 20), @selector(onSelectPhoto), self);
+    [btnSelect alterNormalTitle:@"完成"];
+    [btnSelect alterFontSize:14];
+    btnSelect.backgroundColor=RGBCommon(63, 205, 225);
+    [_toolbar addSubview:btnSelect];
+    [self.view addSubview:_toolbar];
     
 }
+
+-(void)onSelectPhoto{
+    RoutingCameraController *routingController=[[RoutingCameraController alloc]init];
+    [self presentViewController:routingController animated:YES completion:nil];
+    
+}
+
 
 #pragma mark 网络请求
 - (void)getRequest{
@@ -84,13 +112,45 @@
     [self initPostWithURL:ROUTINGTIMEURL path:@"getAllPhotosByUserName" paras:@{@"username":userPhone} mark:@"routing" autoRequest:YES];
 }
 
+-(void)handleRequestOK:(id)response mark:(NSString *)mark{
+    NSNumber *returnCode=[response objectForKey:@"returnCode"];
+    if([returnCode integerValue]==200){
+        NSArray *data=[response objectForKey:@"data"];
+        NSMutableArray *arr=[NSMutableArray array];
+        for (NSDictionary *param in data) {
+            RoutingTime *time=[[RoutingTime alloc]initWithSmallData:param];
+            [arr addObject:time];
+        }
+        PSLog(@"---[%d---]",arr.count);
+        [self reloadData:arr];
+//        [_arrTime addObjectsFromArray:arr];
+    }
+    [self performSelector:@selector(setStateView:) withObject:@"success" afterDelay:0.5];
+}
 
-- (void)reloadData
+-(void)handleRequestFail:(NSError *)error mark:(NSString *)mark{
+    [self performSelector:@selector(setStateView:) withObject:@"fail" afterDelay:0.5];
+}
+
+
+- (void)reloadData:(NSArray *)data
 {
     _photoArr=[NSMutableArray array];
     _upArray=[NSMutableOrderedSet orderedSet];
- 
     NSMutableArray *arrType=[NSMutableArray array];
+    for (RoutingTime *time in data) {
+        for (int i=0; i<time.rtSmallPaths.count; i++) {
+            RoutingMsg *msg=time.rtSmallPaths[i];
+            REPhoto *photo=[[REPhoto alloc]init];
+            photo.routingId=[NSString stringWithFormat:@"%d",time.rtId];
+            photo.date=time.rtDate;
+            photo.photoDate=[CCDate timeDate:time.rtDate formatter:@"yyyy-MM-dd HH:mm:ss"];
+            photo.imageUrl=msg.msgPath;
+            photo.imageName=msg.msgNum;
+            [arrType addObject:photo];
+        }
+    }
+
     for (REPhoto *photo in arrType) {
         NSDateComponents *components = [[NSCalendar currentCalendar] components:NSDayCalendarUnit |
                                         NSMonthCalendarUnit | NSYearCalendarUnit fromDate:photo.photoDate];
@@ -197,6 +257,20 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 80;
+}
+
+
+-(void)setStateView:(NSString *)state{
+    [UIView animateWithDuration:1 animations:^{
+        stateView.alpha=0;
+    } completion:^(BOOL finished) {
+        stateView.alpha=1;
+        stateView.hidden=YES;
+        if ([state isEqualToString:@"fail"]) {
+            //            [self exitCurrentController];
+        }
+        
+    }];
 }
 
 @end

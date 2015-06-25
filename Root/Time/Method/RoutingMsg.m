@@ -22,6 +22,7 @@
         _msgNum=isNIL(data[@"id"])?@"":[data[@"id"] stringValue];
         _msgPath=isNIL(data[@"smallpath"])?@"":data[@"smallpath"];
         _msgDuration=isNIL(data[@"duration"])?@"":data[@"duration"];
+        _msgStory=isNIL(data[@"story"])?@"":data[@"story"];
         if (![_msgDuration isEqualToString:@""]&&![_msgDuration isEqualToString:@"null"]){
             _isVedio=YES;
         }else{

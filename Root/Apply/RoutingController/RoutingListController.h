@@ -28,6 +28,6 @@
 
 
 @interface RoutingListController : PiFiiBaseViewController
-
+@property(nonatomic,weak)CCLabel *lbSelect;
 
 @end

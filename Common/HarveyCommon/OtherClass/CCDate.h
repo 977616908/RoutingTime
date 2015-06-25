@@ -24,7 +24,7 @@
 /// 一年有多少个周
 - (NSInteger)calculateWeeksOfYear:(NSInteger)year;
 
-
++ (NSDate *)timeDate:(NSString *)date formatter:(NSString *)formatter;
 /**
  *  将CST时间字符串转为指定格式
  *

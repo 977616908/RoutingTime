@@ -30,6 +30,7 @@
 #import "REPhotoMoreController.h"
 #import "REPhotoController.h"
 #import "PhotoSelectController.h"
+#import "RoutingListController.h"
 #define ID @"ThumbID"
 //static NSMutableArray *_selectArr;
 @interface  REPhotoThumbnailsCell(){
@@ -265,14 +266,24 @@
             btn02.enabled=YES;
         }
     }else if(self.photoType==REPhotoSelect){
-        PhotoSelectController *controller=(PhotoSelectController*)self.superController;
-        if(_selectOrder.count==0){
-            [controller.btnPopover alterNormalTitle:@"选择项目"];
-            controller.navigationItem.rightBarButtonItem.enabled = NO;
+        if ([self.superController isKindOfClass:[PhotoSelectController class]]) {
+            PhotoSelectController *controller=(PhotoSelectController*)self.superController;
+            if(_selectOrder.count==0){
+                [controller.btnPopover alterNormalTitle:@"选择项目"];
+                controller.navigationItem.rightBarButtonItem.enabled = NO;
+            }else{
+                controller.navigationItem.rightBarButtonItem.enabled = YES;
+                [controller.btnPopover alterNormalTitle:[NSString stringWithFormat:@"已选%d项",_selectOrder.count]];
+            }
         }else{
-            controller.navigationItem.rightBarButtonItem.enabled = YES;
-            [controller.btnPopover alterNormalTitle:[NSString stringWithFormat:@"已选%d项",_selectOrder.count]];
+            RoutingListController *controller=(RoutingListController*)self.superController;
+            if(_selectOrder.count==0){
+                controller.lbSelect.text=@"请选择25张照片";
+            }else{
+                controller.lbSelect.text=[NSString stringWithFormat:@"已选%d/25张照片",_selectOrder.count];
+            }
         }
+       
     }else{
         REPhotoCollectionController *controller=(REPhotoCollectionController*)self.superController;
         UIButton *btn01=(UIButton *)controller.arrTag[0] ;

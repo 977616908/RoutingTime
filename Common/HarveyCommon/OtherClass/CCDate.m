@@ -68,4 +68,10 @@
     return [comps week];
 }
 
++ (NSDate *)timeDate:(NSString *)date formatter:(NSString *)formatter{
+    NSDateFormatter *sdf=[[NSDateFormatter alloc]init];
+    [sdf setDateFormat:formatter];
+    return [sdf dateFromString:date];
+}
+
 @end

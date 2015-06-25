@@ -34,4 +34,28 @@
     }
     return self;
 }
+
+-(id)initWithSmallData:(NSDictionary *)data{
+    if (self=[super init]) {
+        if (data) {
+            _rtId=[data[@"id"] integerValue];
+            _rtNums=[data[@"nums"] stringValue];
+            _rtDate=data[@"record_date"];
+            _rtTitle=data[@"title"];
+            NSMutableArray *arrSmallPath=[NSMutableArray array];
+            for (NSDictionary *param in data[@"smallpath"]) {
+                RoutingMsg *msg=[[RoutingMsg alloc]initWithData:param];
+                [arrSmallPath addObject:msg];
+            }
+            _rtSmallPaths=arrSmallPath;
+            NSMutableArray *arrPath=[NSMutableArray array];
+            for (NSDictionary *param in data[@"path"]) {
+                RoutingMsg *msg=[[RoutingMsg alloc]initWithSmallData:param];
+                [arrPath addObject:msg];
+            }
+            _rtPaths=arrSmallPath;
+        }
+    }
+    return self;
+}
 @end

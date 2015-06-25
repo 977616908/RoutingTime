@@ -17,4 +17,7 @@
 @property(nonatomic,copy)NSArray   *rtSmallPaths;
 
 -(id)initWithData:(NSDictionary *)data;
+
+-(id)initWithSmallData:(NSDictionary *)data;
+
 @end
