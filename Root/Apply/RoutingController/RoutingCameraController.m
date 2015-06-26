@@ -66,7 +66,7 @@
 
 -(void)initView{
     self.slider.minimumValue = 1;
-    self.slider.maximumValue = _arrCamera.count;
+    self.slider.maximumValue = _arrCamera.count-2;
     self.slider.value = 1;
     valueChange=1;
     //    _steppedSlider.labelOnThumb.hidden = YES;

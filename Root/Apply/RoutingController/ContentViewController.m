@@ -37,11 +37,19 @@
     if (routing) {
         if (routing.rtTag==-1) { //第一张
             UIView *startView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame)-20, CGRectGetHeight(self.view.frame))];
+//            startView.backgroundColor=RGBCommon(247, 250, 236);
             startView.backgroundColor=[UIColor whiteColor];
+            UIImageView *img=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"rt_ybright"]];
+            img.frame=CGRectMake(0, 0, 75, CGRectGetHeight(startView.frame));
+            [startView addSubview:img];
             [self.view addSubview:startView];
         }else if(routing.rtTag==-2){ //最后一张
             UIView *endView=[[UIView alloc]initWithFrame:CGRectMake(20, 0, CGRectGetWidth(self.view.frame)-20, CGRectGetHeight(self.view.frame))];
-            endView.backgroundColor=[UIColor grayColor];
+//            endView.backgroundColor=RGBCommon(247, 250, 236) ;
+            endView.backgroundColor=[UIColor whiteColor];
+            UIImageView *img=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"yt_ybleft"]];
+            img.frame=CGRectMake(CGRectGetWidth(endView.frame)-75, 0, 75, CGRectGetHeight(endView.frame));
+            [endView addSubview:img];
             [self.view addSubview:endView];
         }else{
             NSURL *url=[NSURL URLWithString:routing.rtPath];
