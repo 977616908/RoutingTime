@@ -30,12 +30,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
-//    [self initBase];
+    [self initBase];
     [self initView];
     
 }
 
-//-(void)initBase{
+-(void)initBase{
 //    _arrCamera=[NSMutableArray array];
 //    for (int i=0; i<26; i++) {
 //        RoutingCamera *rc=[[RoutingCamera alloc]init];
@@ -45,7 +45,24 @@
 //        rc.rtPath=[NSString stringWithFormat:@"rt_test0%d",arc4random()%2];
 //        [_arrCamera addObject:rc];
 //    }
-//}
+    
+    
+}
+
+-(void)setArrCamera:(NSMutableArray *)arrCamera{
+    if (arrCamera) {
+        _arrCamera=arrCamera;
+    }else{
+        _arrCamera=[NSMutableArray array];
+    }
+    RoutingCamera *start=[[RoutingCamera alloc]init];
+    start.rtTag=-1;
+    RoutingCamera *end=[[RoutingCamera alloc]init];
+    end.rtTag=-2;
+    [_arrCamera insertObject:start atIndex:0];
+    [_arrCamera addObject:end];
+   
+}
 
 -(void)initView{
     self.slider.minimumValue = 1;

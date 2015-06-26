@@ -12,7 +12,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zHf-Vg-Shv">
-                    <rect key="frame" x="0.0" y="0.0" width="230" height="224"/>
+                    <rect key="frame" x="0.0" y="0.0" width="230" height="225"/>
                     <subviews>
                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="rt_wline.png" translatesAutoresizingMaskIntoConstraints="NO" id="toJ-BM-6AO">
                             <rect key="frame" x="25" y="17" width="180" height="1"/>
@@ -52,11 +52,11 @@
             <point key="canvasLocation" x="283" y="118"/>
         </view>
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="4SC-an-pfe" customClass="HgView">
-            <rect key="frame" x="0.0" y="0.0" width="250" height="224"/>
+            <rect key="frame" x="0.0" y="0.0" width="250" height="225"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="x4Y-kP-oqd">
-                    <rect key="frame" x="20" y="0.0" width="230" height="224"/>
+                    <rect key="frame" x="20" y="0.0" width="230" height="225"/>
                     <subviews>
                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="rt_hline.png" translatesAutoresizingMaskIntoConstraints="NO" id="n1f-cd-5HE">
                             <rect key="frame" x="18" y="9" width="123" height="1"/>

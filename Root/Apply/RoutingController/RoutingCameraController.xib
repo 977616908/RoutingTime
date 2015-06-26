@@ -55,7 +55,7 @@
                     <rect key="frame" x="20" y="35" width="528" height="250"/>
                 </imageView>
                 <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OPL-b5-DcH">
-                    <rect key="frame" x="34" y="48" width="500" height="224"/>
+                    <rect key="frame" x="34" y="48" width="500" height="225"/>
                     <subviews>
                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="rt_camera_line.png" translatesAutoresizingMaskIntoConstraints="NO" id="4kc-2y-Z4F">
                             <rect key="frame" x="229" y="0.0" width="42" height="224"/>

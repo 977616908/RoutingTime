@@ -35,14 +35,25 @@
     manager.delegate=self;
     RoutingCamera *routing=self.dataObject;
     if (routing) {
-        NSURL *url=[NSURL URLWithString:routing.rtPath];
-        if ([manager diskImageExistsForURL:url]) {
-            UIImage *image= [manager.imageCache imageFromDiskCacheForKey:routing.rtPath];
-            [self showRouting:routing Image:image];
+        if (routing.rtTag==-1) { //第一张
+            UIView *startView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame)-20, CGRectGetHeight(self.view.frame))];
+            startView.backgroundColor=[UIColor whiteColor];
+            [self.view addSubview:startView];
+        }else if(routing.rtTag==-2){ //最后一张
+            UIView *endView=[[UIView alloc]initWithFrame:CGRectMake(20, 0, CGRectGetWidth(self.view.frame)-20, CGRectGetHeight(self.view.frame))];
+            endView.backgroundColor=[UIColor grayColor];
+            [self.view addSubview:endView];
         }else{
-//            [self downImage:url];
-            [NSThread detachNewThreadSelector:@selector(downImage:) toTarget:self withObject:url];
+            NSURL *url=[NSURL URLWithString:routing.rtPath];
+            if ([manager diskImageExistsForURL:url]) {
+                UIImage *image= [manager.imageCache imageFromDiskCacheForKey:routing.rtPath];
+                [self showRouting:routing Image:image];
+            }else{
+                //            [self downImage:url];
+                [NSThread detachNewThreadSelector:@selector(downImage:) toTarget:self withObject:url];
+            }
         }
+
         
     }
     
@@ -78,7 +89,7 @@
 
 -(void)showRouting:(RoutingCamera *)routing Image:(UIImage*)image{
     CGFloat moveX=0;
-    if (routing.rtTag%2!=0) {
+    if (routing.rtTag%2==0) {
         moveX=20;
     }
     if (image.size.width>image.size.height) {

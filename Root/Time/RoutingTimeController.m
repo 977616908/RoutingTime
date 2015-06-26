@@ -359,8 +359,9 @@ typedef enum{
 }
 
 -(void)removeViewDataSources:(id)dataSource{
-    NSInteger page=pageCount>1?pageCount:1;
-    [self getRequestPage:page mark:@"home"];
+//    NSInteger page=pageCount>1?pageCount:1;
+//    [self getRequestPage:page mark:@"home"];
+    [self getRequestPage:1 mark:@"home"];
 }
 
 -(void)updateDate:(NSNotification *)not{

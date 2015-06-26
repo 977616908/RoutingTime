@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface RoutingCameraController : UIViewController
-@property(nonatomic,copy)NSArray *arrCamera;
+@property(nonatomic,copy)NSMutableArray *arrCamera;
 
 @end
