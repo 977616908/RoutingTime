@@ -85,7 +85,7 @@
     self.lbSelect=lbSelect;
     [_toolbar addSubview:lbSelect];
     
-    CCButton *btnSelect = CCButtonCreateWithValue(CGRectMake(CGRectGetWidth(self.view.frame)-65, 12, 55, 20), @selector(onSelectPhoto), self);
+    CCButton *btnSelect = CCButtonCreateWithValue(CGRectMake(CGRectGetWidth(self.view.frame)-70, 10, 60, 24), @selector(onSelectPhoto), self);
     [btnSelect alterNormalTitle:@"完成"];
     [btnSelect alterFontSize:14];
     btnSelect.backgroundColor=RGBCommon(63, 205, 225);
@@ -102,7 +102,12 @@
         camera.rtDate=photo.date;
         camera.rtTag=i;
         camera.rtId=photo.routingId;
-        camera.rtContent=photo.rtContent;
+        if ([photo.rtContent isEqualToString:@""]) {
+            camera.rtContent=[NSString stringWithFormat:@"点击编辑第%d张时光相册",i+1];
+        }else{
+            camera.rtContent=photo.rtContent;
+        }
+        
         camera.rtPath=photo.imageName;
         [arr addObject:camera];
     }
