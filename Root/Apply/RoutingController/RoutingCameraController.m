@@ -116,6 +116,7 @@
 }
 
 - (IBAction)onClick:(id)sender {
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
     [self dismissViewControllerAnimated:YES completion:nil];
     
 }
@@ -159,6 +160,7 @@
     NSUInteger index = [self indexOfViewController:(ContentViewController *)viewController];
     if (index == 0 || (index == NSNotFound)) {
         self.fligView.hidden=NO;
+        isPage=YES;
         [UIView animateWithDuration:0.5 animations:^{
             [self.flipPage flipToPageAtIndex:0 animation:YES];
         }];
@@ -178,6 +180,7 @@
     }
     index++;
     if (index == [_arrCamera count]) {
+        isPage=YES;
         self.fligView.hidden=NO;
         [UIView animateWithDuration:0.5 animations:^{
             [self.flipPage flipToPageAtIndex:1 animation:YES];
@@ -209,12 +212,10 @@
     if (index%2==0) {
         page.endImg.hidden=YES;
         page.startImg.hidden=NO;
-        isPage=YES;
 //        [self onShowPage];
     }else{
         page.endImg.hidden=NO;
         page.startImg.hidden=YES;
-        isPage=NO;
         page.backgroundColor=[UIColor clearColor];
         [self performSelector:@selector(onShowPage) withObject:nil afterDelay:0.5];
     }
@@ -226,11 +227,6 @@
     self.fligView.hidden=!isPage;
 }
 
-
--(void)viewWillDisappear:(BOOL)animated{
-    [super viewWillDisappear:animated];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
-}
 
 
 

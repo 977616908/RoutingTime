@@ -52,7 +52,9 @@
     UIWindow *window = [UIApplication sharedApplication].keyWindow;
     [window addSubview:self.view];
     [window.rootViewController addChildViewController:self];
-    UIScrollView *rootScrollView=[self addImage:((UIImageView *)_animView).image];
+    UIImageView *image=_animView.subviews[0];
+    UIScrollView *rootScrollView=[self addImage:image.image];
+    
     CGRect moveRect=self.bgView.frame;
     rootScrollView.frame=CGRectMake((CGRectGetWidth(moveRect)-150)/2, (CGRectGetHeight(moveRect)-250)/2, 150, 250);
     [self.bgView addSubview:rootScrollView];

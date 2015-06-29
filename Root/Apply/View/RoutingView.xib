@@ -52,6 +52,7 @@
             <connections>
                 <outlet property="bgView" destination="zHf-Vg-Shv" id="eWf-zO-6g0"/>
                 <outlet property="imgIcon" destination="ccz-88-sUj" id="CF9-sY-K1M"/>
+                <outlet property="imgView" destination="GAi-HK-QVQ" id="lfE-47-tu7"/>
                 <outlet property="lbDate" destination="FCT-Tu-QRC" id="KF2-WM-p9K"/>
                 <outlet property="lbTitle" destination="0lg-df-lOs" id="Qc8-in-eOG"/>
             </connections>
@@ -102,6 +103,7 @@
             <connections>
                 <outlet property="bgView" destination="x4Y-kP-oqd" id="HuA-dM-bA5"/>
                 <outlet property="imgIcon" destination="0J0-ig-Xgf" id="QCo-tS-j1a"/>
+                <outlet property="imgView" destination="lU0-Nl-Eu4" id="hcL-6r-xvM"/>
                 <outlet property="lbDate" destination="Bed-52-Lf5" id="XHV-re-aQ3"/>
                 <outlet property="lbTitle" destination="BrS-bV-Reh" id="fMX-7K-AW9"/>
             </connections>
