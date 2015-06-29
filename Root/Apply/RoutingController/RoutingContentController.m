@@ -52,13 +52,25 @@
     UIWindow *window = [UIApplication sharedApplication].keyWindow;
     [window addSubview:self.view];
     [window.rootViewController addChildViewController:self];
+    UIScrollView *rootScrollView=[self addImage:((UIImageView *)_animView).image];
     CGRect moveRect=self.bgView.frame;
+    rootScrollView.frame=CGRectMake((CGRectGetWidth(moveRect)-150)/2, (CGRectGetHeight(moveRect)-250)/2, 150, 250);
+    [self.bgView addSubview:rootScrollView];
     self.bgView.frame=[_animView convertRect:_animView.bounds toView:nil];
     [UIView animateWithDuration:0.3 animations:^{
         self.bgView.frame=moveRect;
     }];
 }
 
+
+-(UIScrollView *)addImage:(UIImage *)image{
+    UIScrollView *moveScroll=[[UIScrollView alloc]init];
+    moveScroll.pagingEnabled=NO;
+    moveScroll.contentSize=image.size;
+    UIImageView *imgView=[[UIImageView alloc]initWithImage:image];
+    [moveScroll addSubview:imgView];
+    return moveScroll;
+}
 
 - (IBAction)onCancel:(id)sender {
     [UIView animateWithDuration:0.3 animations:^{

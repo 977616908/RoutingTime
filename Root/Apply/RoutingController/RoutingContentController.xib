@@ -53,13 +53,11 @@
                         <action selector="onTypeClick:" destination="-1" eventType="touchUpInside" id="N3K-kI-IJQ"/>
                     </connections>
                 </button>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="rt_content_bg.png" translatesAutoresizingMaskIntoConstraints="NO" id="aVD-3n-xYN">
+                    <rect key="frame" x="166" y="13" width="316" height="294"/>
+                </imageView>
                 <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DzJ-jM-DvE">
                     <rect key="frame" x="166" y="13" width="316" height="294"/>
-                    <subviews>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="rt_content_bg.png" translatesAutoresizingMaskIntoConstraints="NO" id="aVD-3n-xYN">
-                            <rect key="frame" x="0.0" y="0.0" width="316" height="294"/>
-                        </imageView>
-                    </subviews>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                 </view>
                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Zbe-Z4-6oa">
