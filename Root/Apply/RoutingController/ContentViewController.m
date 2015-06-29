@@ -126,6 +126,7 @@
 
 -(void)onGestureListener:(UIGestureRecognizer *)gesture{
     RoutingContentController *contentController=[[RoutingContentController alloc]init];
+    contentController.animView=gesture.view;
     [contentController show];
 }
 

@@ -10,5 +10,7 @@
 
 @interface RoutingContentController : UIViewController
 
+@property(nonatomic,weak)UIView *animView;
+
 -(void)show;
 @end

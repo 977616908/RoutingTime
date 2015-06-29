@@ -16,6 +16,7 @@
 - (IBAction)onSelectAdd:(id)sender;
 
 - (IBAction)onTypeClick:(id)sender;
+@property (weak, nonatomic) IBOutlet UIView *bgView;
 
 @end
 
@@ -51,17 +52,29 @@
     UIWindow *window = [UIApplication sharedApplication].keyWindow;
     [window addSubview:self.view];
     [window.rootViewController addChildViewController:self];
+    CGRect moveRect=self.bgView.frame;
+    self.bgView.frame=[_animView convertRect:_animView.bounds toView:nil];
+    [UIView animateWithDuration:0.3 animations:^{
+        self.bgView.frame=moveRect;
+    }];
 }
 
 
 - (IBAction)onCancel:(id)sender {
-    [self.view removeFromSuperview];
-    [self removeFromParentViewController];
+    [UIView animateWithDuration:0.3 animations:^{
+        self.bgView.frame=[_animView convertRect:_animView.bounds toView:nil];
+    } completion:^(BOOL finished) {
+        [self.view removeFromSuperview];
+        [self removeFromParentViewController];
+    }];
+
 }
 
 - (IBAction)onSelectAdd:(id)sender {
+    
 }
 
 - (IBAction)onTypeClick:(id)sender {
+    
 }
 @end
