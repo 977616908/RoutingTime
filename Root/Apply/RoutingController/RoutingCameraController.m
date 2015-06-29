@@ -8,12 +8,13 @@
 
 #import "RoutingCameraController.h"
 #import "ContentViewController.h"
+#import "RoutingContentController.h"
 #import "RTSlider.h"
 #import "RoutingCamera.h"
 #import "JCFlipPageView.h"
 #import "JCFlipPage.h"
 
-@interface RoutingCameraController ()<UIPageViewControllerDataSource,JCFlipPageViewDataSource>{
+@interface RoutingCameraController ()<UIPageViewControllerDataSource,JCFlipPageViewDataSource,ContentDataSource>{
     NSInteger valueChange;
     BOOL isPage;
 }
@@ -144,7 +145,8 @@
     if ([_arrCamera count] == 0 || (index >= [_arrCamera count])) {
         return nil;
     }
-    ContentViewController * dataViewController =[[ContentViewController alloc]initWithNibName:@"ContentViewController" bundle:nil];
+    ContentViewController * dataViewController =[[ContentViewController alloc]init];
+    dataViewController.dataSource=self;
     dataViewController.dataObject = [_arrCamera objectAtIndex:index];
     return dataViewController;
 }
@@ -158,6 +160,10 @@
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController{
     NSUInteger index = [self indexOfViewController:(ContentViewController *)viewController];
     if (index == 0 || (index == NSNotFound)) {
+        self.fligView.hidden=NO;
+        [UIView animateWithDuration:0.5 animations:^{
+            [self.flipPage flipToPageAtIndex:0 animation:YES];
+        }];
         return nil;
     }
     index--;
@@ -174,6 +180,10 @@
     }
     index++;
     if (index == [_arrCamera count]) {
+        self.fligView.hidden=NO;
+        [UIView animateWithDuration:0.5 animations:^{
+            [self.flipPage flipToPageAtIndex:1 animation:YES];
+        }];
         return nil;
     }
     [UIView animateWithDuration:0.2 animations:^{
@@ -215,6 +225,12 @@
 
 -(void)onShowPage{
     self.fligView.hidden=!isPage;
+}
+
+-(void)pushDataSource:(id)dataSource{
+    RoutingContentController *contentController=[[RoutingContentController alloc]init];
+    [self.view addSubview:contentController.view];
+    [self addChildViewController:contentController];
 }
 
 -(void)viewWillDisappear:(BOOL)animated{

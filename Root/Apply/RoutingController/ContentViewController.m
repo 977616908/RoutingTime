@@ -100,12 +100,15 @@
     if (routing.rtTag%2==0) {
         moveX=20;
     }
+    UITapGestureRecognizer *tapClick=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(onGestureListener:)];
     if (image.size.width>image.size.height) {
         WgView *wgView=[[WgView alloc]initWithFrame:self.view.bounds];
         wgView.moveX=moveX;
         wgView.imgIcon.image=image;
         wgView.lbTitle.text=routing.rtContent;
         wgView.lbDate.text=routing.rtDate;
+        wgView.imgIcon.userInteractionEnabled=YES;
+        [wgView.imgIcon addGestureRecognizer:tapClick];
         [self.view addSubview:wgView];
     }else{
         HgView *hgView=[[HgView alloc]initWithFrame:self.view.bounds];
@@ -113,8 +116,15 @@
         hgView.imgIcon.image=image;
         hgView.lbTitle.text=routing.rtContent;
         hgView.lbDate.text=routing.rtDate;
+        hgView.imgIcon.userInteractionEnabled=YES;
+        [hgView.imgIcon addGestureRecognizer:tapClick];
         [self.view addSubview:hgView];
     }
+}
+
+
+-(void)onGestureListener:(UIGestureRecognizer *)gesture{
+    [self.dataSource pushDataSource:self.dataObject];
 }
 
 - (void)didReceiveMemoryWarning {
