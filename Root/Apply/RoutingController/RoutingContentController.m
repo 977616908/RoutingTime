@@ -46,11 +46,17 @@
     return UIInterfaceOrientationMaskLandscape;
 }
 
-
+- (void)show
+{
+    UIWindow *window = [UIApplication sharedApplication].keyWindow;
+    [window addSubview:self.view];
+    [window.rootViewController addChildViewController:self];
+}
 
 
 - (IBAction)onCancel:(id)sender {
     [self.view removeFromSuperview];
+    [self removeFromParentViewController];
 }
 
 - (IBAction)onSelectAdd:(id)sender {

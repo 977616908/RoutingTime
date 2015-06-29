@@ -10,4 +10,5 @@
 
 @interface RoutingContentController : UIViewController
 
+-(void)show;
 @end

@@ -8,13 +8,12 @@
 
 #import "RoutingCameraController.h"
 #import "ContentViewController.h"
-#import "RoutingContentController.h"
 #import "RTSlider.h"
 #import "RoutingCamera.h"
 #import "JCFlipPageView.h"
 #import "JCFlipPage.h"
 
-@interface RoutingCameraController ()<UIPageViewControllerDataSource,JCFlipPageViewDataSource,ContentDataSource>{
+@interface RoutingCameraController ()<UIPageViewControllerDataSource,JCFlipPageViewDataSource>{
     NSInteger valueChange;
     BOOL isPage;
 }
@@ -146,7 +145,6 @@
         return nil;
     }
     ContentViewController * dataViewController =[[ContentViewController alloc]init];
-    dataViewController.dataSource=self;
     dataViewController.dataObject = [_arrCamera objectAtIndex:index];
     return dataViewController;
 }
@@ -227,11 +225,6 @@
     self.fligView.hidden=!isPage;
 }
 
--(void)pushDataSource:(id)dataSource{
-    RoutingContentController *contentController=[[RoutingContentController alloc]init];
-    [self.view addSubview:contentController.view];
-    [self addChildViewController:contentController];
-}
 
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];

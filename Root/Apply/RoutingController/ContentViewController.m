@@ -7,6 +7,7 @@
 //
 
 #import "ContentViewController.h"
+#import "RoutingContentController.h"
 #import "RoutingCamera.h"
 #import "HgView.h"
 #import "WgView.h"
@@ -124,7 +125,8 @@
 
 
 -(void)onGestureListener:(UIGestureRecognizer *)gesture{
-    [self.dataSource pushDataSource:self.dataObject];
+    RoutingContentController *contentController=[[RoutingContentController alloc]init];
+    [contentController show];
 }
 
 - (void)didReceiveMemoryWarning {

@@ -8,15 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol ContentDataSource <NSObject>
-
-@optional
-
--(void)pushDataSource:(id)dataSource;
-
-@end
 
 @interface ContentViewController : UIViewController
-@property(nonatomic,weak)id<ContentDataSource> dataSource;
 @property (retain,nonatomic)id dataObject;
 @end
