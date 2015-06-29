@@ -10,13 +10,18 @@
 #import "ContentViewController.h"
 #import "RTSlider.h"
 #import "RoutingCamera.h"
+#import "JCFlipPageView.h"
+#import "JCFlipPage.h"
 
-@interface RoutingCameraController ()<UIPageViewControllerDataSource>{
+@interface RoutingCameraController ()<UIPageViewControllerDataSource,JCFlipPageViewDataSource>{
     NSInteger valueChange;
+    BOOL isPage;
 }
 
 @property (weak, nonatomic) IBOutlet RTSlider *slider;
 @property (weak, nonatomic) IBOutlet UIView *pageView;
+@property (weak, nonatomic) IBOutlet UIView *fligView;
+@property (nonatomic, strong) JCFlipPageView *flipPage;
 @property (nonatomic,weak)UIPageViewController *pageController;
 
 - (IBAction)onClick:(id)sender;
@@ -86,6 +91,12 @@
     self.pageController=pageController;
     [self.pageView addSubview:pageController.view];
     [pageController didMoveToParentViewController:self];
+    
+    _flipPage = [[JCFlipPageView alloc] initWithFrame:self.fligView.bounds];
+    [self.fligView addSubview:_flipPage];
+    
+    _flipPage.dataSource = self;
+    [_flipPage reloadData];
 }
 
 
@@ -172,6 +183,39 @@
     return [self viewCintrollerAtIndex:index];
 }
 
+#pragma mar - JCFlipPageViewDataSource
+- (NSUInteger)numberOfPagesInFlipPageView:(JCFlipPageView *)flipPageView
+{
+    return 2;
+}
+- (JCFlipPage *)flipPageView:(JCFlipPageView *)flipPageView pageAtIndex:(NSUInteger)index
+{
+    static NSString *kPageID = @"numberPageID";
+    JCFlipPage *page = [flipPageView dequeueReusablePageWithReuseIdentifier:kPageID];
+    if (!page)
+    {
+        page = [[JCFlipPage alloc] initWithFrame:flipPageView.bounds reuseIdentifier:kPageID];
+    }
+    page.backgroundColor=RGBCommon(254, 232, 172);
+    if (index%2==0) {
+        page.endImg.hidden=YES;
+        page.startImg.hidden=NO;
+        isPage=YES;
+//        [self onShowPage];
+    }else{
+        page.endImg.hidden=NO;
+        page.startImg.hidden=YES;
+        isPage=NO;
+        page.backgroundColor=[UIColor clearColor];
+        [self performSelector:@selector(onShowPage) withObject:nil afterDelay:0.5];
+    }
+    return page;
+}
+
+
+-(void)onShowPage{
+    self.fligView.hidden=!isPage;
+}
 
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];

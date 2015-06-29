@@ -7,6 +7,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RoutingCameraController">
             <connections>
+                <outlet property="fligView" destination="uwb-mj-aH4" id="8Wh-5a-qfM"/>
                 <outlet property="pageView" destination="OPL-b5-DcH" id="myH-ux-din"/>
                 <outlet property="slider" destination="n4K-H2-Fmq" id="8XQ-Kg-H2y"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -62,6 +63,10 @@
                         </imageView>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                </view>
+                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uwb-mj-aH4">
+                    <rect key="frame" x="17" y="35" width="534" height="250"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                 </view>
             </subviews>
             <color key="backgroundColor" red="0.99607843137254903" green="0.90980392156862744" blue="0.67450980392156867" alpha="1" colorSpace="calibratedRGB"/>
