@@ -203,6 +203,7 @@
     if (!page)
     {
         page = [[JCFlipPage alloc] initWithFrame:flipPageView.bounds reuseIdentifier:kPageID];
+        page.dateStr=self.dateStr;
     }
     page.backgroundColor=RGBCommon(254, 232, 172);
     if (index%2==0) {

@@ -7,6 +7,11 @@
 //
 
 #import "JCFlipPage.h"
+@interface JCFlipPage ()
+
+@property(nonatomic,weak)UILabel *lbDate;
+
+@end
 
 @implementation JCFlipPage
 @synthesize reuseIdentifier = _reuseIdentifier;
@@ -44,10 +49,25 @@
         startImg.image=imgs;
         startImg.hidden=YES;
         self.startImg=startImg;
+//        CCLabel *lbDate=CCLabelCreateWithNewValue(@"2016/6/20 - 2016/6/21", 11.0f, CGRectMake(0, CGRectGetHeight(startImg.frame)-50, CGRectGetWidth(startImg.frame), 20));
         
+        UILabel *lbDate=[[UILabel alloc]initWithFrame:CGRectMake(0, CGRectGetHeight(startImg.frame)-50, CGRectGetWidth(startImg.frame), 20)];
+        lbDate.textAlignment=NSTextAlignmentCenter;
+        lbDate.backgroundColor=[UIColor clearColor];
+        NSString *fontName=[[NSBundle mainBundle]pathForResource:@"TUNGAB.TTF" ofType:nil];
+        lbDate.font=[UIFont fontWithName:fontName size:11.0f];
+        lbDate.textColor=RGBCommon(167, 167, 167);
+//        lbDate.text=@"2016/6/20 - 2016/6/21";
+        self.lbDate=lbDate;
+        [startImg addSubview:lbDate];
         [self addSubview:startImg];
     }
     return self;
+}
+
+-(void)setDateStr:(NSString *)dateStr{
+    _dateStr=dateStr;
+    self.lbDate.text=_dateStr;
 }
 
 /*

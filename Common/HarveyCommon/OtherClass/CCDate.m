@@ -74,4 +74,10 @@
     return [sdf dateFromString:date];
 }
 
++ (NSString *)stringFromDate:(NSDate *)date formatter:(NSString *)formatter{
+    NSDateFormatter *sdf=[[NSDateFormatter alloc]init];
+    [sdf setDateFormat:formatter];
+    return [sdf stringFromDate:date];
+}
+
 @end

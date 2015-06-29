@@ -95,9 +95,15 @@
 }
 
 -(void)onSelectPhoto{
+    NSArray *rtArr=[_upArray.array sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        REPhoto *item1=(REPhoto *)obj1;
+        REPhoto *item2=(REPhoto *)obj2;
+        return [item1.photoDate compare:item2.photoDate];
+    }];
     NSMutableArray *arr=[NSMutableArray array];
-    for (int i=0; i<_upArray.count; i++) {
-        REPhoto *photo=_upArray[i];
+    NSMutableString *sb=[NSMutableString string];
+    for (int i=0; i<rtArr.count; i++) {
+        REPhoto *photo=rtArr[i];
         RoutingCamera *camera=[[RoutingCamera alloc]init];
         camera.rtDate=photo.date;
         camera.rtTag=i;
@@ -107,12 +113,20 @@
         }else{
             camera.rtContent=photo.rtContent;
         }
-        
         camera.rtPath=photo.imageName;
         [arr addObject:camera];
+        if (i==0) {
+            [sb appendString:[CCDate stringFromDate:photo.photoDate formatter:@"yyyy/MM/dd"]];
+        }else if(i==rtArr.count-1){
+            NSString *strDate=[CCDate stringFromDate:photo.photoDate formatter:@"yyyy/MM/dd"];
+            if (![strDate isEqualToString:sb]) {
+                [sb appendFormat:@" - %@",strDate];
+            }
+        }
     }
     RoutingCameraController *routingController=[[RoutingCameraController alloc]init];
     routingController.arrCamera=arr;
+    routingController.dateStr=sb;
     [self presentViewController:routingController animated:YES completion:nil];
     
 }

@@ -10,5 +10,5 @@
 
 @interface RoutingCameraController : UIViewController
 @property(nonatomic,copy)NSMutableArray *arrCamera;
-
+@property(nonatomic,copy)NSString *dateStr;
 @end

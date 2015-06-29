@@ -14,6 +14,7 @@ static NSString const* kJCFlipPageDefaultReusableIdentifier = @"kJCFlipPageDefau
 @interface JCFlipPage : UIView
 
 @property (nonatomic, readonly, copy) NSString *reuseIdentifier;
+@property (nonatomic,copy)NSString *dateStr;
 @property (nonatomic,weak)UIImageView *startImg;
 @property (nonatomic,weak)UIImageView *endImg;
 
