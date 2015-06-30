@@ -54,10 +54,12 @@
         UILabel *lbDate=[[UILabel alloc]initWithFrame:CGRectMake(0, CGRectGetHeight(startImg.frame)-50, CGRectGetWidth(startImg.frame), 20)];
         lbDate.textAlignment=NSTextAlignmentCenter;
         lbDate.backgroundColor=[UIColor clearColor];
-        NSString *fontName=[[NSBundle mainBundle]pathForResource:@"TUNGAB.TTF" ofType:nil];
-        lbDate.font=[UIFont fontWithName:fontName size:11.0f];
+//        NSString *fontName=[[NSBundle mainBundle]pathForResource:@"TUNGAB.TTF" ofType:nil];
+        lbDate.font=[UIFont fontWithName:@"Helvetica" size:11.0f];
         lbDate.textColor=RGBCommon(167, 167, 167);
 //        lbDate.text=@"2016/6/20 - 2016/6/21";
+        lbDate.shadowColor = [UIColor colorWithWhite:0.1f alpha:0.1f];    //设置文本的阴影色彩和透明度。
+        lbDate.shadowOffset = CGSizeMake(0.5, 0.5f);
         self.lbDate=lbDate;
         [startImg addSubview:lbDate];
         [self addSubview:startImg];

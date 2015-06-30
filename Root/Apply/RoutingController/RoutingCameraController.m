@@ -21,8 +21,11 @@
 @property (weak, nonatomic) IBOutlet RTSlider *slider;
 @property (weak, nonatomic) IBOutlet UIView *pageView;
 @property (weak, nonatomic) IBOutlet UIView *fligView;
+@property (weak, nonatomic) IBOutlet UIImageView *imgBg;
+
 @property (nonatomic, strong) JCFlipPageView *flipPage;
 @property (nonatomic,weak)UIPageViewController *pageController;
+
 
 - (IBAction)onClick:(id)sender;
 
@@ -92,11 +95,13 @@
     [self.pageView addSubview:pageController.view];
     [pageController didMoveToParentViewController:self];
     
-    _flipPage = [[JCFlipPageView alloc] initWithFrame:self.fligView.bounds];
-    [self.fligView addSubview:_flipPage];
+    JCFlipPageView *flipPage = [[JCFlipPageView alloc] initWithFrame:self.fligView.bounds];
+    flipPage.dataSource = self;
+    [flipPage reloadData];
+    self.flipPage=flipPage;
+    [self.fligView addSubview:flipPage];
     
-    _flipPage.dataSource = self;
-    [_flipPage reloadData];
+
 }
 
 
@@ -159,8 +164,8 @@
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController{
     NSUInteger index = [self indexOfViewController:(ContentViewController *)viewController];
     if (index == 0 || (index == NSNotFound)) {
-        self.fligView.hidden=NO;
         isPage=YES;
+        [self showView:isPage];
         [UIView animateWithDuration:0.5 animations:^{
             [self.flipPage flipToPageAtIndex:0 animation:YES];
         }];
@@ -181,7 +186,7 @@
     index++;
     if (index == [_arrCamera count]) {
         isPage=YES;
-        self.fligView.hidden=NO;
+        [self showView:isPage];
         [UIView animateWithDuration:0.5 animations:^{
             [self.flipPage flipToPageAtIndex:1 animation:YES];
         }];
@@ -207,27 +212,32 @@
     {
         page = [[JCFlipPage alloc] initWithFrame:flipPageView.bounds reuseIdentifier:kPageID];
         page.dateStr=self.dateStr;
+        [self onShowPage];
     }
-    page.backgroundColor=RGBCommon(254, 232, 172);
+    page.backgroundColor=[UIColor clearColor];
     if (index%2==0) {
+        isPage=NO;
         page.endImg.hidden=YES;
         page.startImg.hidden=NO;
 //        [self onShowPage];
     }else{
         page.endImg.hidden=NO;
         page.startImg.hidden=YES;
-        page.backgroundColor=[UIColor clearColor];
-        [self performSelector:@selector(onShowPage) withObject:nil afterDelay:0.5];
+        isPage=YES;
     }
     return page;
 }
 
 
 -(void)onShowPage{
-    self.fligView.hidden=!isPage;
+    [self showView:isPage];
 }
 
-
+-(void)showView:(BOOL)isShow{
+    self.flipPage.hidden=!isShow;
+    self.imgBg.hidden=isShow;
+    self.pageView.hidden=isShow;
+}
 
 
 @end
