@@ -19,7 +19,7 @@
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="rt_written.png" translatesAutoresizingMaskIntoConstraints="NO" id="u3d-aU-EfS">
                     <rect key="frame" x="0.0" y="0.0" width="568" height="45"/>
                 </imageView>
-                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gcG-kj-aSr">
+                <button opaque="NO" tag="1" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gcG-kj-aSr">
                     <rect key="frame" x="15" y="8" width="47" height="30"/>
                     <state key="normal" title="取消">
                         <color key="titleColor" red="0.29411764705882354" green="0.49019607843137253" blue="0.37254901960784315" alpha="1" colorSpace="calibratedRGB"/>
@@ -40,7 +40,7 @@
                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YnM-0s-QNr">
+                <button opaque="NO" tag="2" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YnM-0s-QNr">
                     <rect key="frame" x="507" y="8" width="47" height="30"/>
                     <state key="normal" title="确定">
                         <color key="titleColor" red="0.29411764709999999" green="0.49019607840000001" blue="0.37254901959999998" alpha="1" colorSpace="calibratedRGB"/>
