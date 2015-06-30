@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface RoutingWrittinController : UIViewController
-
+@interface RoutingWrittinController : PiFiiBaseViewController
+@property (strong,nonatomic)id dataObject;
 @end

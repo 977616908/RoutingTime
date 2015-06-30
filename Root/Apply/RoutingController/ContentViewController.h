@@ -10,5 +10,5 @@
 
 
 @interface ContentViewController : UIViewController
-@property (retain,nonatomic)id dataObject;
+@property (strong,nonatomic)id dataObject;
 @end

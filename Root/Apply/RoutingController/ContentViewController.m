@@ -139,6 +139,7 @@
 -(void)onGestureListener:(UIGestureRecognizer *)gesture{
     if ([gesture.view tag]==2) {
         RoutingWrittinController *writtinController=[[RoutingWrittinController alloc]init];
+        writtinController.dataObject=self.dataObject;
         [self presentViewController:writtinController animated:YES completion:nil];
     }else{
         RoutingContentController *contentController=[[RoutingContentController alloc]init];

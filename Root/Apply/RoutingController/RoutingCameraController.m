@@ -97,6 +97,7 @@
     
     JCFlipPageView *flipPage = [[JCFlipPageView alloc] initWithFrame:self.fligView.bounds];
     flipPage.dataSource = self;
+    isPage=YES;
     [flipPage reloadData];
     self.flipPage=flipPage;
     [self.fligView addSubview:flipPage];
@@ -212,31 +213,45 @@
     {
         page = [[JCFlipPage alloc] initWithFrame:flipPageView.bounds reuseIdentifier:kPageID];
         page.dateStr=self.dateStr;
-        [self onShowPage];
     }
     page.backgroundColor=[UIColor clearColor];
     if (index%2==0) {
-        isPage=NO;
         page.endImg.hidden=YES;
         page.startImg.hidden=NO;
 //        [self onShowPage];
     }else{
         page.endImg.hidden=NO;
         page.startImg.hidden=YES;
-        isPage=YES;
     }
+    [self onShowPage];
     return page;
 }
 
 
 -(void)onShowPage{
-    [self showView:isPage];
+    if (!self.flipPage.isFlipPage) {
+       [self showView:isPage];
+        isPage=NO;
+    }
+    
 }
 
 -(void)showView:(BOOL)isShow{
-    self.flipPage.hidden=!isShow;
-    self.imgBg.hidden=isShow;
-    self.pageView.hidden=isShow;
+    [UIView animateWithDuration:0.7 animations:^{
+        CGFloat al = isShow?1.0:0;
+        CGFloat bl = al==0?1.0:0;
+        self.flipPage.alpha=al;
+        self.pageView.alpha=bl;
+        self.imgBg.alpha=bl;
+    } completion:^(BOOL finished) {
+        self.flipPage.alpha=1.0;
+        self.pageView.alpha=1.0;
+        self.imgBg.alpha=1.0;
+        self.flipPage.hidden=!isShow;
+        self.imgBg.hidden=isShow;
+        self.pageView.hidden=isShow;
+    }];
+
 }
 
 

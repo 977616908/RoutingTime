@@ -13,7 +13,7 @@
 @interface JCFlipPageView : UIView
 
 @property (nonatomic, weak) id<JCFlipPageViewDataSource> dataSource;
-
+@property (nonatomic,assign)BOOL isFlipPage;
 
 - (void)reloadData;
 

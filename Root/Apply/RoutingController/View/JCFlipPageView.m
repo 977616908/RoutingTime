@@ -135,11 +135,13 @@ static NSUInteger kReusableArraySize = 5;
 - (void)flipViewAnimationHelperBeginAnimation:(JCFlipViewAnimationHelper *)helper
 {
     _currPage.hidden = YES;
+    _isFlipPage=YES;
 }
 
 - (void)flipViewAnimationHelperEndAnimation:(JCFlipViewAnimationHelper *)helper
 {
     _currPage.hidden = NO;
+    _isFlipPage=NO;
 }
 
 - (void)flipViewAnimationHelper:(JCFlipViewAnimationHelper *)helper flipCompletedToDirection:(EFlipDirection)direction
