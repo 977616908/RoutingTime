@@ -8,6 +8,7 @@
 
 #import "RoutingContentController.h"
 #import "RTSlider.h"
+#import "RoutingListController.h"
 
 @interface RoutingContentController ()
 
@@ -53,10 +54,10 @@
     [window addSubview:self.view];
     [window.rootViewController addChildViewController:self];
     UIImageView *image=_animView.subviews[0];
-    UIScrollView *rootScrollView=[self addImage:image.image];
+    UIScrollView *rootScrollView=[self addImage:image];
     
     CGRect moveRect=self.bgView.frame;
-    rootScrollView.frame=CGRectMake((CGRectGetWidth(moveRect)-150)/2, (CGRectGetHeight(moveRect)-250)/2, 150, 250);
+    rootScrollView.origin=CGPointMake((CGRectGetWidth(moveRect)-CGRectGetWidth(rootScrollView.frame))/2, (CGRectGetHeight(moveRect)-CGRectGetHeight(rootScrollView.frame))/2);
     [self.bgView addSubview:rootScrollView];
     self.bgView.frame=[_animView convertRect:_animView.bounds toView:nil];
     [UIView animateWithDuration:0.3 animations:^{
@@ -65,11 +66,11 @@
 }
 
 
--(UIScrollView *)addImage:(UIImage *)image{
-    UIScrollView *moveScroll=[[UIScrollView alloc]init];
+-(UIScrollView *)addImage:(UIImageView *)image{
+    UIScrollView *moveScroll=[[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, CGRectGetWidth(image.frame)*1.5, CGRectGetHeight(image.frame)*1.5)];
     moveScroll.pagingEnabled=NO;
-    moveScroll.contentSize=image.size;
-    UIImageView *imgView=[[UIImageView alloc]initWithImage:image];
+    moveScroll.contentSize=image.image.size;
+    UIImageView *imgView=[[UIImageView alloc]initWithImage:image.image];
     [moveScroll addSubview:imgView];
     return moveScroll;
 }
@@ -85,10 +86,12 @@
 }
 
 - (IBAction)onSelectAdd:(id)sender {
-    
+   
 }
 
 - (IBAction)onTypeClick:(id)sender {
     
 }
+
+
 @end

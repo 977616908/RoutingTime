@@ -26,6 +26,7 @@
         }
         _msgDuration=isNIL(data[@"duration"])?@"":data[@"duration"];
         _msgStory=isNIL(data[@"story"])?@"":data[@"story"];
+        _msgStroyId=isNIL(data[@"storyid"])?@"":[data[@"storyid"] stringValue];
         if (![_msgDuration isEqualToString:@""]&&![_msgDuration isEqualToString:@"null"]){
             _isVedio=YES;
         }else{

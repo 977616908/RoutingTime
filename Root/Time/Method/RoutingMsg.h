@@ -14,6 +14,7 @@
 @property(nonatomic,copy)NSString *msgPath;
 @property(nonatomic,copy)NSString *msgDuration;
 @property(nonatomic,copy)NSString *msgStory;
+@property(nonatomic,copy)NSString *msgStroyId;
 @property(nonatomic,assign)BOOL isVedio;
 
 -(id)initWithData:(NSDictionary *)data;

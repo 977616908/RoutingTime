@@ -109,11 +109,12 @@
         camera.rtTag=i;
         camera.rtId=photo.routingId;
         if ([photo.rtContent isEqualToString:@""]) {
-            camera.rtContent=[NSString stringWithFormat:@"点击编辑第%d张时光相册",i+1];
+            camera.rtStory=[NSString stringWithFormat:@"点击编辑第%d张时光相册",i+1];
         }else{
-            camera.rtContent=photo.rtContent;
+            camera.rtStory=photo.rtContent;
         }
         camera.rtPath=photo.imageName;
+        camera.rtStoryId=photo.duration;
         [arr addObject:camera];
         if (i==0) {
             [sb appendString:[CCDate stringFromDate:photo.photoDate formatter:@"yyyy/MM/dd"]];
@@ -178,8 +179,9 @@
             photo.date=time.rtDate;
             photo.photoDate=[CCDate timeDate:time.rtDate formatter:@"yyyy-MM-dd HH:mm:ss"];
             photo.imageUrl=msg.msgPath;
-            photo.imageName=[time.rtPaths[i] msgPath];;
+            photo.imageName=[time.rtPaths[i] msgPath];
             photo.rtContent=[time.rtPaths[i] msgStory];
+            photo.duration=[time.rtPaths[i] msgStroyId];
             [arrType addObject:photo];
         }
     }

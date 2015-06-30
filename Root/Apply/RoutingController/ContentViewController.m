@@ -108,7 +108,7 @@
         WgView *wgView=[[WgView alloc]initWithFrame:self.view.bounds];
         wgView.moveX=moveX;
         wgView.imgIcon.image=image;
-        wgView.lbTitle.text=routing.rtContent;
+        wgView.lbTitle.text=routing.rtStory;
         wgView.lbDate.text=routing.rtDate;
 
         wgView.imgView.userInteractionEnabled=YES;
@@ -122,7 +122,7 @@
         HgView *hgView=[[HgView alloc]initWithFrame:self.view.bounds];
         hgView.moveX=moveX;
         hgView.imgIcon.image=image;
-        hgView.lbTitle.text=routing.rtContent;
+        hgView.lbTitle.text=routing.rtStory;
         hgView.lbDate.text=routing.rtDate;
         
         hgView.imgView.userInteractionEnabled=YES;
