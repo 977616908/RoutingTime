@@ -53,13 +53,13 @@
 - (void)layoutSubviews
 {
     // the track background
-    _trackImageViewNormal.frame = CGRectMake(-21, 0, 390, CGRectGetHeight(self.frame)-2);
-    _trackImageViewHighlighted.frame = CGRectMake(-21, 0, 390, CGRectGetHeight(self.frame)-3);
+    _trackImageViewNormal.frame = CGRectMake(-22, 0, 390, CGRectGetHeight(self.frame)-2);
+    _trackImageViewHighlighted.frame = CGRectMake(-22, 0, 390, CGRectGetHeight(self.frame)-2);
     
     // the thumb
 //    CGFloat thumbHeight = 98.f *  _trackImageViewNormal.bounds.size.height / 64.f;   // thumb height is relative to track height
 //    CGFloat thumbWidth = 91.f * thumbHeight / 98.f; // thumb width and height keep the same ratio as the original image size
-    _thumbImageView.frame = CGRectMake(0, 0, 42, 16);
+    _thumbImageView.frame = CGRectMake(0, 0, 43, 16);
     _thumbImageView.center = CGPointMake([self xForValue:_value], CGRectGetMidY(_trackImageViewNormal.frame));
     
     // the labels
@@ -131,7 +131,7 @@
     // the track background images
     _trackImageViewNormal = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"rt_sider"]];
     [self addSubview:_trackImageViewNormal];
-    _trackImageViewHighlighted = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"rt_sider"]];
+    _trackImageViewHighlighted = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"rt_sider02"]];
     [self addSubview:_trackImageViewHighlighted];
     
     // thumb knob

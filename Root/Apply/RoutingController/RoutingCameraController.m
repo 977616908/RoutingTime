@@ -76,7 +76,7 @@
     self.slider.minimumValue = 1;
     self.slider.maximumValue = _arrCamera.count-2;
     self.slider.value = 1;
-    valueChange=1;
+    valueChange=0;
     //    _steppedSlider.labelOnThumb.hidden = YES;
     self.slider.labelAboveThumb.font = [UIFont systemFontOfSize:16.0];
     self.slider.labelAboveThumb.hidden=YES;
@@ -132,8 +132,9 @@
     int value=(int)floor(_slider.value+0.5);
     if (value!=valueChange) {
         PSLog(@"---[%d]---[%d]",[sender tag],(int)_slider.value);
-        if(value==_arrCamera.count)value=_arrCamera.count-1;
-        NSArray *viewControllers=@[[self viewCintrollerAtIndex:value-1],[self viewCintrollerAtIndex:value]];
+        [self showView:NO];
+        if(value==_slider.maximumValue)value=_slider.minimumValue-1;
+        NSArray *viewControllers=@[[self viewCintrollerAtIndex:value],[self viewCintrollerAtIndex:value+1]];
         if (value<valueChange) {
             [self.pageController setViewControllers:viewControllers direction:(UIPageViewControllerNavigationDirectionReverse) animated:YES completion:nil];
             ;
@@ -215,28 +216,28 @@
         page.dateStr=self.dateStr;
     }
     page.backgroundColor=[UIColor clearColor];
-    if (index%2==0) {
-        page.endImg.hidden=YES;
-        page.startImg.hidden=NO;
-//        [self onShowPage];
-    }else{
-        page.endImg.hidden=NO;
-        page.startImg.hidden=YES;
+
+//    [self onShowPage];
+    if (!self.flipPage.isFlipPage) {
+        if (index%2==0) {
+            page.endImg.hidden=YES;
+            page.startImg.hidden=NO;
+            self.slider.labelOnThumb.text=@"封面";
+        }else{
+            self.slider.labelOnThumb.text=@"封底";
+            page.endImg.hidden=NO;
+            page.startImg.hidden=YES;
+        }
+        [self showView:isPage];
+        isPage=NO;
     }
-    [self onShowPage];
     return page;
 }
 
-
--(void)onShowPage{
-    if (!self.flipPage.isFlipPage) {
-       [self showView:isPage];
-        isPage=NO;
-    }
-    
-}
-
 -(void)showView:(BOOL)isShow{
+    if (!isShow) {
+        self.slider.labelOnThumb.text=[NSString stringWithFormat:@"%d/%d",(int)floor(self.slider.value+0.5),(int)self.slider.maximumValue];
+    }
     [UIView animateWithDuration:0.7 animations:^{
         CGFloat al = isShow?1.0:0;
         CGFloat bl = al==0?1.0:0;
