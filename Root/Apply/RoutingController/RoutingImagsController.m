@@ -8,6 +8,9 @@
 
 #import "RoutingImagsController.h"
 #import "ImagsCell.h"
+#import "RoutingTime.h"
+#import "RoutingMsg.h"
+#import "RoutingCamera.h"
 
 #define selectedTag 100
 #define cellSize 72
@@ -16,8 +19,8 @@
 #define cellADeactive 0.7
 #define cellAHidden 0.0
 #define defaultFontSize 10.0
-
-#define numOfimg 20
+#define HEIGHT 150
+#define WEITH 268
 
 @interface RoutingImagsController ()
 {
@@ -25,11 +28,16 @@
     CGPoint dragStartPt;
     bool dragging;
     NSMutableDictionary *selectedIdx;
+    MBProgressHUD   *stateView;
+    NSMutableArray *_datasource;
+    NSMutableOrderedSet  *_upArray;
+    NSMutableArray *_photoArr;
+    NSString *dateStr;
 }
 @property(nonatomic,weak)IBOutlet UICollectionView *collectionView;
 - (IBAction)onClick:(id)sender;
 @property (weak, nonatomic) IBOutlet UILabel *lbTitle;
-
+@property (weak, nonatomic) IBOutlet UILabel *lbDate;
 @end
 
 @implementation RoutingImagsController
@@ -46,6 +54,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    _photoArr=[NSMutableArray array];
+    _upArray=[NSMutableOrderedSet orderedSet];
     [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
     selectedIdx = [[NSMutableDictionary alloc] init];
     
@@ -56,6 +66,9 @@
     [self.view addGestureRecognizer:gestureRecognizer];
     [gestureRecognizer setMinimumNumberOfTouches:1];
     [gestureRecognizer setMaximumNumberOfTouches:1];
+    self.view.backgroundColor=[UIColor whiteColor];
+    
+    [self getRequest];
 }
 
 - (void)didReceiveMemoryWarning
@@ -70,7 +83,7 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-    return numOfimg * 4;
+    return _photoArr.count;
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
@@ -86,24 +99,27 @@
     static NSString *identifier = @"Cell";
     
     ImagsCell *cell = (ImagsCell *)[collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
-    
-    if (![cell viewWithTag:selectedTag])
-    {
-        UIImageView *selectImg=[[UIImageView alloc]init];
-        UIImage *image=@"ImageSelectedOn".imageInstance;
-        CGSize size=image.size;
-        selectImg.frame=CGRectMake(CGRectGetWidth(cell.contentView.frame)-size.width, CGRectGetHeight(cell.contentView.frame)-size.height, size.width, size.height);
-        selectImg.image=image;
-        cell.imgView.alpha=cellADeactive;
-        [cell.imgView addSubview:selectImg];
+    RoutingCamera *camera=_photoArr[indexPath.row];
+    if (camera) {
+        NSString *path=camera.rtSmallPath;
+        //        [cell.imgView setImageWithURL:[path urlInstance]];
+        CGSize imgSize=cell.imgView.frame.size;
+        if (hasCachedImageWithString(path)) {
+            UIImage *img=[UIImage imageWithContentsOfFile:pathForString(path)];
+            if (img.size.width>(imgSize.width+10)||img.size.height>(imgSize.height+10)) {
+                cell.imgView.image=[[ImageCacher defaultCacher]imageByScalingAndCroppingForSize:CGSizeMake(imgSize.width*2, imgSize.height*2) sourceImage:img];
+            }else{
+                cell.imgView.image=img;
+            }
+        }else{
+            NSValue *size=[NSValue valueWithCGSize:CGSizeMake(WEITH, HEIGHT)];
+            NSDictionary *dict=@{@"url":path,@"imageView":cell.imgView,@"size":size};
+            [NSThread detachNewThreadSelector:@selector(cacheImage:) toTarget:[ImageCacher defaultCacher] withObject:dict];
+        }
     }
     
-//    cell.imgView.image=[UIImage imageNamed:@"hm_tupian"];
-    
-    // You supposed to highlight the selected cell in here; This is an example
     bool cellSelected = [selectedIdx objectForKey:[NSString stringWithFormat:@"%d", indexPath.row]];
     [self setCellSelection:cell selected:cellSelected];
-    
     return cell;
 }
 
@@ -114,25 +130,40 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    [selectedIdx setValue:@"1" forKey:[NSString stringWithFormat:@"%d", indexPath.row]];
     UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
     [self setCellSelection:cell selected:YES];
     
-    [selectedIdx setValue:@"1" forKey:[NSString stringWithFormat:@"%d", indexPath.row]];
+
 }
 
 
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    [selectedIdx removeObjectForKey:[NSString stringWithFormat:@"%d", indexPath.row]];
     UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
     [self setCellSelection:cell selected:NO];
-    
-    [selectedIdx removeObjectForKey:[NSString stringWithFormat:@"%d", indexPath.row]];
+}
+
+//定义每个UICollectionView 的间距
+-(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
+{
+    return UIEdgeInsetsMake(0, 20, 0, 20);
 }
 
 - (void) setCellSelection:(UICollectionViewCell *)cell selected:(bool)selected
 {
-    cell.backgroundView.alpha = selected ? cellAAcitve : cellADeactive;
-    [cell viewWithTag:selectedTag].alpha = selected ? cellAAcitve : cellAHidden;
+    ImagsCell *imgCell=(ImagsCell *)cell;
+    if(selected){
+        imgCell.imgView.alpha=cellADeactive;
+        imgCell.selectImg.hidden=NO;
+    }else{
+        imgCell.imgView.alpha=cellAAcitve;
+        imgCell.selectImg.hidden=YES;
+    }
+//    cell.backgroundView.alpha = selected ? cellAAcitve : cellADeactive;
+//    [cell viewWithTag:selectedTag].alpha = selected ? cellAAcitve : cellAHidden;
+    self.lbTitle.text=[NSString stringWithFormat:@"已选择(%d/支持25～37张照片)",selectedIdx.count];
 }
 
 
@@ -175,8 +206,86 @@
         lastAccessed = nil;
         self.collectionView.scrollEnabled = YES;
     }
-    
-    
+}
+
+#pragma mark 网络请求
+- (void)getRequest{
+    if(!stateView){
+        stateView=[MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        stateView.removeFromSuperViewOnHide=YES;
+    }
+    NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+    NSDictionary *userData= [user objectForKey:USERDATA];
+    NSString *userPhone=userData[@"userPhone"];
+    [self initPostWithURL:ROUTINGTIMEURL path:@"getAllPhotosByUserName" paras:@{@"username":userPhone} mark:@"routing" autoRequest:YES];
+}
+
+-(void)handleRequestOK:(id)response mark:(NSString *)mark{
+    NSNumber *returnCode=[response objectForKey:@"returnCode"];
+    if([returnCode integerValue]==200){
+        NSArray *data=[response objectForKey:@"data"];
+        NSMutableArray *arr=[NSMutableArray array];
+        for (NSDictionary *param in data) {
+            RoutingTime *time=[[RoutingTime alloc]initWithSmallData:param];
+            [arr addObject:time];
+        }
+        PSLog(@"---[%d---]",arr.count);
+        [self reloadData:arr];
+        //        [_arrTime addObjectsFromArray:arr];
+    }
+    [self performSelector:@selector(setStateView:) withObject:@"success" afterDelay:0.5];
+}
+
+-(void)handleRequestFail:(NSError *)error mark:(NSString *)mark{
+    [self performSelector:@selector(setStateView:) withObject:@"fail" afterDelay:0.5];
+}
+
+
+
+- (void)reloadData:(NSArray *)data
+{
+    [_photoArr removeAllObjects];
+    for (RoutingTime *time in data) {
+        for (int i=0; i<time.rtSmallPaths.count; i++) {
+            RoutingMsg *msg=time.rtSmallPaths[i];
+            RoutingCamera *camera=[[RoutingCamera alloc]init];
+            camera.rtDate=time.rtDate;
+            camera.rtId=msg.msgNum;
+            camera.rtStory=[time.rtPaths[i] msgStory];
+            camera.rtStoryId=[time.rtPaths[i] msgStroyId];
+            camera.rtPath=[time.rtPaths[i] msgPath];
+            camera.rtSmallPath=msg.msgPath;
+            [_photoArr addObject:camera];
+        }
+    }
+    NSInteger count=_photoArr.count;
+    if (count>0) {
+        NSDate *date=[CCDate timeDate:[_photoArr[0] rtDate] formatter:@"yyyy-MM-dd HH:mm:ss"];
+        NSString *st=[CCDate stringFromDate:date formatter:@"yyyy/MM/dd"];
+        if (count>1) {
+            NSDate *date1=[CCDate timeDate:[_photoArr[count-1] rtDate] formatter:@"yyyy-MM-dd HH:mm:ss"];
+            NSString *strDate=[CCDate stringFromDate:date1 formatter:@"yyyy/MM/dd"];
+            if (![strDate isEqualToString:st]) {
+                dateStr=[NSString stringWithFormat:@"%@ - %@",strDate,st];
+            }
+        }
+    }
+    self.lbDate.text=[NSString stringWithFormat:@"时光相册(%@)",dateStr];
+    [self.collectionView reloadData];
+}
+
+
+-(void)setStateView:(NSString *)state{
+    [UIView animateWithDuration:1 animations:^{
+        stateView.alpha=0;
+    } completion:^(BOOL finished) {
+        stateView.alpha=1;
+        stateView.hidden=YES;
+        if ([state isEqualToString:@"fail"]) {
+            //            [self exitCurrentController];
+        }
+        
+    }];
 }
 
 - (void) selectCellForCollectionView:(UICollectionView *)collection atIndexPath:(NSIndexPath *)indexPath

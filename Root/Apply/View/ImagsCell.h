@@ -11,6 +11,7 @@
 @interface ImagsCell : UICollectionViewCell
 
 @property(nonatomic ,strong)UIImageView *imgView;
+@property(nonatomic ,strong)UIImageView *selectImg;
 @property(nonatomic ,strong)UILabel *text;
 @property(nonatomic ,strong)UIButton *btn;
 @property(nonatomic ,strong)UILabel *txtDuration;

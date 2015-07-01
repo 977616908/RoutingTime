@@ -20,6 +20,14 @@
         self.imgView.image=[UIImage imageNamed:@"hm_tupian"];
         [bgImg addSubview:self.imgView];
         
+        self.selectImg=[[UIImageView alloc]init];
+        UIImage *image=@"ImageSelectedOn".imageInstance;
+        CGSize size=image.size;
+        self.selectImg.frame=CGRectMake(CGRectGetWidth(self.imgView.frame)-size.width, CGRectGetHeight(self.imgView.frame)-size.height, size.width, size.height);
+        self.selectImg.image=image;
+        self.selectImg.hidden=YES;
+        [bgImg addSubview:self.selectImg];
+        
         self.btn = [UIButton buttonWithType:UIButtonTypeCustom];
         self.btn.frame = CGRectMake(6, -4, 28,31);
         [self.btn setBackgroundImage:[UIImage imageNamed:@"hm_dizi"] forState:UIControlStateNormal];

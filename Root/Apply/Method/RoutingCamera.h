@@ -10,6 +10,7 @@
 
 @interface RoutingCamera : NSObject
 @property(nonatomic,copy)NSString *rtPath;
+@property(nonatomic,copy)NSString *rtSmallPath;
 @property(nonatomic,copy)NSString *rtStory;
 @property(nonatomic,copy)NSString *rtStoryId;
 @property(nonatomic,copy)NSString *rtDate;
