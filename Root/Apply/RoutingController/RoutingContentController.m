@@ -8,7 +8,6 @@
 
 #import "RoutingContentController.h"
 #import "RTSlider.h"
-#import "RoutingListController.h"
 
 @interface RoutingContentController ()
 
@@ -86,7 +85,9 @@
 }
 
 - (IBAction)onSelectAdd:(id)sender {
-   
+//    RoutingImagesController *listController=[[RoutingImagesController alloc]init];
+//    [self.view addSubview:listController.view];
+//    [self addChildViewController:listController];
 }
 
 - (IBAction)onTypeClick:(id)sender {

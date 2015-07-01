@@ -145,6 +145,7 @@
         RoutingContentController *contentController=[[RoutingContentController alloc]init];
         contentController.animView=gesture.view;
         [contentController show];
+//        [self presentViewController:contentController animated:NO completion:nil];
     }
 }
 

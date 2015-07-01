@@ -35,10 +35,10 @@
                             <color key="textColor" red="0.68235294117647061" green="0.68235294117647061" blue="0.68235294117647061" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="如果爱因斯坦还健在，或许可以让我走进时间的流里，寻找你忽隐忽现的踪迹；如果流星划过天际，真的可以实现愿望，我会毫不犹豫选择遗留在有你陪伴的时空" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0lg-df-lOs">
-                            <rect key="frame" x="25" y="184" width="180" height="31"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="点击文字编辑" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HsB-SP-Vcu">
+                            <rect key="frame" x="25" y="188" width="180" height="30"/>
                             <fontDescription key="fontDescription" type="system" pointSize="7"/>
-                            <color key="textColor" red="0.46274509803921571" green="0.46274509803921571" blue="0.46274509803921571" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="textColor" red="0.70980392156862748" green="0.70980392156862748" blue="0.70980392156862748" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
@@ -54,7 +54,7 @@
                 <outlet property="imgIcon" destination="ccz-88-sUj" id="CF9-sY-K1M"/>
                 <outlet property="imgView" destination="GAi-HK-QVQ" id="lfE-47-tu7"/>
                 <outlet property="lbDate" destination="FCT-Tu-QRC" id="KF2-WM-p9K"/>
-                <outlet property="lbTitle" destination="0lg-df-lOs" id="Qc8-in-eOG"/>
+                <outlet property="lbTitle" destination="HsB-SP-Vcu" id="1Tj-Tm-BL5"/>
             </connections>
             <point key="canvasLocation" x="283" y="118"/>
         </view>
@@ -86,10 +86,10 @@
                             </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </view>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="如果爱因斯坦还健在，或许可以让我走进时间的流里，寻找你忽隐忽现的踪迹；如果流星划过天际，真的可以实现愿望，我会毫不犹豫选择遗留在有你陪伴的时空" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BrS-bV-Reh">
-                            <rect key="frame" x="167" y="27" width="55" height="185"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="点击文字编辑" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Goj-aZ-4As">
+                            <rect key="frame" x="167" y="26" width="55" height="186"/>
                             <fontDescription key="fontDescription" type="system" pointSize="7"/>
-                            <color key="textColor" red="0.46274509800000002" green="0.46274509800000002" blue="0.46274509800000002" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="textColor" red="0.46274509803921571" green="0.46274509803921571" blue="0.46274509803921571" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
@@ -105,7 +105,7 @@
                 <outlet property="imgIcon" destination="0J0-ig-Xgf" id="QCo-tS-j1a"/>
                 <outlet property="imgView" destination="lU0-Nl-Eu4" id="hcL-6r-xvM"/>
                 <outlet property="lbDate" destination="Bed-52-Lf5" id="XHV-re-aQ3"/>
-                <outlet property="lbTitle" destination="BrS-bV-Reh" id="fMX-7K-AW9"/>
+                <outlet property="lbTitle" destination="Goj-aZ-4As" id="cxg-gl-WEZ"/>
             </connections>
             <point key="canvasLocation" x="623" y="117.5"/>
         </view>
