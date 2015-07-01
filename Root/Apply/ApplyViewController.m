@@ -15,6 +15,7 @@
 #import "NetInstallController.h"
 #import "AlbumInstallController.h"
 #import "RoutingListController.h"
+#import "RoutingImagsController.h"
 
 @interface ApplyViewController ()<PiFiiBaseViewDelegate>{
     NSArray *arrImg;
@@ -122,8 +123,9 @@
         }];
     }else{
        [self showToast:arr[[sender tag]-1] Long:1.5];
-        RoutingListController *routingController=[[RoutingListController alloc]init];
-        [self.navigationController pushViewController:routingController animated:YES];
+        RoutingImagsController *routingController=[[RoutingImagsController alloc]init];
+//        [self.navigationController pushViewController:routingController animated:YES];
+        [self presentViewController:routingController animated:YES completion:nil];
     }
 
 
