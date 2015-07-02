@@ -7,6 +7,7 @@
 //
 
 #import "RoutingContentController.h"
+#import "RoutingImagsController.h"
 #import "RTSlider.h"
 
 @interface RoutingContentController ()
@@ -85,9 +86,14 @@
 }
 
 - (IBAction)onSelectAdd:(id)sender {
-//    RoutingImagesController *listController=[[RoutingImagesController alloc]init];
-//    [self.view addSubview:listController.view];
-//    [self addChildViewController:listController];
+    RoutingImagsController *listController=[[RoutingImagsController alloc]init];
+    listController.type=ContentType;
+    listController.view.origin=CGPointMake(0, CGRectGetHeight(listController.view.frame));
+    [self.view addSubview:listController.view];
+    [self addChildViewController:listController];
+    [UIView animateWithDuration:0.5 animations:^{
+        listController.view.origin=CGPointMake(0, 0);
+    }];
 }
 
 - (IBAction)onTypeClick:(id)sender {

@@ -31,7 +31,6 @@
     NSMutableDictionary *selectedIdx;
     MBProgressHUD   *stateView;
     NSMutableArray *_datasource;
-    NSMutableOrderedSet  *_upArray;
     NSMutableArray *_photoArr;
 }
 @property(nonatomic,weak)IBOutlet UICollectionView *collectionView;
@@ -55,7 +54,6 @@
 {
     [super viewDidLoad];
     _photoArr=[NSMutableArray array];
-    _upArray=[NSMutableOrderedSet orderedSet];
     [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
     selectedIdx = [[NSMutableDictionary alloc] init];
     
@@ -67,7 +65,11 @@
     [gestureRecognizer setMinimumNumberOfTouches:1];
     [gestureRecognizer setMaximumNumberOfTouches:1];
     self.view.backgroundColor=[UIColor whiteColor];
-    
+    if (self.type==ContentType) {
+        self.lbTitle.text=@"已选择0/支持1~2张照片";
+    }else{
+        self.lbTitle.text=@"已选择0/支持25～37张照片";
+    }
     [self getRequest];
 }
 
@@ -322,32 +324,41 @@
 
 
 - (IBAction)onClick:(id)sender {
-    if ([sender tag]==2) {
-        NSArray *selectArr=selectedIdx.allKeys;
-        if (selectArr.count<=0) {
-            [[[UIAlertView alloc]initWithTitle:@"提示" message:@"请选择25～37张照片" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles: nil]show];
-            return;
-        }
-       
-        NSMutableArray *arr=[NSMutableArray array];
-        for (int i=0; i<selectArr.count; i++){
-            NSInteger count=[selectArr[i] integerValue];
-            [arr addObject:_photoArr[count]];
-        }
-        NSArray *arrCamera=[arr sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-            RoutingCamera *item1=(RoutingCamera *)obj1;
-            RoutingCamera *item2=(RoutingCamera *)obj2;
-            return [item1.rtDate compare:item2.rtDate];
+    if (self.type==ContentType) {
+        [UIView animateWithDuration:0.5 animations:^{
+            self.view.origin=CGPointMake(0, CGRectGetHeight(self.view.frame));
+        } completion:^(BOOL finished) {
+            [self.view removeFromSuperview];
+            [self removeFromParentViewController];
         }];
-        NSString *dateStr=[self stringDateWithArray:arrCamera compare:NO];
-        RoutingCameraController *routingController=[[RoutingCameraController alloc]init];
-        routingController.arrCamera=arr;
-        routingController.dateStr=dateStr;
-        [self presentViewController:routingController animated:YES completion:nil];
     }else{
-        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
-       [self dismissViewControllerAnimated:YES completion:nil];
+        if ([sender tag]==2) {
+            NSArray *selectArr=selectedIdx.allKeys;
+            if (selectArr.count<=0) {
+                [[[UIAlertView alloc]initWithTitle:@"提示" message:@"请选择25～37张照片" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles: nil]show];
+                return;
+            }
+            NSMutableArray *arr=[NSMutableArray array];
+            for (int i=0; i<selectArr.count; i++){
+                NSInteger count=[selectArr[i] integerValue];
+                [arr addObject:_photoArr[count]];
+            }
+            NSArray *arrCamera=[arr sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                RoutingCamera *item1=(RoutingCamera *)obj1;
+                RoutingCamera *item2=(RoutingCamera *)obj2;
+                return [item1.rtDate compare:item2.rtDate];
+            }];
+            NSString *dateStr=[self stringDateWithArray:arrCamera compare:NO];
+            RoutingCameraController *routingController=[[RoutingCameraController alloc]init];
+            routingController.arrCamera=arr;
+            routingController.dateStr=dateStr;
+            [self presentViewController:routingController animated:YES completion:nil];
+        }else{
+            [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }
     }
+
     
 }
 

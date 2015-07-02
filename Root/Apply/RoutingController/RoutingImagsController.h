@@ -7,8 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+typedef enum{
+    CameraType,
+    ContentType
+}RoutingImagsType;
 
 @interface RoutingImagsController : PiFiiBaseViewController
+
+@property(nonatomic,copy)NSArray *dateSource;
+@property(nonatomic,assign)RoutingImagsType type;
 
 
 @end
