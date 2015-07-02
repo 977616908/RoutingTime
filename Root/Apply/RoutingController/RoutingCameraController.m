@@ -13,7 +13,7 @@
 #import "JCFlipPageView.h"
 #import "JCFlipPage.h"
 
-@interface RoutingCameraController ()<UIPageViewControllerDataSource,JCFlipPageViewDataSource>{
+@interface RoutingCameraController ()<UIPageViewControllerDataSource,JCFlipPageViewDataSource,PiFiiBaseViewDelegate>{
     NSInteger valueChange;
     BOOL isPage;
 }
@@ -54,12 +54,12 @@
 //        [_arrCamera addObject:rc];
 //    }
     
-    
+
 }
 
 -(void)setArrCamera:(NSMutableArray *)arrCamera{
     if (arrCamera) {
-        _arrCamera=arrCamera;
+        _arrCamera=[NSMutableArray arrayWithArray:arrCamera];
     }else{
         _arrCamera=[NSMutableArray array];
     }
@@ -69,7 +69,6 @@
     end.rtTag=-2;
     [_arrCamera insertObject:start atIndex:0];
     [_arrCamera addObject:end];
-   
 }
 
 -(void)initView{
@@ -105,6 +104,14 @@
 
 }
 
+-(void)pushViewDataSource:(id)dataSource{
+    NSArray *arr=dataSource;
+    self.dateStr=arr[0];
+    [self setArrCamera:arr[1]];
+    [self.pageController.view removeFromSuperview];
+    [self.flipPage removeFromSuperview];
+    [self initView];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

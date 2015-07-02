@@ -86,14 +86,14 @@
 -(void)onSelectClick:(id)sendar{
     NSLog(@"onSelect---");
     RoutingImagsController *imagsController=[[RoutingImagsController alloc]init];
-    [self.superController presentViewController:imagsController animated:YES completion:nil];
-//    imagsController.view.origin=CGPointMake(0, CGRectGetHeight(imagsController.view.frame));
-//    imagsController.pifiiDelegate=self.superController;
-//    [[self.superController view] addSubview:imagsController.view];
-//    [self.superController addChildViewController:imagsController];
-//    [UIView animateWithDuration:0.5 animations:^{
-//        imagsController.view.origin=CGPointMake(0, 0);
-//    }];
+//    [self.superController presentViewController:imagsController animated:YES completion:nil];
+    imagsController.view.origin=CGPointMake(0, CGRectGetHeight(imagsController.view.frame));
+    imagsController.pifiiDelegate=self.superController;
+    [[self.superController view] addSubview:imagsController.view];
+    [self.superController addChildViewController:imagsController];
+    [UIView animateWithDuration:0.5 animations:^{
+        imagsController.view.origin=CGPointMake(0, 0);
+    }];
 }
 
 -(void)setDateStr:(NSString *)dateStr{

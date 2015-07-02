@@ -324,12 +324,7 @@
 
 - (IBAction)onClick:(id)sender {
     if (self.type==ContentType) {
-        [UIView animateWithDuration:0.5 animations:^{
-            self.view.origin=CGPointMake(0, CGRectGetHeight(self.view.frame));
-        } completion:^(BOOL finished) {
-            [self.view removeFromSuperview];
-            [self removeFromParentViewController];
-        }];
+   
     }else{
         if ([sender tag]==2) {
             NSArray *selectArr=selectedIdx.allKeys;
@@ -348,26 +343,16 @@
                 return [item1.rtDate compare:item2.rtDate];
             }];
             NSString *dateStr=[self stringDateWithArray:arrCamera compare:NO];
-            RoutingCameraController *routingController=[[RoutingCameraController alloc]init];
-            routingController.arrCamera=arr;
-            routingController.dateStr=dateStr;
-            
-            RoutingCameraController *routingController1=(RoutingCameraController *)[self presentedViewController];
-            [routingController1.view removeFromSuperview];
-            [routingController1 removeFromParentViewController];
-//            [routingController1 dismissViewControllerAnimated:NO completion:nil];
-            [self presentViewController:routingController animated:YES completion:nil];
-            [self.view removeFromSuperview];
-            [self removeFromParentViewController];
+            [self.pifiiDelegate pushViewDataSource:@[dateStr,arrCamera]];
         }
-        else{
-            [self dismissViewControllerAnimated:YES completion:nil];
-        }
-//        [self.view removeFromSuperview];
-//        [self removeFromParentViewController];
     }
 
-    
+    [UIView animateWithDuration:0.5 animations:^{
+        self.view.origin=CGPointMake(0, CGRectGetHeight(self.view.frame));
+    } completion:^(BOOL finished) {
+        [self.view removeFromSuperview];
+        [self removeFromParentViewController];
+    }];
 }
 
 @end
