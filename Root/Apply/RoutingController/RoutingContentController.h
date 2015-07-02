@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface RoutingContentController : UIViewController
+@interface RoutingContentController : PiFiiBaseViewController
 
 @property(nonatomic,weak)UIView *animView;
 

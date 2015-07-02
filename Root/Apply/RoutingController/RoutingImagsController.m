@@ -54,7 +54,6 @@
 {
     [super viewDidLoad];
     _photoArr=[NSMutableArray array];
-    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
     selectedIdx = [[NSMutableDictionary alloc] init];
     
     [self.collectionView registerClass:[ImagsCell class] forCellWithReuseIdentifier:@"Cell"];
@@ -352,11 +351,20 @@
             RoutingCameraController *routingController=[[RoutingCameraController alloc]init];
             routingController.arrCamera=arr;
             routingController.dateStr=dateStr;
+            
+            RoutingCameraController *routingController1=(RoutingCameraController *)[self presentedViewController];
+            [routingController1.view removeFromSuperview];
+            [routingController1 removeFromParentViewController];
+//            [routingController1 dismissViewControllerAnimated:NO completion:nil];
             [self presentViewController:routingController animated:YES completion:nil];
-        }else{
-            [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+            [self.view removeFromSuperview];
+            [self removeFromParentViewController];
+        }
+        else{
             [self dismissViewControllerAnimated:YES completion:nil];
         }
+//        [self.view removeFromSuperview];
+//        [self removeFromParentViewController];
     }
 
     

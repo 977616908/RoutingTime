@@ -17,6 +17,7 @@ static NSString const* kJCFlipPageDefaultReusableIdentifier = @"kJCFlipPageDefau
 @property (nonatomic,copy)NSString *dateStr;
 @property (nonatomic,weak)UIImageView *startImg;
 @property (nonatomic,weak)UIImageView *endImg;
+@property (nonatomic,strong)id superController;
 
 - (id)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier;
 - (void)prepareForReuse;

@@ -7,6 +7,7 @@
 //
 
 #import "JCFlipPage.h"
+#import "RoutingImagsController.h"
 @interface JCFlipPage ()
 
 @property(nonatomic,weak)UILabel *lbDate;
@@ -35,7 +36,22 @@
 //        UIImageView *image=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"test"]];
 //        image.bounds=self.bounds;
 //        [self addSubview:image];
-//        
+//
+        UIView *bgView=[[UIView alloc]initWithFrame:CGRectMake(0, 80, CGRectGetWidth(self.frame)/2, CGRectGetHeight(self.frame)-80)];
+        bgView.backgroundColor=[UIColor clearColor];
+        
+        CCLabel *lbMsg=CCLabelCreateWithNewValue(@"重新批量选图将清空相册中原有照片", 14.0f, CGRectMake(45, 0, CGRectGetWidth(bgView.frame)-90, 40));
+        lbMsg.numberOfLines=0;
+        lbMsg.textAlignment=NSTextAlignmentCenter;
+        lbMsg.textColor=RGBCommon(143, 120, 90);
+        [bgView addSubview:lbMsg];
+        
+        CCButton *btnSelect=CCButtonCreateWithValue(CGRectMake(CGRectGetWidth(bgView.frame)/2-40, CGRectGetMaxY(lbMsg.frame)+15, 100, 34), @selector(onSelectClick:), self);
+        [btnSelect alterNormalTitle:@"批量选图"];
+        btnSelect.backgroundColor=RGBCommon(143, 120, 90);
+        [bgView addSubview:btnSelect];
+        
+        [self addSubview:bgView];
         
         UIImage *img=[UIImage imageNamed:@"rt_end"];
         UIImageView *endImg=[[UIImageView alloc]initWithFrame:CGRectMake(0, 0, img.size.width, img.size.height)];
@@ -65,6 +81,19 @@
         [self addSubview:startImg];
     }
     return self;
+}
+
+-(void)onSelectClick:(id)sendar{
+    NSLog(@"onSelect---");
+    RoutingImagsController *imagsController=[[RoutingImagsController alloc]init];
+    [self.superController presentViewController:imagsController animated:YES completion:nil];
+//    imagsController.view.origin=CGPointMake(0, CGRectGetHeight(imagsController.view.frame));
+//    imagsController.pifiiDelegate=self.superController;
+//    [[self.superController view] addSubview:imagsController.view];
+//    [self.superController addChildViewController:imagsController];
+//    [UIView animateWithDuration:0.5 animations:^{
+//        imagsController.view.origin=CGPointMake(0, 0);
+//    }];
 }
 
 -(void)setDateStr:(NSString *)dateStr{

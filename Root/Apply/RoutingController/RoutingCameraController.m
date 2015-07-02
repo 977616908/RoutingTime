@@ -219,6 +219,7 @@
     {
         page = [[JCFlipPage alloc] initWithFrame:flipPageView.bounds reuseIdentifier:kPageID];
         page.dateStr=self.dateStr;
+        page.superController=self;
     }
     page.backgroundColor=[UIColor clearColor];
 
