@@ -7,6 +7,7 @@
 //
 
 #import "RoutingImagsController.h"
+#import "RoutingCameraController.h"
 #import "ImagsCell.h"
 #import "RoutingTime.h"
 #import "RoutingMsg.h"
@@ -32,7 +33,6 @@
     NSMutableArray *_datasource;
     NSMutableOrderedSet  *_upArray;
     NSMutableArray *_photoArr;
-    NSString *dateStr;
 }
 @property(nonatomic,weak)IBOutlet UICollectionView *collectionView;
 - (IBAction)onClick:(id)sender;
@@ -163,7 +163,7 @@
     }
 //    cell.backgroundView.alpha = selected ? cellAAcitve : cellADeactive;
 //    [cell viewWithTag:selectedTag].alpha = selected ? cellAAcitve : cellAHidden;
-    self.lbTitle.text=[NSString stringWithFormat:@"已选择(%d/支持25～37张照片)",selectedIdx.count];
+    self.lbTitle.text=[NSString stringWithFormat:@"已选择%d/支持25～37张照片",selectedIdx.count];
 }
 
 
@@ -258,22 +258,32 @@
             [_photoArr addObject:camera];
         }
     }
-    NSInteger count=_photoArr.count;
-    if (count>0) {
-        NSDate *date=[CCDate timeDate:[_photoArr[0] rtDate] formatter:@"yyyy-MM-dd HH:mm:ss"];
-        NSString *st=[CCDate stringFromDate:date formatter:@"yyyy/MM/dd"];
-        if (count>1) {
-            NSDate *date1=[CCDate timeDate:[_photoArr[count-1] rtDate] formatter:@"yyyy-MM-dd HH:mm:ss"];
-            NSString *strDate=[CCDate stringFromDate:date1 formatter:@"yyyy/MM/dd"];
-            if (![strDate isEqualToString:st]) {
-                dateStr=[NSString stringWithFormat:@"%@ - %@",strDate,st];
-            }
-        }
-    }
+    NSString *dateStr=[self stringDateWithArray:_photoArr compare:YES];
     self.lbDate.text=[NSString stringWithFormat:@"时光相册(%@)",dateStr];
     [self.collectionView reloadData];
 }
 
+
+-(NSString *)stringDateWithArray:(NSArray *)array compare:(BOOL)isCompare{
+    NSString *dateStr;
+    NSInteger count=array.count;
+    if (count>0) {
+        NSDate *date=[CCDate timeDate:[array[0] rtDate] formatter:@"yyyy-MM-dd HH:mm:ss"];
+        dateStr=[CCDate stringFromDate:date formatter:@"yyyy/MM/dd"];
+        if (count>1) {
+            NSDate *date1=[CCDate timeDate:[array[count-1] rtDate] formatter:@"yyyy-MM-dd HH:mm:ss"];
+            NSString *strDate=[CCDate stringFromDate:date1 formatter:@"yyyy/MM/dd"];
+            if (![strDate isEqualToString:dateStr]) {
+                if (isCompare) {
+                   dateStr=[NSString stringWithFormat:@"%@ - %@",strDate,dateStr];
+                }else{
+                    dateStr=[NSString stringWithFormat:@"%@ - %@",dateStr,strDate];
+                }
+            }
+        }
+    }
+    return dateStr;
+}
 
 -(void)setStateView:(NSString *)state{
     [UIView animateWithDuration:1 animations:^{
@@ -312,8 +322,33 @@
 
 
 - (IBAction)onClick:(id)sender {
-    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
-    [self dismissViewControllerAnimated:YES completion:nil];
+    if ([sender tag]==2) {
+        NSArray *selectArr=selectedIdx.allKeys;
+        if (selectArr.count<=0) {
+            [[[UIAlertView alloc]initWithTitle:@"提示" message:@"请选择25～37张照片" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles: nil]show];
+            return;
+        }
+       
+        NSMutableArray *arr=[NSMutableArray array];
+        for (int i=0; i<selectArr.count; i++){
+            NSInteger count=[selectArr[i] integerValue];
+            [arr addObject:_photoArr[count]];
+        }
+        NSArray *arrCamera=[arr sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+            RoutingCamera *item1=(RoutingCamera *)obj1;
+            RoutingCamera *item2=(RoutingCamera *)obj2;
+            return [item1.rtDate compare:item2.rtDate];
+        }];
+        NSString *dateStr=[self stringDateWithArray:arrCamera compare:NO];
+        RoutingCameraController *routingController=[[RoutingCameraController alloc]init];
+        routingController.arrCamera=arr;
+        routingController.dateStr=dateStr;
+        [self presentViewController:routingController animated:YES completion:nil];
+    }else{
+        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+       [self dismissViewControllerAnimated:YES completion:nil];
+    }
+    
 }
 
 @end

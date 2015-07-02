@@ -153,6 +153,11 @@
         return nil;
     }
     ContentViewController * dataViewController =[[ContentViewController alloc]init];
+    if (index%2==0) {
+        dataViewController.isLeft=YES;
+    }else{
+        dataViewController.isLeft=NO;
+    }
     dataViewController.dataObject = [_arrCamera objectAtIndex:index];
     return dataViewController;
 }

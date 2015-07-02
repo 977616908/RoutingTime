@@ -10,5 +10,6 @@
 
 
 @interface ContentViewController : UIViewController
+@property(nonatomic,assign)BOOL isLeft;
 @property (strong,nonatomic)id dataObject;
 @end

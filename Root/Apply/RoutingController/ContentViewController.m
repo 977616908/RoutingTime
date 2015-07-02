@@ -99,7 +99,7 @@
 
 -(void)showRouting:(RoutingCamera *)routing Image:(UIImage*)image{
     CGFloat moveX=0;
-    if (routing.rtTag%2==0) {
+    if (!self.isLeft) {
         moveX=20;
     }
     UITapGestureRecognizer *imgGesture=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(onGestureListener:)];
@@ -108,9 +108,11 @@
         WgView *wgView=[[WgView alloc]initWithFrame:self.view.bounds];
         wgView.moveX=moveX;
         wgView.imgIcon.image=image;
-        wgView.lbTitle.text=routing.rtStory;
+        if (![routing.rtStory isEqualToString:@""]) {
+            wgView.lbTitle.text=routing.rtStory;
+        }
         wgView.lbDate.text=routing.rtDate;
-
+        
         wgView.imgView.userInteractionEnabled=YES;
         [wgView.imgView addGestureRecognizer:imgGesture];
         
@@ -122,7 +124,9 @@
         HgView *hgView=[[HgView alloc]initWithFrame:self.view.bounds];
         hgView.moveX=moveX;
         hgView.imgIcon.image=image;
-        hgView.lbTitle.text=routing.rtStory;
+        if (![routing.rtStory isEqualToString:@""]) {
+            hgView.lbTitle.text=routing.rtStory;
+        }
         hgView.lbDate.text=routing.rtDate;
         
         hgView.imgView.userInteractionEnabled=YES;

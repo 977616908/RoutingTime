@@ -106,13 +106,8 @@
         REPhoto *photo=rtArr[i];
         RoutingCamera *camera=[[RoutingCamera alloc]init];
         camera.rtDate=photo.date;
-        camera.rtTag=i;
         camera.rtId=photo.routingId;
-        if ([photo.rtContent isEqualToString:@""]) {
-            camera.rtStory=[NSString stringWithFormat:@"点击编辑第%d张时光相册",i+1];
-        }else{
-            camera.rtStory=photo.rtContent;
-        }
+        camera.rtStory=photo.rtContent;
         camera.rtPath=photo.imageName;
         camera.rtStoryId=photo.duration;
         [arr addObject:camera];
