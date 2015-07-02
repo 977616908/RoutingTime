@@ -103,10 +103,11 @@
 -(void)createTextView{
     // 1.添加
     CCTextView *textView = [[CCTextView alloc] init];
-    textView.font = [UIFont systemFontOfSize:18];
+    textView.font = [UIFont systemFontOfSize:15];
+    textView.textColor=RGBCommon(72, 72, 72);
     textView.placeholderColor=RGBCommon(181, 181, 181);
     
-    textView.frame = CGRectMake(7, 5, CGRectGetWidth(self.view.frame)-15, HEIGHT);
+    textView.frame = CGRectMake(7, 0, CGRectGetWidth(self.view.frame)-15, HEIGHT);
 //    textView.textContainerInset=UIEdgeInsetsMake(15, 10, 0, 10);
     // 垂直方向上永远可以拖拽
     textView.alwaysBounceVertical = YES;
