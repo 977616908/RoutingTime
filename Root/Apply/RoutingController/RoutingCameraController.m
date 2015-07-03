@@ -63,6 +63,11 @@
     }else{
         _arrCamera=[NSMutableArray array];
     }
+    if(arrCamera.count%2!=0){
+        RoutingCamera *title=[[RoutingCamera alloc]init];
+        title.rtTag=-3;
+        [_arrCamera addObject:title];
+    }
     RoutingCamera *start=[[RoutingCamera alloc]init];
     start.rtTag=-1;
     RoutingCamera *end=[[RoutingCamera alloc]init];
@@ -140,7 +145,12 @@
     if (value!=valueChange) {
         PSLog(@"---[%d]---[%d]",[sender tag],(int)_slider.value);
         [self showView:NO];
-        if(value==_slider.maximumValue)value=_slider.minimumValue-1;
+//        if(value==_slider.maximumValue){
+//           value=_slider.maximumValue-1;
+//        }else{
+//            
+//        }
+        if(value%2!=0)value-=1;
         NSArray *viewControllers=@[[self viewCintrollerAtIndex:value],[self viewCintrollerAtIndex:value+1]];
         if (value<valueChange) {
             [self.pageController setViewControllers:viewControllers direction:(UIPageViewControllerNavigationDirectionReverse) animated:YES completion:nil];

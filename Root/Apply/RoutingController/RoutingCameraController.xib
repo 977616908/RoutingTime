@@ -55,7 +55,7 @@
                     <rect key="frame" x="88" y="291" width="363" height="18"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <connections>
-                        <action selector="onSilderChange:" destination="-1" eventType="valueChanged" id="1vt-oJ-yhu"/>
+                        <action selector="onSilderChange:" destination="-1" eventType="touchUpInside" id="kO7-lR-WOz"/>
                     </connections>
                 </view>
                 <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uwb-mj-aH4">
