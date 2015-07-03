@@ -29,9 +29,9 @@
 //#define FLOWTTBASEURL @"http://192.168.1.213:8022/platports/pifii/plat/system"  //内网
 #define CLOUNDURL @"http://58.67.196.187:8080/platports/pifii/plat/cloud" //云下载
 
-#define ROUTINGTIMEURL @"http://58.67.196.187:8080/platports/pifii/plat/timeRouter" //云下载
+#define ROUTINGTIMEURL @"http://58.67.196.187:8080/platports/pifii/plat/timeRouter" //云下载getCamera
 //#define ROUTINGTIMEURL @"http://192.168.1.6:8080/platports/pifii/plat/timeRouter" //云下载 内网
-
+#define ROUTINGCAMERA @"http://58.67.196.187:8080/platports/pifii/plat/plug" //摄像头
 #define JUHEIURL @"http://op.juhe.cn/onebox/movie/video"  //聚合影视
 
 #define TOKEN @"token" //路由访问的token

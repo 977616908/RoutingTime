@@ -9,17 +9,20 @@
 #import "CameraViewController.h"
 #import "PFDownloadIndicator.h"
 #import "ScannerViewController.h"
-
+#import <SystemConfiguration/CaptiveNetwork.h>
+#import "CameraMessage.h"
 
 @interface CameraViewController ()<ScannerMacDelegate>{
     CGFloat downloadedBytes;
     NSTimer *timer;
     BOOL isConnect;
+    NSMutableArray *arrSteps;
 }
 @property(nonatomic,weak)PFDownloadIndicator *downIndicator;
 @property(nonatomic,weak)CCLabel *downMsg;
 @property(nonatomic,weak)CCButton *btnStart;
 @property(nonatomic,weak)CCLabel *lbMsg;
+@property(nonatomic,copy)CameraMessage *cameraMsg;
 @end
 
 @implementation CameraViewController
@@ -27,6 +30,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self createNav];
+    NSString *wifiiName=[self getWifiName];
+    NSLog(@"---[%@]---",wifiiName);
 }
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -83,10 +88,28 @@
     downMsg.hidden=YES;
     [bgView addSubview:downMsg];
     
-    CCImageView *imgConn=CCImageViewCreateWithNewValue(@"hm_camera_conn", CGRectMake(0,CGRectGetMaxY(downMsg.frame), 320, 158));
-    [bgView addSubview:imgConn];
+    UIView *stepView=[[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(downMsg.frame), 320, 150)];
+    CCImageView *imgConn=CCImageViewCreateWithNewValue(@"hm_camera_conn", CGRectMake(0, 0, 320, 150));
+    [stepView addSubview:imgConn];
+    CCLabel *lbMsg=CCLabelCreateWithBlodNewValue(@"配制摄像头步骤:", 13.0, CGRectMake(15, 20, 100, 14));
+    lbMsg.textColor=RGBCommon(155, 155, 155);
+    [stepView addSubview:lbMsg];
+    NSArray *arr=@[@" 1.扫描设置二维码",@" 2.连接“IPCAM-XXX”的WIFI",@" 3.连接摄像头",@" 4.设置摄像头WIFI",@" 5.重启摄像头"];
+    arrSteps=[NSMutableArray array];
+    for(int i=0;i < arr.count;i++){
+        CGFloat hg=40+i*15;
+        CCButton *btn=CCButtonCreateWithFrame(CGRectMake(14, hg, 180, 14));
+        [btn setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
+        [btn alterFontSize:11.0];
+        [btn setImage:[UIImage imageNamed:@"rt_gou"] forState:UIControlStateSelected];
+        [btn alterNormalTitle:arr[i]];
+        [btn alterNormalTitleColor:RGBCommon(155, 155, 155)];
+        [stepView addSubview:btn];
+        [arrSteps addObject:btn];
+    }
+    [bgView addSubview:stepView];
     
-    CCButton *btnStart=CCButtonCreateWithValue(CGRectMake(20, CGRectGetMaxY(imgConn.frame)+10, CGRectGetWidth(self.view.frame)-40, 42), @selector(onTypeClick:), self);
+    CCButton *btnStart=CCButtonCreateWithValue(CGRectMake(20, CGRectGetMaxY(stepView.frame)+10, CGRectGetWidth(self.view.frame)-40, 42), @selector(onTypeClick:), self);
     btnStart.backgroundColor=RGBCommon(63, 205, 225);
     btnStart.tag=2;
     [btnStart alterFontSize:20];
@@ -140,13 +163,60 @@
     }
 }
 
+-(void)setStepsCount:(NSInteger)count{
+    for (int i=0; i<count; i++) {
+        [arrSteps[i] setSelected:YES];
+    }
+}
 
 -(void)scannerMessage:(NSString *)msg{
     if (![msg isEqualToString:@""]) {
         isConnect=YES;
+        [self setStepsCount:1];
         self.lbMsg.text=[NSString stringWithFormat:@"连接摄像机设备ID:%@",msg];
         [self.btnStart alterNormalTitle:@"开始智能连接"];
+//        /platports/pifii/plat/plug/getCamera?camid=HDXQ-005664-CEGGN
+        [self initPostWithURL:ROUTINGCAMERA path:@"getCamera" paras:@{@"camid":msg} mark:@"user" autoRequest:YES];
     }
+
+}
+
+-(void)handleRequestOK:(id)response mark:(NSString *)mark{
+    PSLog(@"%@:%@",response,mark);
+    NSNumber *returnCode=[response objectForKey:@"returnCode"];
+    if ([returnCode intValue]==200) {
+        NSDictionary *data=response[@"data"];
+        CameraMessage *msg=[[CameraMessage alloc]initWithData:data];
+        self.cameraMsg=msg;
+        [self setStepsCount:2];
+    }
+}
+
+-(void)handleRequestFail:(NSError *)error mark:(NSString *)mark{
+    
+}
+
+- (NSString *)getWifiName
+
+{
+    NSString *wifiName = nil;
+    CFArrayRef wifiInterfaces = CNCopySupportedInterfaces();
+    if (!wifiInterfaces) {
+        return nil;
+    }
+    NSArray *interfaces = (__bridge NSArray *)wifiInterfaces;
+    for (NSString *interfaceName in interfaces) {
+        CFDictionaryRef dictRef = CNCopyCurrentNetworkInfo((__bridge CFStringRef)(interfaceName));
+        if (dictRef) {
+            NSDictionary *networkInfo = (__bridge NSDictionary *)dictRef;
+            NSLog(@"network info -> %@", networkInfo);
+            wifiName = [networkInfo objectForKey:(__bridge NSString *)kCNNetworkInfoKeySSID];
+            CFRelease(dictRef);
+        }
+    }
+    CFRelease(wifiInterfaces);
+    return wifiName;
+    
 }
 
 
