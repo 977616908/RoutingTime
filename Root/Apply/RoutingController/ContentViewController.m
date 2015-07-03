@@ -49,14 +49,16 @@
             UIView *endView=[[UIView alloc]initWithFrame:CGRectMake(20, 0, CGRectGetWidth(self.view.frame)-20, CGRectGetHeight(self.view.frame))];
 //            endView.backgroundColor=RGBCommon(247, 250, 236) ;
             endView.backgroundColor=[UIColor whiteColor];
-            UIImageView *img=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"yt_ybleft"]];
+            UIImageView *img=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"rt_ybleft"]];
             img.frame=CGRectMake(CGRectGetWidth(endView.frame)-75, 0, 75, CGRectGetHeight(endView.frame));
             [endView addSubview:img];
             [self.view addSubview:endView];
         }else if(routing.rtTag==-3){ //扉页
             UIView *pageView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame)-20, CGRectGetHeight(self.view.frame))];
-            //            startView.backgroundColor=RGBCommon(247, 250, 236);
             pageView.backgroundColor=[UIColor whiteColor];
+            UIImageView *img=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"rt_pageleft"]];
+            img.frame=pageView.bounds;
+            [pageView addSubview:img];
             [self.view addSubview:pageView];
         }else{
             NSURL *url=[NSURL URLWithString:routing.rtPath];
