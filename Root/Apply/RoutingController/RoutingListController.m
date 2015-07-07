@@ -109,6 +109,7 @@
         camera.rtId=photo.routingId;
         camera.rtStory=photo.rtContent;
         camera.rtPath=photo.imageName;
+        camera.rtSmallPath=photo.imageUrl;
         camera.rtStoryId=photo.duration;
         [arr addObject:camera];
         if (i==0) {

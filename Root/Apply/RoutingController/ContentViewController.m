@@ -61,13 +61,20 @@
             [pageView addSubview:img];
             [self.view addSubview:pageView];
         }else{
-            NSURL *url=[NSURL URLWithString:routing.rtPath];
-            if ([manager diskImageExistsForURL:url]) {
-                UIImage *image= [manager.imageCache imageFromDiskCacheForKey:routing.rtPath];
+            NSURL *smallUrl=[NSURL URLWithString:routing.rtSmallPath];
+            if ([manager diskImageExistsForURL:smallUrl]) {
+                UIImage *image= [manager.imageCache imageFromDiskCacheForKey:routing.rtSmallPath];
                 [self showRouting:routing Image:image];
             }else{
+                NSURL *pathUrl=[NSURL URLWithString:routing.rtPath];
+                if ([manager diskImageExistsForURL:pathUrl]) {
+                    UIImage *image= [manager.imageCache imageFromDiskCacheForKey:routing.rtPath];
+                    [self showRouting:routing Image:image];
+                }else{
+                    [NSThread detachNewThreadSelector:@selector(downImage:) toTarget:self withObject:smallUrl];
+                }
                 //            [self downImage:url];
-                [NSThread detachNewThreadSelector:@selector(downImage:) toTarget:self withObject:url];
+             
             }
         }
 
