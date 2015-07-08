@@ -8,6 +8,7 @@
 
 #import "RoutingTime.h"
 #import "RoutingMsg.h"
+#import "MJExtension.h"
 
 @implementation RoutingTime
 -(id)initWithData:(NSDictionary *)data{
@@ -58,4 +59,6 @@
     }
     return self;
 }
+
+MJCodingImplementation
 @end

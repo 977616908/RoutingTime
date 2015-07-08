@@ -7,6 +7,7 @@
 //
 
 #import "RoutingMsg.h"
+#import "MJExtension.h"
 
 @implementation RoutingMsg
 
@@ -35,5 +36,7 @@
     }
     return self;
 }
+
+MJCodingImplementation
 
 @end

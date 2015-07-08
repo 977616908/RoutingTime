@@ -28,6 +28,7 @@ typedef enum{
     NSArray *arrImgs;
     MBProgressHUD           *stateView;
     BOOL isRefresh;
+    NSString *pathArchive;
 }
 @property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *imgArr;
 @property (strong, nonatomic) IBOutletCollection(UILabel) NSArray *titileArr;
@@ -53,6 +54,7 @@ typedef enum{
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    pathArchive=pathInCacheDirectory(@"AppCache/RoutingTime.archiver");
     [self setupRefreshView];
     [self judgeWithLogin];
     [self createImage];
@@ -162,6 +164,7 @@ typedef enum{
             }else{
                 pageCount=2;
             }
+            [self saveRoutingTime:response];
         }
         [self performSelector:@selector(updateMark:) withObject:mark afterDelay:.2];
     }else if([mark isEqualToString:@"footer"]){
@@ -179,6 +182,7 @@ typedef enum{
             }else{
                 pageCount+=1;
             }
+            [self saveRoutingTime:response];
         }
         [self performSelector:@selector(updateMark:) withObject:mark afterDelay:.2];
     }else{
@@ -221,9 +225,45 @@ typedef enum{
                 pageCount+=1;
             }
             [self.rootTable reloadData];
+            [self saveRoutingTime:response];
         }
 
     }
+}
+
+-(void)handleRequestFail:(NSError *)error mark:(NSString *)mark{
+    [self performSelector:@selector(updateMark:) withObject:mark afterDelay:.2];
+    if (_arrTime.count<=0) {
+         NSDictionary *params=[NSKeyedUnarchiver unarchiveObjectWithFile:pathArchive];
+        NSString *path=[params objectForKey:@"logo_bg"];
+        //            self.topImg.image=[UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:path]]];
+        if (hasCachedImageWithString(path)) {
+            self.topImg.image=[UIImage imageWithContentsOfFile:pathForString(path)];
+        }else{
+            NSValue *size=[NSValue valueWithCGSize:self.topImg.frame.size];
+            NSDictionary *dict=@{@"url":path,@"imageView":self.topImg,@"size":size};
+            [NSThread detachNewThreadSelector:@selector(cacheImage:) toTarget:[ImageCacher defaultCacher] withObject:dict];
+        }
+        NSArray *arr=@[[NSString stringWithFormat:@"时光片段 %@",params[@"item_counts"]],
+                       [NSString stringWithFormat:@"照片 %@",params[@"picture_counts"]],
+                       [NSString stringWithFormat:@"视频 %@",params[@"video_counts"]]];
+        for (int i=0; i<arr.count; i++) {
+            ((UILabel *)_titileArr[i]).text=arr[i];
+        }
+        NSArray *arrTime=params[@"arrTime"];
+        [_arrTime addObjectsFromArray:arrTime];
+        [self.rootTable reloadData];
+    }
+    [self showToast:@"似乎已断开与互连网的连接" Long:1.5];
+}
+
+-(void)saveRoutingTime:(NSDictionary *)response{
+    NSDictionary *param=@{@"item_counts":response[@"item_counts"],
+                          @"picture_counts":response[@"picture_counts"],
+                          @"video_counts":response[@"video_counts"],
+                          @"logo_bg":response[@"logo_bg"],
+                          @"arrTime":_arrTime};
+    [NSKeyedArchiver archiveRootObject:param toFile:pathArchive];
 }
 
 //-(void)removeRoutingClass:(Class)class{
@@ -236,10 +276,6 @@ typedef enum{
 //    [_arrTime removeAllObjects];
 //    [_arrTime addObjectsFromArray:arrs];
 //}
-
--(void)handleRequestFail:(NSError *)error mark:(NSString *)mark{
-    [self performSelector:@selector(updateMark:) withObject:mark afterDelay:.2];
-}
 
 -(void)updateMark:(NSString *)mark{
     if ([mark isEqualToString:@"header"]) {
