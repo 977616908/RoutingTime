@@ -152,10 +152,21 @@
             [thumbnailView.reImage setImage:photo.image];
         }else{
             if (hasCachedImageWithString(path)) {
-                photo.image=[UIImage imageWithContentsOfFile:pathForString(path)];
-                [thumbnailView.reImage setImage:photo.image];
+                if (_photoType==REPhotoSelect) {
+                    UIImage *image=[UIImage imageWithContentsOfFile:pathForString(path)];
+                    //            UIImage *scaleImag=[[ImageCacher defaultCacher]scaleImage:image size:CGSizeMake(144, 144)];
+                    photo.image=[[ImageCacher defaultCacher]imageByScalingAndCroppingForSize:CGSizeMake(144, 144) sourceImage:image];
+                    [thumbnailView.reImage setImage:photo.image];
+                }else{
+                    photo.image=[UIImage imageWithContentsOfFile:pathForString(path)];
+                    [thumbnailView.reImage setImage:photo.image];
+                }
             }else{
-                NSDictionary *dict=@{@"url":path,@"imageView":thumbnailView.reImage};
+                NSValue *size=nil;
+                if (_photoType==REPhotoSelect) {
+                    size =[NSValue valueWithCGSize:CGSizeMake(268, 150)];
+                }
+                NSDictionary *dict=@{@"url":path,@"imageView":thumbnailView.reImage,@"size":size};
                 [NSThread detachNewThreadSelector:@selector(cacheImage:) toTarget:[ImageCacher defaultCacher] withObject:dict];
             }
         }

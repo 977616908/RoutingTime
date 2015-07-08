@@ -347,7 +347,7 @@
         }
     }
     CGFloat gh=self.photosView.subviews.count/4*80;
-    self.photosView.size=CGSizeMake(CGRectGetHeight(self.rootScrollView.frame), gh);
+    self.photosView.size=CGSizeMake(CGRectGetWidth(self.rootScrollView.frame), gh);
     self.rootScrollView.contentSize=CGSizeMake(0, gh);
 }
 
