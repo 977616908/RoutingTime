@@ -14,6 +14,7 @@
 #import "PiFiiBaseNavigationController.h"
 #import "MJPhotoBrowser.h"
 #import <AssetsLibrary/AssetsLibrary.h>
+#import <AVFoundation/AVFoundation.h>
 #import "RoutingDown.h"
 #define HEIGHT 150
 
@@ -297,10 +298,22 @@
 
 -(void)uploadWithPhoto:(REPhoto *)photo{
     ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-    [library assetForURL:[NSURL URLWithString:photo.imageUrl] resultBlock:^(ALAsset *asset)
-     {
-         //在这里使用asset来获取图片
-         if (photo.isVedio) {//上传视频
+    if (photo.isVedio) {
+//        NSURL *outputUrl=[NSURL URLWithString:@""];
+//        [self lowQuailtyWithInputURL:[photo.imageUrl urlInstance] outputURL:outputUrl blockHandler:^(AVAssetExportSession * session){
+//            if (session.status == AVAssetExportSessionStatusCompleted)
+//            {
+//                
+//            }
+//            else
+//            {
+//                
+//                
+//            }
+//        }];
+        [library assetForURL:[NSURL URLWithString:photo.imageUrl] resultBlock:^(ALAsset *asset)
+         {
+             //在这里上传视频
              ALAssetRepresentation *rep = [asset defaultRepresentation];
              PSLog(@"[%lld]",rep.size);
              const int bufferSize = 1024 * 1024;
@@ -320,15 +333,39 @@
              free(buffer);
              buffer = NULL;
              [self uploadVedio:data photo:photo];
-         }else{ // 上传图片
+
+         }
+                failureBlock:^(NSError *error)
+         {}];
+
+    }else{
+        [library assetForURL:[NSURL URLWithString:photo.imageUrl] resultBlock:^(ALAsset *asset)
+         {
+             //在这里使用asset来获取图片
              UIImage *image = [[UIImage alloc]initWithCGImage:[[asset  defaultRepresentation]fullScreenImage]];
              [self uploadVedio:UIImageJPEGRepresentation(image, 1) photo:photo];
          }
-     }
-            failureBlock:^(NSError *error)
-     {}];
+                failureBlock:^(NSError *error)
+         {}];
+
+    }
+
 }
 
+
+- (void) lowQuailtyWithInputURL:(NSURL*)inputURL
+                      outputURL:(NSURL*)outputURL
+                   blockHandler:(void (^)(AVAssetExportSession*))handler
+{
+    AVURLAsset *asset = [AVURLAsset URLAssetWithURL:inputURL options:nil];
+    AVAssetExportSession *session = [[AVAssetExportSession alloc] initWithAsset:asset     presetName:AVAssetExportPresetMediumQuality];
+    session.outputURL = outputURL;
+    session.outputFileType = AVFileTypeQuickTimeMovie;
+    [session exportAsynchronouslyWithCompletionHandler:^(void)
+     {
+         handler(session);
+     }];
+}
 
 #pragma -mark 备份视频
 -(void)uploadVedio:(NSData *)data photo:(REPhoto *)photo{

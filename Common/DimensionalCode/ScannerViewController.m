@@ -193,7 +193,7 @@
                                
                               PSLog(@"---%@----%@",macBind,macAddress);
                               if (![macBind isEqualToString:macAddress]) {
-                                  [[[UIAlertView alloc]initWithTitle:@"提示" message:@"扫描的二维码Mac地址与路由的Mac地址不一致，扫描失败，请确定后重新扫描" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil]show];
+                                  [[[UIAlertView alloc]initWithTitle:@"提示" message:@"扫描路由跟当前连接的路由地址不一致，扫描失败，请确定后重新扫描" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil]show];
                                   [self performSelector:@selector(setStateView:) withObject:@NO afterDelay:0.5];
                                   return;
                               }

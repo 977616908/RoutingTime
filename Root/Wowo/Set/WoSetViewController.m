@@ -14,6 +14,7 @@
 
 @interface WoSetViewController ()<UITableViewDataSource,UITableViewDelegate,UIAlertViewDelegate>{
     NSArray *_arrTitle;
+    MBProgressHUD *stateView;
 }
 @property (nonatomic,weak)CCTableView *woTable;
 
@@ -59,7 +60,7 @@
     titleLabel.textColor=RGBCommon(52, 52, 52);
     titleLabel.textAlignment=NSTextAlignmentCenter;
     [bgView addSubview:titleLabel];
-    CCLabel *contentLabel=CCLabelCreateWithNewValue(@"当前版本:1.0 最新版本:2.0", 14.0, CGRectMake(0, CGRectGetMaxY(titleLabel.frame)+5, CGRectGetWidth(frame), 18));
+    CCLabel *contentLabel=CCLabelCreateWithNewValue(@"当前版本:1.0 最新版本:1.0", 14.0, CGRectMake(0, CGRectGetMaxY(titleLabel.frame)+5, CGRectGetWidth(frame), 18));
     contentLabel.textColor=RGBCommon(109, 109, 109);
     contentLabel.textAlignment=NSTextAlignmentCenter;
     [bgView addSubview:contentLabel];
@@ -141,10 +142,21 @@
             [self.navigationController pushViewController:vcInstance animated:NO];
         }
     }else{
-        [self onCheckVersion];
+//        [self onCheckVersion];
+        if (!stateView) {
+            stateView = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        }
+        stateView.hidden=NO;
+        [self performSelector:@selector(showDialog) withObject:nil afterDelay:1.5];
+
     }
 }
 
+-(void)showDialog{
+    stateView.hidden=YES;
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"更新" message:@"此版本为最新版本" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+    [alert show];
+}
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     NSInteger section=indexPath.section;

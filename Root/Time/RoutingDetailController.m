@@ -245,8 +245,8 @@
         self.title=@"时光片段";
         isDelete=NO;
         for (UIImageView *delImg in _photosView.totalImages) {
+            if(delImg.subviews.count>0&&delImg.alpha<1.0)[[delImg.subviews lastObject] removeFromSuperview];
             delImg.alpha=1.0;
-            if(delImg.subviews.count>0)[delImg.subviews[0] removeFromSuperview];
         }
     }
     [_deleteArr removeAllObjects];
@@ -288,7 +288,7 @@
         if ([_deleteArr containsObject:photo]) {
             delImg.alpha=1.0;
             [_deleteArr removeObject:photo];
-            [delImg.subviews[0] removeFromSuperview];
+            [[delImg.subviews lastObject] removeFromSuperview];
         }else{
             [_deleteArr addObject:photo];
             UIImageView *selectImg=[[UIImageView alloc]init];
@@ -346,7 +346,7 @@
             [NSThread detachNewThreadSelector:@selector(cacheImage:) toTarget:[ImageCacher defaultCacher] withObject:dict];
         }
     }
-    CGFloat gh=self.photosView.subviews.count/4*80;
+    CGFloat gh=(self.photosView.subviews.count/4+1)*80;
     self.photosView.size=CGSizeMake(CGRectGetWidth(self.rootScrollView.frame), gh);
     self.rootScrollView.contentSize=CGSizeMake(0, gh);
 }
@@ -416,17 +416,36 @@
 
 #pragma -mark 分享信息
 -(void)shareSDK{
+    SSPublishContentMediaType contentType;
     NSString *content=_textView.text;//@"要分享的内容"
-    REPhoto *photo=_photoArr[0];
+    RoutingMsg *msg=_imageArr[0];
+    REPhoto *photo;
+    if (msg.isVedio) {
+        contentType=SSPublishContentMediaTypeVideo;
+        photo=_vedioArr[0];
+//        for(photo in _vedioArr){
+//            if([photo.imageName isEqualToString:msg.msgNum]){
+//                break;
+//            }
+//        }
+    }else{
+        contentType=SSPublishContentMediaTypeImage;
+        photo=_photoArr[0];
+//        for(photo in _photoArr){
+//            if([photo.imageName isEqualToString:msg.msgNum]){
+//                break;
+//            }
+//        }
+    }
     NSString *url=photo.imageUrl;
     //1、构造分享内容
     id<ISSContent> publishContent = [ShareSDK content:content
                                        defaultContent:@"默认内容"
-                                                image:[ShareSDK imageWithUrl:url]
+                                                image:[ShareSDK imageWithUrl:msg.msgPath]
                                                 title:@"时光路游 - 美好记忆的开始"
                                                   url:url
                                           description:@"来自于www.pifii.com"
-                                            mediaType:SSPublishContentMediaTypeNews];
+                                            mediaType:contentType];
     //1+创建弹出菜单容器（iPad必要）
     id<ISSContainer> container = [ShareSDK container];
     [container setIPadContainerWithView:self.view arrowDirect:UIPopoverArrowDirectionUp];

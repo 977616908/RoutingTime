@@ -122,8 +122,8 @@
         }];
     }else{
        [self showToast:arr[[sender tag]-1] Long:1.5];
-        RoutingListController *routingController=[[RoutingListController alloc]init];
-        [self.navigationController pushViewController:routingController animated:YES];
+//        RoutingListController *routingController=[[RoutingListController alloc]init];
+//        [self.navigationController pushViewController:routingController animated:YES];
     }
 
 

@@ -162,11 +162,13 @@
                     [thumbnailView.reImage setImage:photo.image];
                 }
             }else{
-                NSValue *size=nil;
+                NSDictionary *dict;
                 if (_photoType==REPhotoSelect) {
-                    size =[NSValue valueWithCGSize:CGSizeMake(268, 150)];
+                    NSValue *size =[NSValue valueWithCGSize:CGSizeMake(268, 150)];
+                    dict=@{@"url":path,@"imageView":thumbnailView.reImage,@"size":size};
+                }else{
+                    dict=@{@"url":path,@"imageView":thumbnailView.reImage};
                 }
-                NSDictionary *dict=@{@"url":path,@"imageView":thumbnailView.reImage,@"size":size};
                 [NSThread detachNewThreadSelector:@selector(cacheImage:) toTarget:[ImageCacher defaultCacher] withObject:dict];
             }
         }

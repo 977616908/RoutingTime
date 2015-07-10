@@ -87,7 +87,7 @@
 -(UIView *)createButtonView:(CGRect)frame{
     UIView *bgView=[[UIView alloc]initWithFrame:frame];
     bgView.backgroundColor=[UIColor whiteColor];
-    NSArray *iconArr=@[@"hm_ddgl",@"hm_sggj",@"hm_sgjy"];
+    NSArray *iconArr=@[@"hm_sggj",@"hm_sgjy",@"hm_ddgl"];
     NSArray *titleArr=@[@"时光赶集",@"时光脚印",@"订单管理"];
     for (int i=0; i<iconArr.count; i++) {
         WoButton *btn=[[WoButton alloc]initWithFrame:CGRectMake((BUTTONHEIGHT+15)*i+30, 15, BUTTONHEIGHT, BUTTONHEIGHT)];
