@@ -17,7 +17,7 @@ CGFloat imgH;
 CGFloat imgW;
 - (void)setImageWithURL:(NSURL *)url
 {
-    [self setImageWithURL:url placeholderImage:nil options:0 progress:nil completed:nil];
+    [self setImageWithURL:url placeholderImage:nil options:SDWebImageProgressiveDownload progress:nil completed:nil];
 }
 
 - (void)setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder
