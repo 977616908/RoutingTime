@@ -16,9 +16,20 @@
 #import "AlbumInstallController.h"
 #import "RoutingListController.h"
 
-@interface ApplyViewController ()<PiFiiBaseViewDelegate>{
+#import "PlayViewController.h"
+#import "CameraListMgt.h"
+#import "PPPPDefine.h"
+
+@interface ApplyViewController ()<PiFiiBaseViewDelegate,UserPwdProtocol,PPPPStatusProtocol>{
     NSArray *arrImg;
     NSInteger showCount;
+    
+    PicPathManagement *m_pPicPathMgt;
+    RecPathManagement *m_pRecPathMgt;
+    CameraListMgt *m_pCameraListMgt;
+    CPPPPChannelManagement *pPPPPChannelMgt;
+    NSCondition *ppppChannelMgntCondition;
+    NetWorkUtiles *netWorkUtile;
 }
 - (IBAction)onClick:(id)sender;
 @property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *imgArr;
@@ -33,6 +44,7 @@
     arrImg=@[@"hm_asxl",@"hm_aphc",@"hm_aap",@"hm_save"];
     showCount=0;
     [self startWifiiAnimation];
+    [self createCamera];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -51,6 +63,16 @@
             [self startAnimation:image];
         }
     }
+    
+    UIImageView *image=_imgArr[0];
+    if (image.tag!=1) {
+        image.tag=1;
+        [self startAnimation:image];
+    }
+    if (pPPPPChannelMgt) {
+        pPPPPChannelMgt->StopPPPPLivestream([@"HDXQ-005664-CEGGN" UTF8String]);
+    }
+    [self start];
 }
 
 -(void)coustomNav{
@@ -125,14 +147,12 @@
 //        RoutingListController *routingController=[[RoutingListController alloc]init];
 //        [self.navigationController pushViewController:routingController animated:YES];
     }
-
-
 }
 
 -(void)startController:(NSInteger)tag{
     switch (tag) {
         case 1:{
-           
+            [self startPlayer];
         }
             break;
             
@@ -163,6 +183,39 @@
             
     }
 }
+
+#pragma -mark 跳转摄像头
+-(void)startPlayer{
+    //    NSDictionary *cameraDic = [m_pCameraListMgt GetCameraAtIndex:0];
+    //    NSNumber *nPPPPStatus = [cameraDic objectForKey:@STR_PPPP_STATUS];
+    //    if ([nPPPPStatus intValue] == PPPP_STATUS_INVALID_ID) {
+    //        return;
+    //    }
+    //    NSLog(@"---%d---",[nPPPPStatus integerValue]);
+    //    if ([nPPPPStatus intValue] != PPPP_STATUS_ON_LINE) {
+    //        NSString *strDID = [cameraDic objectForKey:@STR_DID];
+    //        NSString *strUser = [cameraDic objectForKey:@STR_USER];
+    //        NSString *strPwd = [cameraDic objectForKey:@STR_PWD];
+    //
+    //        pPPPPChannelMgt->Start([strDID UTF8String], [strUser UTF8String], [strPwd UTF8String]);
+    //
+    //        //            return;
+    //    }
+    
+    PlayViewController *playViewController = [[PlayViewController alloc] initWithNibName:@"PlayView" bundle:nil];
+    playViewController.m_pPPPPChannelMgt = pPPPPChannelMgt;
+    playViewController.m_pPicPathMgt = m_pPicPathMgt;
+    playViewController.m_pRecPathMgt = m_pRecPathMgt;
+    playViewController.isP2P=YES;
+    playViewController.cameraName = @"时光路游";
+    
+    
+    
+    playViewController.strDID = @"HDXQ-005664-CEGGN";
+    playViewController.m_nP2PMode = 1;
+    [self presentViewController:playViewController animated:YES completion:nil];
+}
+
 
 #pragma mark 启动动画
 -(void)startWifiiAnimation{
@@ -226,4 +279,130 @@
     }
     return isBound;
 }
+
+#pragma -mark 启动摄像头
+
+-(void)createCamera{
+    NSString *filePath=[self serverFilePath];
+    NSString *strServer=nil;
+    BOOL isDefaultServer=YES;
+    if([[NSFileManager defaultManager]fileExistsAtPath:filePath]){
+        NSArray *array=[[NSArray alloc]initWithContentsOfFile:filePath];
+        strServer=[array objectAtIndex:0];
+        
+        isDefaultServer=[(NSNumber *)[array objectAtIndex:1]boolValue];
+        //        [array release];
+    }
+    if (isDefaultServer) {
+        strServer=@"EBGAEOBOKHJMHMJMENGKFIEEHBMDHNNEGNEBBCCCBIIHLHLOCIACCJOFHHLLJEKHBFMPLMCHPHMHAGDHJNNHIFBAMC";
+    }else{
+        NSLog(@"使用更改的服务器地址");
+    }
+    NSLog(@"strServer=%@",strServer);
+    PPPP_Initialize((char *)[strServer UTF8String]);
+    
+    usleep(1000000);
+    st_PPPP_NetInfo NetInfo;
+    PPPP_NetworkDetect(&NetInfo, 0);
+}
+
+-(void)start{
+    ppppChannelMgntCondition = [[NSCondition alloc] init];
+    pPPPPChannelMgt = new CPPPPChannelManagement();
+    m_pPicPathMgt = [[PicPathManagement alloc] init];
+    m_pRecPathMgt = [[RecPathManagement alloc] init];
+    m_pCameraListMgt = [[CameraListMgt alloc] init];
+    [m_pCameraListMgt selectP2PAll:YES];
+    netWorkUtile=[[NetWorkUtiles alloc]init];
+    netWorkUtile.userProtocol=self;
+    pPPPPChannelMgt->CameraControl([@"HDXQ-005664-CEGGN" UTF8String], 0, 1);
+    pPPPPChannelMgt->StartPPPPLivestream([@"HDXQ-005664-CEGGN" UTF8String], 0, self);
+    
+    
+    [ppppChannelMgntCondition lock];
+    [NSThread detachNewThreadSelector:@selector(startCamera) toTarget:self withObject:nil];
+    [ppppChannelMgntCondition unlock];
+    //    [self start];
+    [self updateAuthority:@"HDXQ-005664-CEGGN"];
+}
+
+-(void)startCamera{
+    NSString *strDID = @"HDXQ-005664-CEGGN";
+    NSString *strUser = @"admin";
+    NSString *strPwd = @"admin";
+    
+    pPPPPChannelMgt->Start([strDID UTF8String], [strUser UTF8String], [strPwd UTF8String]);
+}
+
+-(NSString *)serverFilePath{
+    NSArray *path=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask
+                                                      , YES);
+    NSString *paths=[path objectAtIndex:0];
+    return[paths stringByAppendingPathComponent:@"server"];
+}
+
+
+#pragma mark -
+#pragma mark UserPwdProtocol
+-(void)UserPwdResult:(NSString *)did user1:(NSString *)strUser1 pwd1:(NSString *)strPwd1 user2:(NSString *)strUser2 pwd2:(NSString *)strPwd2 user3:(NSString *)strUser3 pwd3:(NSString *)strPwd3{
+    NSLog(@"获取权限返回的结果  did=%@  user1=%@ pwd1=%@  user2=%@ pwd2=%@  user3=%@ pwd3=%@",did,strUser1,strPwd1,strUser2,strPwd2,strUser3,strPwd3);
+    
+    
+    
+    
+    //[self performSelectorOnMainThread:@selector(ReloadCameraTableView) withObject:nil waitUntilDone:NO];
+}
+
+-(void)updateAuthority:(NSString *)did{
+    //NSLog(@"updateAuthority  00000  did=%@",did);
+    
+    sleep(1);
+    pPPPPChannelMgt->SetUserPwdParamDelegate((char*)[did UTF8String], self);
+    pPPPPChannelMgt->PPPPSetSystemParams((char*)[did UTF8String], MSG_TYPE_GET_PARAMS, NULL, 0);
+}
+
+
+#pragma mark -
+#pragma mark  PPPPStatusProtocol
+- (void) PPPPStatus:(NSString *)strDID statusType:(NSInteger)statusType status:(NSInteger)status
+{
+    NSLog(@"PPPPStatus ..... strDID: %@, statusType: %d, status: %d", strDID, statusType, status);
+    if (statusType == MSG_NOTIFY_TYPE_PPPP_MODE) {
+        NSInteger index = [m_pCameraListMgt UpdatePPPPMode:strDID mode:status];
+        if ( index >= 0){
+            //   [self performSelectorOnMainThread:@selector(ReloadRowDataAtIndex:) withObject:[NSNumber numberWithInt:index] waitUntilDone:NO];
+        }
+        return;
+    }
+    
+    if (statusType == MSG_NOTIFY_TYPE_PPPP_STATUS) {
+        NSInteger index = [m_pCameraListMgt UpdatePPPPStatus:strDID status:status];
+        if ( index >= 0){
+            // [self performSelectorOnMainThread:@selector(ReloadRowDataAtIndex:) withObject:[NSNumber numberWithInt:index] waitUntilDone:NO];
+            if (status==PPPP_STATUS_ON_LINE) {//
+                NSLog(@"用户在线，去获取权限");
+                // [self performSelector:@selector(updateAuthority:) withObject:strDID afterDelay:1];
+                //[self performSelectorOnMainThread:@selector(updateAuthority:) withObject:strDID waitUntilDone:NO];
+                //[self updateAuthority:strDID];
+                [NSThread detachNewThreadSelector:@selector(updateAuthority:) toTarget:self withObject:strDID];
+            }else{
+                NSLog(@"状态改变");
+                //                [self performSelectorOnMainThread:@selector(notifyCameraStatusChange:) withObject:strDID waitUntilDone:NO];
+            }
+            //            [self performSelectorOnMainThread:@selector(ReloadCameraTableView) withObject:nil waitUntilDone:NO];
+        }
+        
+        
+        //如果是ID号无效，则停止该设备的P2P
+        if (status == PPPP_STATUS_INVALID_ID
+            || status == PPPP_STATUS_CONNECT_TIMEOUT
+            || status == PPPP_STATUS_DEVICE_NOT_ON_LINE
+            || status == PPPP_STATUS_CONNECT_FAILED||statusType==PPPP_STATUS_INVALID_USER_PWD) {
+            //            [self performSelectorOnMainThread:@selector(StopPPPPByDID:) withObject:strDID waitUntilDone:NO];
+        }
+        
+    }
+}
+
+
 @end
