@@ -8,6 +8,7 @@
 
 #import "GlobalShare.h"
 #import <sys/utsname.h>
+//#import <CoreText/CoreText.h>
 
 @implementation GlobalShare
 

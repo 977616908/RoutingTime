@@ -1351,14 +1351,14 @@
 
 #pragma mark system
 
--(BOOL)shouldAutorotate{
-    return NO;
-}
-
--(NSUInteger)supportedInterfaceOrientations
-{
-    return UIInterfaceOrientationMaskLandscape;
-}
+//-(BOOL)shouldAutorotate{
+//    return NO;
+//}
+//
+//-(NSUInteger)supportedInterfaceOrientations
+//{
+//    return UIInterfaceOrientationMaskLandscape;
+//}
 
 - (void) viewWillAppear:(BOOL)animated
 {

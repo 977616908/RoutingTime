@@ -72,7 +72,7 @@
     if (pPPPPChannelMgt) {
         pPPPPChannelMgt->StopPPPPLivestream([@"HDXQ-005664-CEGGN" UTF8String]);
     }
-    [self start];
+    [self performSelector:@selector(start) withObject:nil afterDelay:.25];
 }
 
 -(void)coustomNav{
@@ -202,7 +202,7 @@
     //        //            return;
     //    }
     
-    PlayViewController *playViewController = [[PlayViewController alloc] initWithNibName:@"PlayView" bundle:nil];
+    PlayViewController *playViewController = [[PlayViewController alloc] init];
     playViewController.m_pPPPPChannelMgt = pPPPPChannelMgt;
     playViewController.m_pPicPathMgt = m_pPicPathMgt;
     playViewController.m_pRecPathMgt = m_pRecPathMgt;
