@@ -13,12 +13,13 @@
 #import "PiFiiBaseNavigationController.h"
 #import "LoginRegisterController.h"
 #import "MJRefresh.h"
+#import "PECropViewController.h"
 typedef enum{
     CameraNone,
     CameraPhoto
 }CameraType;
 
-@interface RoutingTimeController ()<MJRefreshBaseViewDelegate,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,PiFiiBaseViewDelegate>{
+@interface RoutingTimeController ()<MJRefreshBaseViewDelegate,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,PiFiiBaseViewDelegate,PECropViewControllerDelegate>{
     CGFloat lastScrollOffset;
     CGFloat angle;
     CADisplayLink *link;
@@ -442,9 +443,36 @@ typedef enum{
         _imagePicker.delegate = self;
         _imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
         _imagePicker.showsCameraControls = YES;
-        if (self.type!=CameraNone)_imagePicker.allowsEditing = YES;
+//        if (self.type!=CameraNone)_imagePicker.allowsEditing = YES;
         [self presentViewController:_imagePicker animated:YES completion:nil];
     }
+}
+
+- (void)cropViewController:(PECropViewController *)controller didFinishCroppingImage:(UIImage *)croppedImage{
+    NSLog(@"--croppedImage--");
+    [_imagePicker dismissViewControllerAnimated:YES completion:NULL];
+
+    _imagePicker = nil;
+                if(!stateView){
+                    stateView=[MBProgressHUD showHUDAddedTo:self.view animated:YES];
+                }
+                stateView.hidden=NO;
+                stateView.labelText=@"正在更换封面...";
+//                CGSize size=self.topImg.frame.size;
+    //            UIImage *customImg=[[ImageCacher defaultCacher]scaleImage:theImage size:size];
+    //            UIImage *customImg=[[ImageCacher defaultCacher]compressImage:theImage sizeheight:size.height*2];
+//                ImageCacher *cacher=[ImageCacher defaultCacher];
+//                cacher.isCenter=YES;
+//                UIImage *customImg=[cacher imageByScalingAndCroppingForSize:CGSizeMake(size.width*2, size.height*2) sourceImage:theImage];
+                [self uploadImage:croppedImage];
+    //            self.topImg.image=theImage;
+}
+
+- (void)cropViewControllerDidCancel:(PECropViewController *)controller{
+    [controller.navigationController popViewControllerAnimated:NO];
+    [_imagePicker dismissViewControllerAnimated:YES completion:NULL];
+    
+    _imagePicker = nil;
 }
 
 // 打开相册
@@ -453,7 +481,7 @@ typedef enum{
         _imagePicker = [[UIImagePickerController alloc] init];
     }
     _imagePicker.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
-    _imagePicker.allowsEditing = YES;
+//    _imagePicker.allowsEditing = YES;
     _imagePicker.delegate = self;
     [self presentViewController:_imagePicker animated:YES completion:NULL];
 }
@@ -462,10 +490,6 @@ typedef enum{
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info{
     
     NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
-    
-    [_imagePicker dismissViewControllerAnimated:YES completion:NULL];
-    
-    _imagePicker = nil;
     
     // 判断获取类型：图片
     if ([mediaType isEqualToString:@"public.image"]){
@@ -482,20 +506,20 @@ typedef enum{
         }
         PSLog(@"--[%f]--[%f]",theImage.size.width,theImage.size.height);
         if (self.type!=CameraNone) {
-            if(!stateView){
-                stateView=[MBProgressHUD showHUDAddedTo:self.view animated:YES];
-            }
-            stateView.hidden=NO;
-            stateView.labelText=@"正在更换封面...";
-            CGSize size=self.topImg.frame.size;
-//            UIImage *customImg=[[ImageCacher defaultCacher]scaleImage:theImage size:size];
-//            UIImage *customImg=[[ImageCacher defaultCacher]compressImage:theImage sizeheight:size.height*2];
-            ImageCacher *cacher=[ImageCacher defaultCacher];
-            cacher.isCenter=YES;
-            UIImage *customImg=[cacher imageByScalingAndCroppingForSize:CGSizeMake(size.width*2, size.height*2) sourceImage:theImage];
-            [self uploadImage:customImg];
-//            self.topImg.image=theImage;
+            PECropViewController *controller = [[PECropViewController alloc] init];
+            controller.delegate = self;
+            controller.image = theImage;
+            //    controller.navigationItem.title = @"截取图片";
+            //    controller.imageCropRect = rect;
+            controller.keepingCropAspectRatio = YES;
+            controller.cropAspectRatio = self.topImg.frame.size.width/self.topImg.frame.size.height;
+            controller.toolbarHidden = YES;
+//            [self presentViewController:controller animated:YES completion:nil];
+            [_imagePicker pushViewController:controller animated:YES];
         }else{
+            [_imagePicker dismissViewControllerAnimated:YES completion:NULL];
+            
+            _imagePicker = nil;
             UIImageWriteToSavedPhotosAlbum(theImage, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
         }
 
