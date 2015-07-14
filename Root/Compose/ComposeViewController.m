@@ -25,6 +25,7 @@
     NSMutableOrderedSet     *_saveSet;
     NSMutableDictionary *params;
     NSInteger downCount;
+    NSString *resultPath;
 }
 
 @property(nonatomic,weak)CCTextView *textView;
@@ -297,48 +298,64 @@
 
 
 -(void)uploadWithPhoto:(REPhoto *)photo{
-    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
     if (photo.isVedio) {
-//        NSURL *outputUrl=[NSURL URLWithString:@""];
-//        [self lowQuailtyWithInputURL:[photo.imageUrl urlInstance] outputURL:outputUrl blockHandler:^(AVAssetExportSession * session){
-//            if (session.status == AVAssetExportSessionStatusCompleted)
-//            {
-//                
-//            }
-//            else
-//            {
-//                
-//                
-//            }
-//        }];
-        [library assetForURL:[NSURL URLWithString:photo.imageUrl] resultBlock:^(ALAsset *asset)
-         {
-             //在这里上传视频
-             ALAssetRepresentation *rep = [asset defaultRepresentation];
-             PSLog(@"[%lld]",rep.size);
-             const int bufferSize = 1024 * 1024;
-             Byte *buffer=(Byte *)malloc(bufferSize);
-             NSUInteger read=0,offSet=0;
-             NSError *error=nil;
-             NSMutableData *data=[NSMutableData data];
-             if (rep.size!=0) {
-                 do {
-                     read = [rep getBytes:buffer fromOffset:offSet length:bufferSize error:&error];
-                     [data appendBytes:buffer length:read];
-                     offSet += read;
-                 } while (read!=0&&!error);
-             }
-             
-             // 释放缓冲区，关闭文件
-             free(buffer);
-             buffer = NULL;
-             [self uploadVedio:data photo:photo];
-
-         }
-                failureBlock:^(NSError *error)
-         {}];
+        [self convertVedio:[photo.imageUrl urlInstance] block:^(AVAssetExportSession * session) {
+            switch (session.status) {
+                case AVAssetExportSessionStatusUnknown:
+                    NSLog(@"AVAssetExportSessionStatusUnknown");
+                    break;
+                case AVAssetExportSessionStatusWaiting:
+                    NSLog(@"AVAssetExportSessionStatusWaiting");
+                    break;
+                case AVAssetExportSessionStatusExporting:
+                    NSLog(@"AVAssetExportSessionStatusExporting");
+                    break;
+                case AVAssetExportSessionStatusCompleted:
+                    NSLog(@"AVAssetExportSessionStatusCompleted");
+                    break;
+                case AVAssetExportSessionStatusFailed:
+                    NSLog(@"AVAssetExportSessionStatusFailed");
+                    break;
+                    
+                default:
+                    break;
+            }
+            CGFloat length=[self getFileSize:resultPath];
+            if (length>0) {
+                [self uploadVedio:[NSData dataWithContentsOfFile:resultPath] photo:photo];
+            }
+            NSLog(@"%@:%f",resultPath,length);
+            
+        }];
+//        [library assetForURL:[NSURL URLWithString:photo.imageUrl] resultBlock:^(ALAsset *asset)
+//         {
+//             //在这里上传视频
+//             ALAssetRepresentation *rep = [asset defaultRepresentation];
+//             PSLog(@"[%lld]",rep.size);
+//             const int bufferSize = 1024 * 1024;
+//             Byte *buffer=(Byte *)malloc(bufferSize);
+//             NSUInteger read=0,offSet=0;
+//             NSError *error=nil;
+//             NSMutableData *data=[NSMutableData data];
+//             if (rep.size!=0) {
+//                 do {
+//                     read = [rep getBytes:buffer fromOffset:offSet length:bufferSize error:&error];
+//                     [data appendBytes:buffer length:read];
+//                     offSet += read;
+//                 } while (read!=0&&!error);
+//             }
+//             
+//             // 释放缓冲区，关闭文件
+//             free(buffer);
+//             buffer = NULL;
+//             [self uploadVedio:data photo:photo];
+//
+//         }
+//                failureBlock:^(NSError *error)
+//         {}];
 
     }else{
+        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
         [library assetForURL:[NSURL URLWithString:photo.imageUrl] resultBlock:^(ALAsset *asset)
          {
              //在这里使用asset来获取图片
@@ -352,19 +369,32 @@
 
 }
 
+#pragma mark 视频压缩
+-(void)convertVedio:(NSURL *)path block:(void (^)(AVAssetExportSession*))handler{
+    AVURLAsset *avAsset = [AVURLAsset URLAssetWithURL:path options:nil];
+    NSArray *compatiblePresets = [AVAssetExportSession exportPresetsCompatibleWithAsset:avAsset];
+    if ([compatiblePresets containsObject:AVAssetExportPresetMediumQuality]) {
+        AVAssetExportSession *exportSession = [[AVAssetExportSession alloc] initWithAsset:avAsset presetName:AVAssetExportPresetMediumQuality];
+        resultPath = [NSHomeDirectory() stringByAppendingFormat:@"/Documents/output-%@.mp4", [self getDate]];
+        exportSession.outputURL = [NSURL fileURLWithPath:resultPath];
+        exportSession.outputFileType = AVFileTypeMPEG4;
+        [exportSession exportAsynchronouslyWithCompletionHandler:^(void)
+         {
+             handler(exportSession);
+         }];
+    }
+}
 
-- (void) lowQuailtyWithInputURL:(NSURL*)inputURL
-                      outputURL:(NSURL*)outputURL
-                   blockHandler:(void (^)(AVAssetExportSession*))handler
+- (CGFloat) getFileSize:(NSString *)path
 {
-    AVURLAsset *asset = [AVURLAsset URLAssetWithURL:inputURL options:nil];
-    AVAssetExportSession *session = [[AVAssetExportSession alloc] initWithAsset:asset     presetName:AVAssetExportPresetMediumQuality];
-    session.outputURL = outputURL;
-    session.outputFileType = AVFileTypeQuickTimeMovie;
-    [session exportAsynchronouslyWithCompletionHandler:^(void)
-     {
-         handler(session);
-     }];
+    NSFileManager *fileManager = [[NSFileManager alloc] init];
+    float filesize = -1.0;
+    if ([fileManager fileExistsAtPath:path]) {
+        NSDictionary *fileDic = [fileManager attributesOfItemAtPath:path error:nil];//获取文件的属性
+        unsigned long long size = [[fileDic objectForKey:NSFileSize] longLongValue];
+        filesize = 1.0*size/1024;
+    }
+    return filesize;
 }
 
 #pragma -mark 备份视频
@@ -374,6 +404,7 @@
         if (data) {
             if (photo.isVedio) {
                 [formData appendPartWithFileData:data name:@"files" fileName:photo.imageName mimeType:@"video/mp4"];
+                [[NSFileManager defaultManager]removeItemAtPath:resultPath error:nil];
             }else{
                  [formData appendPartWithFileData:data name:@"files" fileName:photo.imageName mimeType:@"image/jpeg"];
             }
