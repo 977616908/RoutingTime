@@ -259,6 +259,7 @@
         [controller presentMoviePlayerViewControllerAnimated:playerController];
     }else{
         NSMutableArray *arrPhoto=[NSMutableArray array];
+        NSInteger tag=0;
         for (int i=0; i<_routingTime.rtPaths.count; i++) {
             if (![_routingTime.rtSmallPaths[i] isVedio]) {
                 RoutingMsg *rtMsg=_routingTime.rtPaths[i];
@@ -268,15 +269,16 @@
                 photo.isVedio=rtMsg.isVedio;
                 photo.imageName=rtMsg.msgNum;
                 photo.routingId=[NSString stringWithFormat:@"%d",_routingTime.rtId];
+                if ([msg.msgNum isEqualToString:rtMsg.msgNum]) {
+                    tag=arrPhoto.count;
+                }
                 [arrPhoto addObject:photo];
             }
         }
-        NSLog(@"tap--[%d]",gesture.view.tag);
-        
-        
+        NSLog(@"tap--[%d]",tag);
         MJPhotoBrowser *photo=[[MJPhotoBrowser alloc]init];
         photo.isPhoto=NO;
-        photo.currentPhotoIndex=gesture.view.tag;
+        photo.currentPhotoIndex=tag;
         photo.photos=arrPhoto;
         photo.pifiiDelegate=self.superController;
         [controller.navigationController.view.layer addAnimation:[self customAnimationType:kCATransitionFade upDown:NO]  forKey:@"animation"];

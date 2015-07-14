@@ -1351,9 +1351,18 @@
 
 #pragma mark system
 
-//-(BOOL)shouldAutorotate{
-//    return NO;
-//}
+-(BOOL)shouldAutorotate{
+    return NO;
+}
+
+// Override to allow orientations other than the default portrait orientation.
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    // Return YES for supported orientations.
+    
+    // NSLog(@"playviewcontroller shouldAutorotateToInterfaceOrientation");
+    return UIInterfaceOrientationIsLandscape(interfaceOrientation);
+}
+
 //
 //-(NSUInteger)supportedInterfaceOrientations
 //{

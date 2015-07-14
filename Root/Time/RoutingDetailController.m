@@ -397,8 +397,7 @@
             }
             [_deleteArr removeAllObjects];
             for (UIImageView *delImg in _photosView.totalImages) {
-                delImg.alpha=1.0;
-                if(delImg.subviews.count>0)[delImg removeFromSuperview];
+                if(delImg.subviews.count>0&&delImg.alpha<1.0)[delImg removeFromSuperview];
             }
         }
         [self.pifiiDelegate removeViewDataSources:nil];

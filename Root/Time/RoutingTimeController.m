@@ -448,33 +448,6 @@ typedef enum{
     }
 }
 
-- (void)cropViewController:(PECropViewController *)controller didFinishCroppingImage:(UIImage *)croppedImage{
-    NSLog(@"--croppedImage--");
-    [_imagePicker dismissViewControllerAnimated:YES completion:NULL];
-
-    _imagePicker = nil;
-                if(!stateView){
-                    stateView=[MBProgressHUD showHUDAddedTo:self.view animated:YES];
-                }
-                stateView.hidden=NO;
-                stateView.labelText=@"正在更换封面...";
-//                CGSize size=self.topImg.frame.size;
-    //            UIImage *customImg=[[ImageCacher defaultCacher]scaleImage:theImage size:size];
-    //            UIImage *customImg=[[ImageCacher defaultCacher]compressImage:theImage sizeheight:size.height*2];
-//                ImageCacher *cacher=[ImageCacher defaultCacher];
-//                cacher.isCenter=YES;
-//                UIImage *customImg=[cacher imageByScalingAndCroppingForSize:CGSizeMake(size.width*2, size.height*2) sourceImage:theImage];
-                [self uploadImage:croppedImage];
-    //            self.topImg.image=theImage;
-}
-
-- (void)cropViewControllerDidCancel:(PECropViewController *)controller{
-    [controller.navigationController popViewControllerAnimated:NO];
-    [_imagePicker dismissViewControllerAnimated:YES completion:NULL];
-    
-    _imagePicker = nil;
-}
-
 // 打开相册
 - (void)openPics {
     if (_imagePicker == nil) {
@@ -488,7 +461,8 @@ typedef enum{
 
 // 选中照片
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info{
-    
+    [_imagePicker dismissViewControllerAnimated:YES completion:NULL];
+    _imagePicker = nil;
     NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
     
     // 判断获取类型：图片
@@ -506,20 +480,8 @@ typedef enum{
         }
         PSLog(@"--[%f]--[%f]",theImage.size.width,theImage.size.height);
         if (self.type!=CameraNone) {
-            PECropViewController *controller = [[PECropViewController alloc] init];
-            controller.delegate = self;
-            controller.image = theImage;
-            //    controller.navigationItem.title = @"截取图片";
-            //    controller.imageCropRect = rect;
-            controller.keepingCropAspectRatio = YES;
-            controller.cropAspectRatio = self.topImg.frame.size.width/self.topImg.frame.size.height;
-            controller.toolbarHidden = YES;
-//            [self presentViewController:controller animated:YES completion:nil];
-            [_imagePicker pushViewController:controller animated:YES];
+            [self performSelector:@selector(startCropImage:) withObject:theImage];
         }else{
-            [_imagePicker dismissViewControllerAnimated:YES completion:NULL];
-            
-            _imagePicker = nil;
             UIImageWriteToSavedPhotosAlbum(theImage, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
         }
 
@@ -534,6 +496,41 @@ typedef enum{
     }
 }
 
+#pragma -mark 头像的编辑
+
+-(void)startCropImage:(UIImage *)image{
+    PECropViewController *controller = [[PECropViewController alloc] init];
+    controller.delegate = self;
+    controller.image = image;
+    controller.navigationItem.title=@"截取图片";
+    controller.keepingCropAspectRatio = YES;
+    controller.cropAspectRatio = self.topImg.frame.size.width/self.topImg.frame.size.height;
+    controller.toolbarHidden = YES;
+    PiFiiBaseNavigationController *nav=[[PiFiiBaseNavigationController alloc]initWithRootViewController:controller];
+//    UINavigationController *nav=[[UINavigationController alloc]initWithRootViewController:controller];
+    [self presentViewController:nav animated:YES completion:nil];
+}
+
+- (void)cropViewController:(PECropViewController *)controller didFinishCroppingImage:(UIImage *)croppedImage{
+    [controller dismissViewControllerAnimated:YES completion:nil];
+    if(!stateView){
+        stateView=[MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    }
+    stateView.hidden=NO;
+    stateView.labelText=@"正在更换封面...";
+    //                CGSize size=self.topImg.frame.size;
+    //            UIImage *customImg=[[ImageCacher defaultCacher]scaleImage:theImage size:size];
+    //            UIImage *customImg=[[ImageCacher defaultCacher]compressImage:theImage sizeheight:size.height*2];
+    //                ImageCacher *cacher=[ImageCacher defaultCacher];
+    //                cacher.isCenter=YES;
+    //                UIImage *customImg=[cacher imageByScalingAndCroppingForSize:CGSizeMake(size.width*2, size.height*2) sourceImage:theImage];
+    [self uploadImage:croppedImage];
+    //            self.topImg.image=theImage;
+}
+
+- (void)cropViewControllerDidCancel:(PECropViewController *)controller{
+    [controller dismissViewControllerAnimated:YES completion:nil];
+}
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
     if (![scrollView isMemberOfClass:[_rootScrollView class]]) {
