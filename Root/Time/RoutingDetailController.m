@@ -388,12 +388,20 @@
         if (_deleteArr.count==count) {
             [self performSelector:@selector(exitCurrentController) withObject:nil afterDelay:1.5];
         }else{
+//            NSMutableArray *arrImg=[NSMutableArray array];
             for (REPhoto *photo in _deleteArr) {
                 if (photo.isVedio) {
                     [_vedioArr removeObject:photo];
                 }else{
                     [_photoArr removeObject:photo];
                 }
+                for (RoutingMsg *msg in _imageArr) {
+                    if ([msg.msgNum isEqualToString:photo.imageName]) {
+                        [_imageArr removeObject:msg];
+                        break;
+                    }
+                }
+
             }
             [_deleteArr removeAllObjects];
             for (UIImageView *delImg in _photosView.totalImages) {

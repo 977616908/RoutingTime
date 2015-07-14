@@ -22,7 +22,7 @@
 @property(nonatomic,weak)CCLabel *downMsg;
 @property(nonatomic,weak)CCButton *btnStart;
 @property(nonatomic,weak)CCLabel *lbMsg;
-@property(nonatomic,copy)CameraMessage *cameraMsg;
+@property(nonatomic,weak)CameraMessage *cameraMsg;
 @end
 
 @implementation CameraViewController
@@ -187,6 +187,7 @@
     if ([returnCode intValue]==200) {
         NSDictionary *data=response[@"data"];
         CameraMessage *msg=[[CameraMessage alloc]initWithData:data];
+        PSLog(@"%@",msg);
         self.cameraMsg=msg;
         [self setStepsCount:2];
     }
