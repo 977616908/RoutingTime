@@ -45,7 +45,6 @@
     arrImg=@[@"hm_asxl",@"hm_aphc",@"hm_aap",@"hm_save"];
     showCount=0;
     [self startWifiiAnimation];
-    [self createCamera];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -66,11 +65,12 @@
     }
     
     UIImageView *image=_imgArr[0];
-    if (image.tag!=1) {
-        image.tag=1;
-        [self startAnimation:image];
+    if (image.tag==1) {
+        [self performSelector:@selector(start) withObject:nil afterDelay:.25];
+//        image.tag=1;
+//        [self startAnimation:image];
     }
-    [self performSelector:@selector(start) withObject:nil afterDelay:.25];
+    
 }
 
 -(void)coustomNav{
@@ -156,7 +156,7 @@
             
         case 2:{
             MediaCenterViewController *mediaController=[[MediaCenterViewController alloc]init];
-            mediaController.title=@"应用中心";
+            mediaController.title=@"家庭应用";
             [self.navigationController pushViewController:mediaController animated:YES];
         }
             break;
@@ -258,6 +258,9 @@
         image.tag=count+1;
         [self startAnimation:image];
     }
+    if(image.tag==1){
+        [self createCamera];
+    }
 }
 
 
@@ -297,8 +300,8 @@
     PSLog(@"strServer=%@",strServer);
     PPPP_Initialize((char *)[strServer UTF8String]);
 //    usleep(1000000);
-    st_PPPP_NetInfo NetInfo;
-    PPPP_NetworkDetect(&NetInfo, 0);
+//    st_PPPP_NetInfo NetInfo;
+//    PPPP_NetworkDetect(&NetInfo, 0);
 }
 
 -(void)start{
@@ -354,9 +357,9 @@
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     if (!isCamera) {
-        if (pPPPPChannelMgt) {
-            pPPPPChannelMgt->StopPPPPLivestream([@"HDXQ-005664-CEGGN" UTF8String]);
-        }
+//        if (pPPPPChannelMgt) {
+//            pPPPPChannelMgt->StopPPPPLivestream([@"HDXQ-005664-CEGGN" UTF8String]);
+//        }
     }
 }
 

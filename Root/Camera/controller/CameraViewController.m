@@ -174,7 +174,6 @@
         isConnect=YES;
         [self setStepsCount:1];
         self.lbMsg.text=[NSString stringWithFormat:@"连接摄像机设备ID:%@",msg];
-        [self.btnStart alterNormalTitle:@"开始智能连接"];
 //        /platports/pifii/plat/plug/getCamera?camid=HDXQ-005664-CEGGN
         [self initPostWithURL:ROUTINGCAMERA path:@"getCamera" paras:@{@"camid":msg} mark:@"user" autoRequest:YES];
     }
@@ -187,9 +186,16 @@
     if ([returnCode intValue]==200) {
         NSDictionary *data=response[@"data"];
         CameraMessage *msg=[[CameraMessage alloc]initWithData:data];
-        PSLog(@"%@",msg);
         self.cameraMsg=msg;
-        [self setStepsCount:2];
+        PSLog(@"%@",msg);
+        if(msg.isOpen){
+            [self setStepsCount:5];
+            [self.btnStart alterNormalTitle:@"开始智能连接"];
+        }else{
+            [self.btnStart alterNormalTitle:@"开始智能连接"];
+        }
+
+
     }
 }
 
