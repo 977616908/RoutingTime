@@ -91,8 +91,10 @@ typedef enum{
 //    start.color=[UIColor blackColor];
     self.startView=start;
     [self.showImg addSubview:start];
+    for (int i=0; i<_titileArr.count; i++) {
+        ((UILabel *)_titileArr[i]).font=[UIFont fontWithName:@"Hagin Caps Medium" size:14.0];
+    }
     
-  
 }
 
 -(void)viewWillAppear:(BOOL)animated{

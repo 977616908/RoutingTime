@@ -15,7 +15,7 @@
 #import "NetInstallController.h"
 #import "AlbumInstallController.h"
 #import "RoutingListController.h"
-
+#include "MyAudioSession.h"
 #import "PlayViewController.h"
 #import "CameraListMgt.h"
 #import "PPPPDefine.h"
@@ -30,6 +30,7 @@
     CPPPPChannelManagement *pPPPPChannelMgt;
     NSCondition *ppppChannelMgntCondition;
     NetWorkUtiles *netWorkUtile;
+    BOOL isCamera;
 }
 - (IBAction)onClick:(id)sender;
 @property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *imgArr;
@@ -68,9 +69,6 @@
     if (image.tag!=1) {
         image.tag=1;
         [self startAnimation:image];
-    }
-    if (pPPPPChannelMgt) {
-        pPPPPChannelMgt->StopPPPPLivestream([@"HDXQ-005664-CEGGN" UTF8String]);
     }
     [self performSelector:@selector(start) withObject:nil afterDelay:.25];
 }
@@ -128,9 +126,6 @@
     // Dispose of any resources that can be recreated.
 }
 
--(void)viewWillDisappear:(BOOL)animated{
-    [super viewWillDisappear:animated];
-}
 
 - (IBAction)onClick:(id)sender {
     NSArray *arr=@[@"暂未添加摄像头连接",@"暂未绑定路由",@"暂未添加时光相册",@"暂未添加安全上网控件"];
@@ -154,6 +149,7 @@
 -(void)startController:(NSInteger)tag{
     switch (tag) {
         case 1:{
+            isCamera=YES;
             [self startPlayer];
         }
             break;
@@ -291,24 +287,22 @@
     if([[NSFileManager defaultManager]fileExistsAtPath:filePath]){
         NSArray *array=[[NSArray alloc]initWithContentsOfFile:filePath];
         strServer=[array objectAtIndex:0];
-        
         isDefaultServer=[(NSNumber *)[array objectAtIndex:1]boolValue];
-        //        [array release];
     }
     if (isDefaultServer) {
         strServer=@"EBGAEOBOKHJMHMJMENGKFIEEHBMDHNNEGNEBBCCCBIIHLHLOCIACCJOFHHLLJEKHBFMPLMCHPHMHAGDHJNNHIFBAMC";
     }else{
-        NSLog(@"使用更改的服务器地址");
+        PSLog(@"使用更改的服务器地址");
     }
-    NSLog(@"strServer=%@",strServer);
+    PSLog(@"strServer=%@",strServer);
     PPPP_Initialize((char *)[strServer UTF8String]);
-    
-    usleep(1000000);
+//    usleep(1000000);
     st_PPPP_NetInfo NetInfo;
     PPPP_NetworkDetect(&NetInfo, 0);
 }
 
 -(void)start{
+    isCamera=NO;
     ppppChannelMgntCondition = [[NSCondition alloc] init];
     pPPPPChannelMgt = new CPPPPChannelManagement();
     m_pPicPathMgt = [[PicPathManagement alloc] init];
@@ -326,6 +320,8 @@
     [ppppChannelMgntCondition unlock];
     //    [self start];
     [self updateAuthority:@"HDXQ-005664-CEGGN"];
+    
+    InitAudioSession();
 }
 
 -(void)startCamera{
@@ -343,12 +339,34 @@
     return[paths stringByAppendingPathComponent:@"server"];
 }
 
+#pragma mark -停用摄像头
+- (void) StopPPPP
+{
+    [ppppChannelMgntCondition lock];
+    if (pPPPPChannelMgt == NULL) {
+        [ppppChannelMgntCondition unlock];
+        return;
+    }
+    pPPPPChannelMgt->StopAll();
+    [ppppChannelMgntCondition unlock];
+}
+
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    if (!isCamera) {
+        if (pPPPPChannelMgt) {
+            pPPPPChannelMgt->StopPPPPLivestream([@"HDXQ-005664-CEGGN" UTF8String]);
+        }
+    }
+}
+
+
 
 #pragma mark -
 #pragma mark UserPwdProtocol
 -(void)UserPwdResult:(NSString *)did user1:(NSString *)strUser1 pwd1:(NSString *)strPwd1 user2:(NSString *)strUser2 pwd2:(NSString *)strPwd2 user3:(NSString *)strUser3 pwd3:(NSString *)strPwd3{
     NSLog(@"获取权限返回的结果  did=%@  user1=%@ pwd1=%@  user2=%@ pwd2=%@  user3=%@ pwd3=%@",did,strUser1,strPwd1,strUser2,strPwd2,strUser3,strPwd3);
-    
+    [m_pCameraListMgt UpdateCameraAuthority:did User:strUser3 Pwd:strPwd3];
     
     
     
