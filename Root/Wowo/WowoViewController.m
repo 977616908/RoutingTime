@@ -8,6 +8,8 @@
 
 #import "WowoViewController.h"
 #import "WoEditViewController.h"
+#import "RoutingOrderViewController.h"
+#import "HtmlViewController.h"
 #import "WoButton.h"
 #import "BindView.h"
 #import "ScannerViewController.h"
@@ -107,6 +109,27 @@
 
 -(void)onWoClick:(id)sendar{
     PSLog(@"onClick:%d",[sendar tag]);
+    switch ([sendar tag]) {
+        case 0:{
+            HtmlViewController * web =[[HtmlViewController alloc]init];
+            web.url = @"http://ipifii.wxshidai.com/shop/?redirect=1";
+            web.title =@"时光赶集";
+            [self.navigationController pushViewController:web animated:YES];
+        }
+            break;
+        case 1:{
+            
+        }
+            break;
+        case 2:{
+            RoutingOrderViewController *orderController=[[RoutingOrderViewController alloc]init];
+            [self.navigationController pushViewController:orderController animated:YES];
+        }
+            break;
+        default:
+            break;
+    }
+    
 }
 
 #pragma -mark 获取个人信息
