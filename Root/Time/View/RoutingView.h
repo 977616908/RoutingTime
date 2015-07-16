@@ -15,6 +15,8 @@ typedef void (^BeginUpdatingBlock)(RoutingView *);
 @interface RoutingView : UIView
 @property (nonatomic,assign,readonly) BOOL isLoading;
 @property (strong,nonatomic) BeginUpdatingBlock beginUpdatingBlock;
+@property (weak, nonatomic) IBOutlet UIImageView *topImg;
+@property (weak, nonatomic) IBOutlet UIImageView *refreshImgView;
 /**
  *  内容视图大小，可根据此摆放你的内容视图
  */

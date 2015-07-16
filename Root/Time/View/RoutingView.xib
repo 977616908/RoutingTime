@@ -30,9 +30,9 @@
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
-                <outlet property="bgImageView" destination="fSi-Vr-7Gn" id="V9E-XE-tqp"/>
                 <outlet property="refreshImgView" destination="0Oq-db-rJO" id="1xC-2S-tl9"/>
                 <outlet property="scrollView" destination="fNy-Pd-Ojb" id="VzY-1B-AFn"/>
+                <outlet property="topImg" destination="fSi-Vr-7Gn" id="2oc-5D-jr3"/>
             </connections>
             <point key="canvasLocation" x="253" y="-144"/>
         </view>

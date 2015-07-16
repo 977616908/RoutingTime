@@ -8,7 +8,7 @@
 
 #import "RoutingView.h"
 
-#define TOP_BG_HIDE 66.0f
+#define TOP_BG_HIDE 35.0f
 #define TOP_FLAG_HIDE 55.0f
 #define RATE 2
 #define SWITCH_Y -TOP_FLAG_HIDE
@@ -21,8 +21,7 @@
 }
 
 @property (weak, nonatomic) IBOutlet  UIScrollView *scrollView;
-@property (weak, nonatomic) IBOutlet UIImageView *bgImageView;
-@property (weak, nonatomic) IBOutlet UIImageView *refreshImgView;
+
 //@property (weak, nonatomic)  UIView *containerView;
 @end
 
@@ -43,7 +42,7 @@
     self.scrollView.backgroundColor = [UIColor clearColor];
     self.scrollView.delegate  = self;
     self.scrollView.scrollsToTop = NO;
-    
+    self.backgroundColor=[UIColor clearColor];
     [self prepare];
 }
 
@@ -52,7 +51,7 @@
     CGPoint point = scrollView.contentOffset;
     CGFloat rate = point.y/scrollView.contentSize.height;
     if(point.y+TOP_BG_HIDE>5){
-        self.bgImageView.frame = CGRectMake(0, (-TOP_BG_HIDE)*(1+rate*RATE), self.bgImageView.frame.size.width, self.bgImageView.frame.size.height);
+        self.topImg.frame = CGRectMake(0, (-TOP_BG_HIDE)*(1+rate*RATE), self.topImg.frame.size.width, self.topImg.frame.size.height);
     }
     if(!_isLoading){
         if(scrollView.dragging){
@@ -77,12 +76,12 @@
 -(void)setBgImage:(UIImage *)image{
     if(image){
     
-        self.bgImageView.image = image;
+        self.topImg.image = image;
         CGSize size = image.size;
-        CGRect rect = self.bgImageView.frame;
+        CGRect rect = self.topImg.frame;
         rect.size.width = self.bounds.size.width;
         rect.size.height = self.bounds.size.width * (size.height/size.width);
-        self.bgImageView.frame = rect;
+        self.topImg.frame = rect;
     }
 }
 -(void)setContentView:(UIView *)contentView{

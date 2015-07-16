@@ -34,6 +34,7 @@ typedef enum{
 @property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *imgArr;
 @property (strong, nonatomic) IBOutletCollection(UILabel) NSArray *titileArr;
 @property (weak, nonatomic) IBOutlet UIView *bgLoad;
+@property (weak, nonatomic) IBOutlet UIView *topView;
 @property (weak, nonatomic) IBOutlet UIScrollView *rootScrollView;
 @property (weak, nonatomic) IBOutlet UIButton *btnWifii;
 @property (weak, nonatomic) IBOutlet UITableView *rootTable;
@@ -94,7 +95,29 @@ typedef enum{
     for (int i=0; i<_titileArr.count; i++) {
         ((UILabel *)_titileArr[i]).font=[UIFont fontWithName:@"Hagin Caps Medium" size:14.0];
     }
+    UISwipeGestureRecognizer *swipeGesture;
+    swipeGesture=[[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(handleSwipeFrom:)];
+    [swipeGesture setDirection:UISwipeGestureRecognizerDirectionDown];
+    [self.topView addGestureRecognizer:swipeGesture];
     
+    swipeGesture=[[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(handleSwipeFrom:)];
+    [swipeGesture setDirection:UISwipeGestureRecognizerDirectionUp];
+    [self.topView addGestureRecognizer:swipeGesture];
+//    self.topView.userInteractionEnabled=YES;
+}
+
+-(void)handleSwipeFrom:(UISwipeGestureRecognizer *)gesture{
+    if (gesture.direction==UISwipeGestureRecognizerDirectionDown) {
+        NSLog(@"---down---");
+        [UIView animateWithDuration:0.35 animations:^{
+            _rootScrollView.contentOffset=CGPointMake(0, -64);
+        }];
+    }else{
+        NSLog(@"---up---");
+        [UIView animateWithDuration:0.5 animations:^{
+            _rootScrollView.contentOffset=CGPointMake(0, 35);
+        }];
+    }
 }
 
 -(void)viewWillAppear:(BOOL)animated{

@@ -263,21 +263,24 @@
                                 //可以根据回调提示用户。
                                 if (state == SSResponseStateSuccess)
                                 {
-                                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"分享成功"
-                                                                                    message:nil
-                                                                                   delegate:self
-                                                                          cancelButtonTitle:@"OK"
-                                                                          otherButtonTitles:nil, nil];
-                                    [alert show];
+//                                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"分享成功"
+//                                                                                    message:nil
+//                                                                                   delegate:self
+//                                                                          cancelButtonTitle:@"OK"
+//                                                                          otherButtonTitles:nil, nil];
+//                                    [alert show];
+//                                    
+                                    [self showToast:@"推荐成功" Long:1.5];
                                 }
                                 else if (state == SSResponseStateFail)
                                 {
-                                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"分享失败"
-                                                                                    message:[NSString stringWithFormat:@"失败描述：%@",[error errorDescription]]
-                                                                                   delegate:self
-                                                                          cancelButtonTitle:@"OK"
-                                                                          otherButtonTitles:nil, nil];
-                                    [alert show];
+//                                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"分享失败"
+//                                                                                    message:[NSString stringWithFormat:@"失败描述：%@",[error errorDescription]]
+//                                                                                   delegate:self
+//                                                                          cancelButtonTitle:@"OK"
+//                                                                          otherButtonTitles:nil, nil];
+//                                    [alert show];
+                                    [self showToast:[NSString stringWithFormat:@"推荐失败(%@)",[error errorDescription]] Long:1.5];
                                 }
                             }];
 }

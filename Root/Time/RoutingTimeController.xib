@@ -13,6 +13,7 @@
                 <outlet property="rootTable" destination="sPl-xk-I81" id="Lk1-St-Abh"/>
                 <outlet property="showImg" destination="uFu-2n-bkL" id="A9G-yP-QUl"/>
                 <outlet property="topImg" destination="nu3-vW-DC2" id="US5-9g-Oey"/>
+                <outlet property="topView" destination="Knp-qX-fM0" id="1gZ-My-rMJ"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
                 <outletCollection property="imgArr" destination="6f7-kx-ueT" id="9XA-35-Mwp"/>
                 <outletCollection property="imgArr" destination="6BR-wb-jhe" id="EKD-Uz-nPR"/>
@@ -26,21 +27,21 @@
             <rect key="frame" x="0.0" y="64" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SUR-Jl-eSZ">
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SUR-Jl-eSZ">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                     <subviews>
                         <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0nM-TI-dc5">
                             <rect key="frame" x="0.0" y="0.0" width="320" height="122"/>
                             <subviews>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hm_top_db.png" translatesAutoresizingMaskIntoConstraints="NO" id="uFu-2n-bkL">
-                                    <rect key="frame" x="0.0" y="-163" width="320" height="100"/>
-                                </imageView>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hm_top.png" translatesAutoresizingMaskIntoConstraints="NO" id="nu3-vW-DC2">
-                                    <rect key="frame" x="0.0" y="-65" width="320" height="188"/>
+                                    <rect key="frame" x="0.0" y="-160" width="320" height="100"/>
                                 </imageView>
                             </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         </view>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hm_top.png" translatesAutoresizingMaskIntoConstraints="NO" id="nu3-vW-DC2">
+                            <rect key="frame" x="0.0" y="-64" width="320" height="186"/>
+                        </imageView>
                         <view alpha="0.29999999999999999" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="c4w-wj-P7u">
                             <rect key="frame" x="0.0" y="99" width="320" height="24"/>
                             <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
@@ -105,6 +106,10 @@
                                     </state>
                                 </button>
                             </subviews>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        </view>
+                        <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Knp-qX-fM0">
+                            <rect key="frame" x="0.0" y="96" width="320" height="89"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         </view>
                     </subviews>
