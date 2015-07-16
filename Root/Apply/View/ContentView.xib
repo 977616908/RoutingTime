@@ -35,10 +35,10 @@
                             <color key="textColor" red="0.68235294120000001" green="0.68235294120000001" blue="0.68235294120000001" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="点击文字编辑" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u3M-u3-ydS">
-                            <rect key="frame" x="25" y="188" width="180" height="30"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="点击文字编辑" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gfW-Zm-856">
+                            <rect key="frame" x="25" y="180" width="180" height="30"/>
                             <fontDescription key="fontDescription" type="system" pointSize="7"/>
-                            <color key="textColor" red="0.70980392160000005" green="0.70980392160000005" blue="0.70980392160000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="textColor" red="0.70980392156862748" green="0.70980392156862748" blue="0.70980392156862748" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
@@ -54,7 +54,7 @@
                 <outlet property="imgIcon" destination="9HN-yz-ChE" id="35G-9P-Pcc"/>
                 <outlet property="imgView" destination="Lta-Iy-UAC" id="POW-sg-7XA"/>
                 <outlet property="lbDate" destination="YkI-AM-HqC" id="Hkm-1E-FlN"/>
-                <outlet property="lbTitle" destination="u3M-u3-ydS" id="rJV-rI-Ulj"/>
+                <outlet property="lbTitle" destination="gfW-Zm-856" id="AYx-rT-hn9"/>
             </connections>
             <point key="canvasLocation" x="283" y="118"/>
         </view>
@@ -86,10 +86,10 @@
                             </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </view>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="点击文字编辑" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qba-ik-g9v">
-                            <rect key="frame" x="167" y="26" width="55" height="186"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="点击文字编辑" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rz1-Ub-eHX">
+                            <rect key="frame" x="167" y="26" width="42" height="186"/>
                             <fontDescription key="fontDescription" type="system" pointSize="7"/>
-                            <color key="textColor" red="0.46274509800000002" green="0.46274509800000002" blue="0.46274509800000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="textColor" red="0.70980392156862748" green="0.70980392156862748" blue="0.70980392156862748" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
@@ -105,7 +105,7 @@
                 <outlet property="imgIcon" destination="B79-5q-mWn" id="wr4-2y-kjC"/>
                 <outlet property="imgView" destination="PaZ-xd-SN1" id="UKX-Si-KAk"/>
                 <outlet property="lbDate" destination="ktR-Yp-hiW" id="Edj-VK-qf5"/>
-                <outlet property="lbTitle" destination="qba-ik-g9v" id="f9a-G0-AXc"/>
+                <outlet property="lbTitle" destination="rz1-Ub-eHX" id="ehH-ed-1P4"/>
             </connections>
             <point key="canvasLocation" x="623" y="117.5"/>
         </view>
