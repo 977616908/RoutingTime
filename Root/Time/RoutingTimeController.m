@@ -587,7 +587,7 @@ typedef enum{
     float h = size.height;
     float reload_distance = 10;
     if(y > h + reload_distance) {
-        if (pageCount!=-1&&!isRefresh) {
+        if (pageCount!=-1&&pageCount!=0&&!isRefresh) {
             isRefresh=YES;
             [self.footer beginRefreshing];
             [self getRequestPage:pageCount mark:@"footer"];

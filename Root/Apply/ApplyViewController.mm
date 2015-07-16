@@ -156,7 +156,7 @@
             
         case 2:{
             MediaCenterViewController *mediaController=[[MediaCenterViewController alloc]init];
-            mediaController.title=@"家庭应用";
+            mediaController.title=@"应用中心";
             [self.navigationController pushViewController:mediaController animated:YES];
         }
             break;

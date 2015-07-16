@@ -89,7 +89,7 @@
     
     // 2.应用
     ApplyViewController *message = [[ApplyViewController alloc] init];
-    [self setupChildViewController:message title:@"应用" imageName:@"hm_yyon" selectedImageName:@"hm_yyon_selected"];
+    [self setupChildViewController:message title:@"家庭应用" imageName:@"hm_yyon" selectedImageName:@"hm_yyon_selected"];
     
     // 3.我
     WowoViewController *wo = [[WowoViewController alloc] init];
