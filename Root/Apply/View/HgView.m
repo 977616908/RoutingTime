@@ -12,7 +12,7 @@
 
 -(instancetype)initWithFrame:(CGRect)frame{
     if (self=[super initWithFrame:frame]) {
-        NSArray *array=[[NSBundle mainBundle]loadNibNamed:@"RoutingView" owner:nil options:nil];
+        NSArray *array=[[NSBundle mainBundle]loadNibNamed:@"ContentView" owner:nil options:nil];
         self=array[1];
     }
     return self;

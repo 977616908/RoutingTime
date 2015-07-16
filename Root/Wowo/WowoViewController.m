@@ -112,7 +112,7 @@
     switch ([sendar tag]) {
         case 0:{
             HtmlViewController * web =[[HtmlViewController alloc]init];
-            web.url = @"http://ipifii.wxshidai.com/shop/?redirect=1";
+            web.url = @"http://ipifii.wxshidai.com/index/list?id=27066";
             web.title =@"时光赶集";
             [self.navigationController pushViewController:web animated:YES];
         }
