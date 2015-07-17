@@ -93,7 +93,12 @@
     //    CGFloat barHeight = 0;
     CGFloat barY = CGRectGetHeight(self.view.frame) - BARHEIHGT;
     _toolbar = [[MJPhotoToolbar alloc] init];
-    _toolbar.isPhoto=self.isPhoto;
+    if (self.photos==PhotoShowNone) {
+        _toolbar.isPhoto=YES;
+    }else{
+        _toolbar.isPhoto=NO;
+    }
+
     //    _toolbar.backgroundColor=[UIColor grayColor];
     _toolbar.backgroundColor=RGBCommon(63, 205, 225);
     _toolbar.Delegate = self;
@@ -166,30 +171,37 @@
     }else{
         _currentPhotoIndex = _currentPhotoIndex - 1;
     }
-    if(_isPhoto){
-//        [library assetForURL:photo.url resultBlock:^(ALAsset *asset)
-//         {
-//             //在这里使用asset来获取图片
-//             if(asset.isEditable) {
-//                 //再删除这张图片，如果不执行这行代码，在你的默认相册里面会多一张照片出来
-//                 [asset setImageData:nil metadata:nil completionBlock:^(NSURL *assetURL, NSError *error) {
-//                     PSLog(@"Asset url %@ should be deleted. (Error %@)", assetURL, error);
-//                 }];
-//             }
-//         }
-//                failureBlock:^(NSError *error)
-//         {}];
-    }else{
+//    if(_isPhoto){
+//    }else{
 //        [self deleteWithPhoto:_photos[ThisImageIndex]];
+//        [self deletePhoto:_removePhoto[ThisImageIndex]];
+//    }
+    if (self.photoType==PhotoShowRouter) {
+        [self deleteWithPhoto:_photos[ThisImageIndex]];
+    }else if(self.photoType==PhotoShowCamera){
         [self deletePhoto:_removePhoto[ThisImageIndex]];
+        [_removePhoto removeObjectAtIndex:ThisImageIndex];
+        [self.pifiiDelegate removeViewDataSources:_removePhoto];
+        if (_removePhoto.count==0) {
+            [self performSelector:@selector(exitCurrentController) withObject:nil afterDelay:0.2];
+        }
+    }else{
+        MJPhoto *photo=_photos[ThisImageIndex];
+        [library assetForURL:photo.url resultBlock:^(ALAsset *asset)
+                   {
+                       //在这里使用asset来获取图片
+                       if(asset.isEditable) {
+                           //再删除这张图片，如果不执行这行代码，在你的默认相册里面会多一张照片出来
+                           [asset setImageData:nil metadata:nil completionBlock:^(NSURL *assetURL, NSError *error) {
+                               PSLog(@"Asset url %@ should be deleted. (Error %@)", assetURL, error);
+                           }];
+                       }
+                   }
+                          failureBlock:^(NSError *error)
+                   {}];
     }
     [_photos removeObjectAtIndex: ThisImageIndex];
-    [_removePhoto removeObjectAtIndex:ThisImageIndex];
     [self setCurrentPhotoIndex: _currentPhotoIndex ];
-    [self.pifiiDelegate removeViewDataSources:_removePhoto];
-    if (_photos.count==0) {
-        [self performSelector:@selector(exitCurrentController) withObject:nil afterDelay:0.2];
-    }
 }
 
 -(void)deleteWithPhoto:(MJPhoto *)photo{
@@ -448,7 +460,7 @@
         MJPhoto *photo = [[MJPhoto alloc]init];
         photo.index = i;
         photo.path=rePhoto.imageUrl;
-        if (_isPhoto) {
+        if (self.photoType==PhotoShowNone) {
             photo.isVedio=rePhoto.isVedio;
             photo.url=[NSURL URLWithString:rePhoto.imageUrl];
             photo.name=rePhoto.imageName;
@@ -641,7 +653,12 @@
     MJPhotoView *photoView = [self dequeueReusablePhotoView];
     if (!photoView) { // 添加新的图片view
         photoView = [[MJPhotoView alloc] init];
-        photoView.isPhotoImg=_isPhoto;
+        if (self.photoType==PhotoShowNone) {
+             photoView.isPhotoImg=YES;
+        }else{
+             photoView.isPhotoImg=NO;
+        }
+       
         photoView.photoViewDelegate = self;
 //        btnPlayer=CCButtonCreateWithValue(CGRectMake(CGRectGetWidth(_photoScrollView.frame)/2-35, CGRectGetHeight(_photoScrollView.frame)/2-35, 70, 70), @selector(playVedio), self);
 //        btnPlayer=CCButtonCreateWithValue(CGRectMake(0, 0, 70, 70), @selector(playVedio), self);
@@ -687,7 +704,7 @@
 -(void)downImageWithUrl:(MJPhoto *)photo{
     if (photo.image)return;
     NSURL *url=photo.url;
-    if (_isPhoto) {
+    if (self.photoType==PhotoShowNone) {
         [library assetForURL:url resultBlock:^(ALAsset *asset)
          {
              //在这里使用asset来获取图片

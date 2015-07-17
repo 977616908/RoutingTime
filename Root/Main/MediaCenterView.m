@@ -329,7 +329,7 @@
             [controller.navigationController pushViewController:setController animated:YES];
         }else{
             MJPhotoBrowser *photo=[[MJPhotoBrowser alloc]init];
-            photo.isPhoto=YES;
+//            photo.isPhoto=YES;
             photo.currentPhotoIndex=indexPath.row;
             photo.photos=_imageArr;
             photo.navigationItem.title=@"图片预览";

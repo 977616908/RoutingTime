@@ -234,7 +234,13 @@
 -(void)onBtnClick:(UITapGestureRecognizer *)imageTap{
     REPhoto *rePhoto=_photos[imageTap.view.tag];
     MJPhotoBrowser *photo=[[MJPhotoBrowser alloc]init];
-    if(_photoType==REPhotoOther)photo.isPhoto=YES;
+    if(_photoType==REPhotoOther){
+       photo.photoType=PhotoShowNone;
+    }else if(_photoType==REPhotoSelect){
+       photo.photoType=PhotoShowCamera;
+    }else{
+       photo.photoType=PhotoShowRouter;
+    }
     photo.currentPhotoIndex=[_arryGroup indexOfObject:rePhoto];
     photo.photos=[NSMutableArray arrayWithArray:_arryGroup];
     photo.navigationItem.title=@"图片预览";

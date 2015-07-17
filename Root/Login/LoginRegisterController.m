@@ -534,8 +534,8 @@ typedef enum{
                                         [self bindMacWithDeviceEcho:mymodels];
                                         [[[UIAlertView alloc]initWithTitle:@"提示" message:@"登录成功!" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil]show];
                                    }else{
-                                       _echo.isConnect=NO;
-                                       [self bindMacWithDeviceEcho:_echo];
+//                                       _echo.isConnect=NO;
+//                                       [self bindMacWithDeviceEcho:_echo];
                                         [[[UIAlertView alloc]initWithTitle:@"提示" message:@"登录成功,该账号不是当前绑定路由,请解除绑定后再绑定！" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil]show];
                                    }
                                }else{

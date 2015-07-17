@@ -309,7 +309,7 @@
             [self presentMoviePlayerViewControllerAnimated:playerController];
         }else{
             MJPhotoBrowser *photo=[[MJPhotoBrowser alloc]init];
-            photo.isPhoto=NO;
+            photo.photoType=PhotoShowCamera;
             NSInteger count=0;
             for (int i=0; i<_photoArr.count; i++) {
                 if ([[_photoArr[i] imageName]isEqualToString:msg.msgNum]) {

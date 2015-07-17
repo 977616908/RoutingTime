@@ -277,7 +277,7 @@
         }
         NSLog(@"tap--[%d]",tag);
         MJPhotoBrowser *photo=[[MJPhotoBrowser alloc]init];
-        photo.isPhoto=NO;
+        photo.photoType=PhotoShowCamera;
         photo.currentPhotoIndex=tag;
         photo.photos=arrPhoto;
         photo.pifiiDelegate=self.superController;

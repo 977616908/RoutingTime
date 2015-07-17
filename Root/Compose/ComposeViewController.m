@@ -149,7 +149,6 @@
 //        [self openLibaray];
     }else{
         MJPhotoBrowser *photo=[[MJPhotoBrowser alloc]init];
-        photo.isPhoto=YES;
         photo.currentPhotoIndex=index-1;
         photo.photos=_photoArr;
         photo.pifiiDelegate=self;
