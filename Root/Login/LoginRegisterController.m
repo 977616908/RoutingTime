@@ -305,7 +305,7 @@ typedef enum{
     arrImg=[NSMutableArray array];
     _saveSet=[NSMutableOrderedSet orderedSet];
     isAdd=YES;
-//    [self initWithRequestAll];
+    [self initWithRequestAll];
 }
 
 -(void)initWithRequestAll{

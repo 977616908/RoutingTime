@@ -27,7 +27,7 @@
 #import "NotifyMessageProtocol.h"
 
 #import "DateTimeProtocol.h"
-@interface PlayViewController : UIViewController <UINavigationBarDelegate, PPPPStatusProtocol, ParamNotifyProtocol,ImageNotifyProtocol,PresetDialogDelegate,MySetDialogDelegate,NotifyMessageProtocol,CgiResultProtocol,DateTimeProtocol>
+@interface PlayViewController : PiFiiBaseViewController <UINavigationBarDelegate, PPPPStatusProtocol, ParamNotifyProtocol,ImageNotifyProtocol,PresetDialogDelegate,MySetDialogDelegate,NotifyMessageProtocol,CgiResultProtocol,DateTimeProtocol>
 {
     IBOutlet UIImageView *imgView;
     IBOutlet UIActivityIndicatorView *progressView;

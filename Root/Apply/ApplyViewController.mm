@@ -20,6 +20,8 @@
 #import "CameraListMgt.h"
 #import "PPPPDefine.h"
 
+#define DEVICE @"APPDEVICE"
+
 @interface ApplyViewController ()<PiFiiBaseViewDelegate,UserPwdProtocol,PPPPStatusProtocol>{
     NSArray *arrImg;
     NSInteger showCount;
@@ -31,6 +33,8 @@
     NSCondition *ppppChannelMgntCondition;
     NetWorkUtiles *netWorkUtile;
     BOOL isCamera;
+    BOOL isDefaultServer;
+    NSMutableArray *arrDevice;
 }
 - (IBAction)onClick:(id)sender;
 @property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *imgArr;
@@ -42,9 +46,19 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    isDefaultServer=YES;
     arrImg=@[@"hm_asxl",@"hm_aphc",@"hm_aap",@"hm_save"];
     showCount=0;
     [self startWifiiAnimation];
+}
+
+-(void)coustomNav{
+    self.navigationItem.title=@"家庭应用";
+    CCButton *sendBut = CCButtonCreateWithValue(CGRectMake(10, 0, 30, 20), @selector(onAddClick:), self);
+    sendBut.tag=1;
+    [sendBut setImage:[UIImage imageNamed:@"hm_add"] forState:UIControlStateNormal];
+    [sendBut setImage:[UIImage imageNamed:@"hm_add_select"] forState:UIControlStateSelected];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:sendBut];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -62,24 +76,33 @@
             image.tag=2;
             [self startAnimation:image];
         }
+        NSArray *arr=[[NSUserDefaults standardUserDefaults]objectForKey:DEVICE];
+        //绑定后有没有添加其它设备
+        [self addDevice:arr];
+        
+        
     }
-    
-    UIImageView *image=_imgArr[0];
-    if (image.tag==1) {
-        [self performSelector:@selector(start) withObject:nil afterDelay:.25];
-//        image.tag=1;
-//        [self startAnimation:image];
-    }
+
     
 }
 
--(void)coustomNav{
-   self.navigationItem.title=@"家庭应用";
-   CCButton *sendBut = CCButtonCreateWithValue(CGRectMake(10, 0, 30, 20), @selector(onAddClick:), self);
-   sendBut.tag=1;
-   [sendBut setImage:[UIImage imageNamed:@"hm_add"] forState:UIControlStateNormal];
-   [sendBut setImage:[UIImage imageNamed:@"hm_add_select"] forState:UIControlStateSelected];
-   self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:sendBut];
+-(void)addDevice:(NSArray *)arr{
+    PSLog(@"---[%@]---",arr);
+    if (arr) {
+        for (NSNumber *data in arr) {
+            NSInteger count=[data integerValue];
+            UIImageView *image=_imgArr[count];
+            if(image.tag!=count+1){
+                image.tag=count+1;
+                [self startAnimation:image];
+            }
+        }
+    }
+    UIImageView *image=_imgArr[0];
+    if (image.tag==1) {
+        [self createCamera];
+        [self performSelector:@selector(start) withObject:nil afterDelay:.25];
+    }
 }
 
 -(void)onAddClick:(id)sendar{
@@ -251,18 +274,35 @@
     
 }
 
+#pragma -mark 传递数据处理
 -(void)pushViewDataSource:(id)dataSource{
     NSInteger count=[dataSource integerValue];
-    UIImageView *image=_imgArr[count];
-    if(image.tag!=count+1){
-        image.tag=count+1;
-        [self startAnimation:image];
-    }
-    if(image.tag==1){
+//    UIImageView *image=_imgArr[count];
+//    if(image.tag!=count+1){
+//        image.tag=count+1;
+//        [self startAnimation:image];
+//    }
+    if(count==0){
         [self createCamera];
     }
+    [self saveDevice:dataSource];
 }
 
+-(void)saveDevice:(id)data{
+    NSUserDefaults *ud=[NSUserDefaults standardUserDefaults];
+    NSArray *arr=[ud objectForKey:DEVICE];
+    if (!arr) {
+        arr=@[data];
+    }else{
+        if (![arr containsObject:data]) {
+            NSMutableArray *ar=[NSMutableArray arrayWithArray:arr];
+            [ar addObject:data];
+            arr=ar;
+        }
+    }
+    [ud setObject:arr forKey:DEVICE];
+    [ud synchronize];
+}
 
 /**
  * 判断是否绑定与连接PIFii路由
@@ -284,21 +324,24 @@
 #pragma -mark 启动摄像头
 
 -(void)createCamera{
-    NSString *filePath=[self serverFilePath];
-    NSString *strServer=nil;
-    BOOL isDefaultServer=YES;
-    if([[NSFileManager defaultManager]fileExistsAtPath:filePath]){
-        NSArray *array=[[NSArray alloc]initWithContentsOfFile:filePath];
-        strServer=[array objectAtIndex:0];
-        isDefaultServer=[(NSNumber *)[array objectAtIndex:1]boolValue];
-    }
     if (isDefaultServer) {
-        strServer=@"EBGAEOBOKHJMHMJMENGKFIEEHBMDHNNEGNEBBCCCBIIHLHLOCIACCJOFHHLLJEKHBFMPLMCHPHMHAGDHJNNHIFBAMC";
-    }else{
-        PSLog(@"使用更改的服务器地址");
+        NSString *filePath=[self serverFilePath];
+        NSString *strServer=nil;
+        if([[NSFileManager defaultManager]fileExistsAtPath:filePath]){
+            NSArray *array=[[NSArray alloc]initWithContentsOfFile:filePath];
+            strServer=[array objectAtIndex:0];
+            isDefaultServer=[(NSNumber *)[array objectAtIndex:1]boolValue];
+        }
+        if (isDefaultServer) {
+            strServer=@"EBGAEOBOKHJMHMJMENGKFIEEHBMDHNNEGNEBBCCCBIIHLHLOCIACCJOFHHLLJEKHBFMPLMCHPHMHAGDHJNNHIFBAMC";
+            isDefaultServer=NO;
+        }else{
+            PSLog(@"使用更改的服务器地址");
+        }
+        PSLog(@"strServer=%@",strServer);
+        PPPP_Initialize((char *)[strServer UTF8String]);
     }
-    PSLog(@"strServer=%@",strServer);
-    PPPP_Initialize((char *)[strServer UTF8String]);
+
 //    usleep(1000000);
 //    st_PPPP_NetInfo NetInfo;
 //    PPPP_NetworkDetect(&NetInfo, 0);
