@@ -180,11 +180,6 @@
         [self deleteWithPhoto:_photos[ThisImageIndex]];
     }else if(self.photoType==PhotoShowCamera){
         [self deletePhoto:_removePhoto[ThisImageIndex]];
-        [_removePhoto removeObjectAtIndex:ThisImageIndex];
-        [self.pifiiDelegate removeViewDataSources:_removePhoto];
-        if (_removePhoto.count==0) {
-            [self performSelector:@selector(exitCurrentController) withObject:nil afterDelay:0.2];
-        }
     }else{
         MJPhoto *photo=_photos[ThisImageIndex];
         [library assetForURL:photo.url resultBlock:^(ALAsset *asset)
@@ -202,6 +197,14 @@
     }
     [_photos removeObjectAtIndex: ThisImageIndex];
     [self setCurrentPhotoIndex: _currentPhotoIndex ];
+    if ([self.pifiiDelegate respondsToSelector:@selector(removeViewDataSources:)]) {
+        [_removePhoto removeObjectAtIndex:ThisImageIndex];
+        [self.pifiiDelegate removeViewDataSources:_removePhoto];
+        if (_removePhoto.count==0) {
+            [self performSelector:@selector(exitCurrentController) withObject:nil afterDelay:0.2];
+        }
+    }
+
 }
 
 -(void)deleteWithPhoto:(MJPhoto *)photo{
@@ -476,7 +479,7 @@
         photo.firstShow = i == _currentPhotoIndex;
         [arr addObject:photo];
     }
-    _removePhoto=photos;
+    _removePhoto=[NSMutableArray arrayWithArray:photos];
     _photos=arr;
 }
 
@@ -492,6 +495,7 @@
     }
     
     if ([self isViewLoaded]) {
+        _photoScrollView.contentSize = CGSizeMake(CGRectGetWidth(self.view.frame) * _photos.count, 0);
         _photoScrollView.contentOffset = CGPointMake(_currentPhotoIndex * _photoScrollView.frame.size.width, 0);
         
         // 显示所有的相片

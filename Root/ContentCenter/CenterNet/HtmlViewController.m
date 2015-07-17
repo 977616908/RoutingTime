@@ -87,4 +87,13 @@
 - (IBAction)downloadAction:(id)sender {
     PSLog(@"下载视频");
 }
+
+-(void)exitCurrentController{
+    if ([self.webView canGoBack]) {
+        [self.webView goBack];
+    }else{
+        [super exitCurrentController];
+    }
+}
+
 @end

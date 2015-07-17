@@ -248,11 +248,11 @@
                                           description:@"来自时光路游"
                                             mediaType:SSPublishContentMediaTypeNews];
     //1+创建弹出菜单容器（iPad必要）
-    id<ISSContainer> container = [ShareSDK container];
-    [container setIPadContainerWithView:self.view arrowDirect:UIPopoverArrowDirectionUp];
+//    id<ISSContainer> container = [ShareSDK container];
+//    [container setIPadContainerWithView:self.view arrowDirect:UIPopoverArrowDirectionUp];
     
     //2、弹出分享菜单
-    [ShareSDK showShareActionSheet:container
+    [ShareSDK showShareActionSheet:nil
                          shareList:nil
                            content:publishContent
                      statusBarTips:YES
@@ -270,7 +270,7 @@
 //                                                                          otherButtonTitles:nil, nil];
 //                                    [alert show];
 //                                    
-                                    [self showToast:@"推荐成功" Long:1.5];
+                                    [self showToast:@"推荐成功" Long:2];
                                 }
                                 else if (state == SSResponseStateFail)
                                 {
@@ -280,7 +280,7 @@
 //                                                                          cancelButtonTitle:@"OK"
 //                                                                          otherButtonTitles:nil, nil];
 //                                    [alert show];
-                                    [self showToast:[NSString stringWithFormat:@"推荐失败(%@)",[error errorDescription]] Long:1.5];
+                                    [self showToast:[NSString stringWithFormat:@"推荐失败(%@)",[error errorDescription]] Long:2];
                                 }
                             }];
 }
