@@ -309,6 +309,21 @@
         return self.text;
     }
 }
+-(void)setTxt:(NSString *)text{
+    if(self.type==TextFieldTel){
+        if (text.length>11) {
+            text=[text substringWithRange:NSMakeRange(0, 11)];
+        }
+        if (text.length>3&&text.length<=7) {
+            text=[NSString stringWithFormat:@"%@-%@",[text substringWithRange:NSMakeRange(0, 3)],[text substringWithRange:NSMakeRange(3, text.length-3)]];
+        }else if(text.length>7&&text.length<=11){
+            text=[NSString stringWithFormat:@"%@-%@-%@",[text substringWithRange:NSMakeRange(0, 3)],[text substringWithRange:NSMakeRange(3, 4)],[text substringWithRange:NSMakeRange(7, text.length-7)]];
+        }
+        
+    }
+    self.text=text;
+//    [self editingChanged:self];
+}
 
 - (void)textFieldDidEndEditing:(NSNotification *) notification
 {

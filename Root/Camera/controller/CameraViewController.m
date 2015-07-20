@@ -11,8 +11,9 @@
 #import "ScannerViewController.h"
 #import <SystemConfiguration/CaptiveNetwork.h>
 #import "CameraMessage.h"
+#import "CameraSearchViewController.h"
 
-@interface CameraViewController ()<ScannerMacDelegate>{
+@interface CameraViewController ()<ScannerMacDelegate,SearchAddCameraInfoProtocol>{
     CGFloat downloadedBytes;
     NSTimer *timer;
     BOOL isConnect;
@@ -21,6 +22,7 @@
 @property(nonatomic,weak)PFDownloadIndicator *downIndicator;
 @property(nonatomic,weak)CCLabel *downMsg;
 @property(nonatomic,weak)CCButton *btnStart;
+@property(nonatomic,weak)CCButton *btnSearch;
 @property(nonatomic,weak)CCLabel *lbMsg;
 @property(nonatomic,weak)CameraMessage *cameraMsg;
 @end
@@ -108,13 +110,21 @@
     }
     [bgView addSubview:stepView];
     
-    CCButton *btnStart=CCButtonCreateWithValue(CGRectMake(20, CGRectGetMaxY(stepView.frame)+10, CGRectGetWidth(self.view.frame)-40, 42), @selector(onTypeClick:), self);
+    CCButton *btnStart=CCButtonCreateWithValue(CGRectMake(20, CGRectGetMaxY(stepView.frame)+5, CGRectGetWidth(self.view.frame)-40, 42), @selector(onTypeClick:), self);
     btnStart.backgroundColor=RGBCommon(63, 205, 225);
-    btnStart.tag=2;
+    btnStart.tag=1;
     [btnStart alterFontSize:20];
-    [btnStart alterNormalTitle:@"扫一扫"];
+    [btnStart alterNormalTitle:@"扫描二维码"];
     self.btnStart=btnStart;
     [bgView addSubview:btnStart];
+    
+    CCButton *btnSearch=CCButtonCreateWithValue(CGRectMake(20, CGRectGetMaxY(btnStart.frame)+10, CGRectGetWidth(self.view.frame)-40, 42), @selector(onTypeClick:), self);
+    btnSearch.backgroundColor=RGBCommon(63, 205, 225);
+    btnSearch.tag=2;
+    [btnSearch alterFontSize:20];
+    [btnSearch alterNormalTitle:@"局域网搜索"];
+    self.btnSearch=btnSearch;
+    [bgView addSubview:btnSearch];
 
 }
 
@@ -123,16 +133,25 @@
 
 -(void)onTypeClick:(CCButton *)sendar{
 //    [self showToast:@"暂未找到可连接的设置" Long:1.5];
-    if (isConnect) {
-        self.btnStart.enabled=NO;
-        [self startAnimation];
+    if(sendar.tag==2){
+        CameraSearchViewController *cameraSearch=[[CameraSearchViewController alloc]init];
+        cameraSearch.SearchAddCameraDelegate=self;
+        cameraSearch.title=@"局域网搜索";
+        [self.navigationController pushViewController:cameraSearch animated:YES];
     }else{
-        [self.navigationController.view.layer addAnimation:[self customAnimation1:self.view upDown:YES] forKey:@"animation1"];
-        ScannerViewController *svc = [[ScannerViewController alloc]init];
-        svc.type=ScannerOther;
-        svc.delegate=self;
-        [self.navigationController pushViewController:svc animated:NO];
+        if (isConnect) {
+            self.btnStart.enabled=NO;
+            [self createCamera];
+            [self startAnimation];
+        }else{
+            [self.navigationController.view.layer addAnimation:[self customAnimation1:self.view upDown:YES] forKey:@"animation1"];
+            ScannerViewController *svc = [[ScannerViewController alloc]init];
+            svc.type=ScannerOther;
+            svc.delegate=self;
+            [self.navigationController pushViewController:svc animated:NO];
+        }
     }
+
 
 }
 //判断是否连接当前摄像头
@@ -183,28 +202,53 @@
 
 -(void)scannerMessage:(NSString *)msg{
     if (![msg isEqualToString:@""]) {
-        [self setStepsCount:1];
-        self.lbMsg.text=[NSString stringWithFormat:@"连接摄像机设备ID:%@",msg];
-//        /platports/pifii/plat/plug/getCamera?camid=HDXQ-005664-CEGGN
-        [self initPostWithURL:ROUTINGCAMERA path:@"getCamera" paras:@{@"camid":msg} mark:@"user" autoRequest:YES];
+        [self cameraConnect:msg];
     }
 
+}
+
+-(void)cameraConnect:(NSString *)msg{
+    [self setStepsCount:1];
+    self.lbMsg.text=[NSString stringWithFormat:@"连接摄像机设备ID:%@",msg];
+    //        /platports/pifii/plat/plug/getCamera?camid=HDXQ-005664-CEGGN
+    [self initPostWithURL:ROUTINGCAMERA path:@"getCamera" paras:@{@"camid":msg} mark:@"user" autoRequest:YES];
+}
+
+-(void)createCamera{
+    NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+    NSDictionary *userData= [user objectForKey:USERDATA];
+    NSString *userPhone=userData[@"userPhone"];
+    if (self.cameraMsg) {
+        NSDictionary *params=@{@"username":userPhone,
+                               @"camdevice":_cameraMsg.camdevice,
+                               @"camdevicewifiname":_cameraMsg.camdevicewifiname,
+                               @"camid":_cameraMsg.camid,
+                               @"camname":_cameraMsg.camname,
+                               @"campas":_cameraMsg.campas,
+                               @"camwifiname":_cameraMsg.camwifiname,
+                               @"isopen":@(1)};
+        [self initPostWithURL:ROUTINGCAMERA path:@"initalizeCamera" paras:params mark:@"camera" autoRequest:YES];
+    }
 }
 
 -(void)handleRequestOK:(id)response mark:(NSString *)mark{
     PSLog(@"%@:%@",response,mark);
     NSNumber *returnCode=[response objectForKey:@"returnCode"];
-    if ([returnCode intValue]==200) {
-        NSDictionary *data=response[@"data"];
-        CameraMessage *msg=[[CameraMessage alloc]initWithData:data];
-        self.cameraMsg=msg;
-        PSLog(@"%@",msg);
-        if(msg.isOpen){
-            isConnect=YES;
-            [self setStepsCount:5];
-            [self.btnStart alterNormalTitle:@"开始智能连接"];
+    if ([mark isEqualToString:@"user"]) {
+        if ([returnCode intValue]==200) {
+            NSDictionary *data=response[@"data"];
+            CameraMessage *msg=[[CameraMessage alloc]initWithData:data];
+            self.cameraMsg=msg;
+            PSLog(@"%@",msg);
+            if(msg.isOpen){
+                isConnect=YES;
+                [self setStepsCount:5];
+                self.btnSearch.hidden=YES;
+                [self.btnStart alterNormalTitle:@"开始智能连接"];
+            }
         }
     }
+
 }
 
 -(void)handleRequestFail:(NSError *)error mark:(NSString *)mark{
@@ -231,6 +275,14 @@
     }
     CFRelease(wifiInterfaces);
     return wifiName;
+    
+}
+
+-(void)AddCameraInfo: (NSString*) strCameraName DID: (NSString*) strDID IP:(NSString *)strIP Port:(NSString *)port{
+    PSLog(@"%@->%@->%@",strCameraName,strDID,strIP);
+    if (strDID&&![strDID isEqualToString:@""]) {
+        [self cameraConnect:strDID];
+    }
     
 }
 

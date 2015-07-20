@@ -80,6 +80,7 @@ typedef enum{
     CCButton *btnBack=CCButtonCreateWithValue(CGRectMake(10, 0, 60, 44), @selector(exitCurrentController), self);
     [btnBack setImage:[UIImage imageNamed:@"hm_fanhui"] forState:UIControlStateNormal];
     btnBack.contentHorizontalAlignment=UIControlContentHorizontalAlignmentLeft;
+    btnBack.hidden=YES;
     [navTopView addSubview:btnBack];
     [self.view addSubview:navTopView];
     
@@ -136,6 +137,12 @@ typedef enum{
     _loginPhone=tfUser;
     [_rootScrollView addSubview:tfUser];
     
+    NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+    NSDictionary *userData= [user objectForKey:USERDATA];
+    NSString *txtPhone=userData[@"userPhone"];
+    if (txtPhone&&![txtPhone isEqualToString:@""]) {
+        [tfUser setTxt:txtPhone];
+    }
     
     UIImageView *bgPwd=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"hm_login_kuang"]];
     bgPwd.frame=CGRectMake(27, CGRectGetMaxY(bgUser.frame)+15, 266, 50);

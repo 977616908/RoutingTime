@@ -32,4 +32,6 @@ typedef enum{
 
 -(NSString *)getText;
 
+-(void)setTxt:(NSString *)text;
+
 @end

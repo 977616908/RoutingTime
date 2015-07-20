@@ -214,6 +214,7 @@
         }else{
             NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
             [user removeObjectForKey:NETPASSWORD];
+            [user removeObjectForKey:ISLOGIN];
             [self.navigationController.view.layer addAnimation:[self customAnimation:self.view upDown:YES] forKey:@"animation"];
             //推入
             LoginRegisterController *loginController=[[LoginRegisterController alloc]init];
