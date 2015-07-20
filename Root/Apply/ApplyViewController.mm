@@ -50,6 +50,8 @@
     arrImg=@[@"hm_asxl",@"hm_aphc",@"hm_aap",@"hm_save"];
     showCount=0;
     [self startWifiiAnimation];
+    [PSNotificationCenter addObserver:self selector:@selector(StopPPPP) name:@"enterbackground" object:nil];
+    [PSNotificationCenter addObserver:self selector:@selector(startCamera) name:@"becomeActive" object:nil];
 }
 
 -(void)coustomNav{
@@ -361,25 +363,27 @@
 
 -(void)start{
     isCamera=NO;
-    ppppChannelMgntCondition = [[NSCondition alloc] init];
-    pPPPPChannelMgt = new CPPPPChannelManagement();
-    m_pPicPathMgt = [[PicPathManagement alloc] init];
-    m_pRecPathMgt = [[RecPathManagement alloc] init];
-    m_pCameraListMgt = [[CameraListMgt alloc] init];
-    [m_pCameraListMgt selectP2PAll:YES];
-    netWorkUtile=[[NetWorkUtiles alloc]init];
-    netWorkUtile.userProtocol=self;
-    pPPPPChannelMgt->CameraControl([@"HDXQ-005664-CEGGN" UTF8String], 0, 1);
-    pPPPPChannelMgt->StartPPPPLivestream([@"HDXQ-005664-CEGGN" UTF8String], 0, self);
-    
-    
+    if (!pPPPPChannelMgt) {
+        ppppChannelMgntCondition = [[NSCondition alloc] init];
+        pPPPPChannelMgt = new CPPPPChannelManagement();
+        pPPPPChannelMgt->pCameraViewController=self;
+        m_pPicPathMgt = [[PicPathManagement alloc] init];
+        m_pRecPathMgt = [[RecPathManagement alloc] init];
+        m_pCameraListMgt = [[CameraListMgt alloc] init];
+        [m_pCameraListMgt selectP2PAll:YES];
+        netWorkUtile=[[NetWorkUtiles alloc]init];
+        netWorkUtile.userProtocol=self;
+        pPPPPChannelMgt->CameraControl([@"HDXQ-005664-CEGGN" UTF8String], 0, 1);
+        pPPPPChannelMgt->StartPPPPLivestream([@"HDXQ-005664-CEGGN" UTF8String], 0, self);
+        //    [self start];
+//        [self updateAuthority:@"HDXQ-005664-CEGGN"];
+        
+        InitAudioSession();
+    }
     [ppppChannelMgntCondition lock];
     [NSThread detachNewThreadSelector:@selector(startCamera) toTarget:self withObject:nil];
     [ppppChannelMgntCondition unlock];
-    //    [self start];
-    [self updateAuthority:@"HDXQ-005664-CEGGN"];
-    
-    InitAudioSession();
+
 }
 
 -(void)startCamera{
@@ -409,12 +413,19 @@
     [ppppChannelMgntCondition unlock];
 }
 
+
+- (void) StopPPPPByDID:(NSString*)did
+{
+    pPPPPChannelMgt->Stop([did UTF8String]);
+}
+
+
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     if (!isCamera) {
-//        if (pPPPPChannelMgt) {
-//            pPPPPChannelMgt->StopPPPPLivestream([@"HDXQ-005664-CEGGN" UTF8String]);
-//        }
+        if (pPPPPChannelMgt) {
+            [self StopPPPPByDID:@"HDXQ-005664-CEGGN"];
+        }
     }
 }
 
@@ -476,11 +487,32 @@
             || status == PPPP_STATUS_CONNECT_TIMEOUT
             || status == PPPP_STATUS_DEVICE_NOT_ON_LINE
             || status == PPPP_STATUS_CONNECT_FAILED||statusType==PPPP_STATUS_INVALID_USER_PWD) {
-            //            [self performSelectorOnMainThread:@selector(StopPPPPByDID:) withObject:strDID waitUntilDone:NO];
+            [self performSelectorOnMainThread:@selector(StopPPPPByDID:) withObject:strDID waitUntilDone:NO];
         }
         
     }
 }
 
+- (void)dealloc
+{
+    //NSLog(@"IpCameraClientAppDelegate dealloc");
+    m_pCameraListMgt = nil;
+    //[cameraListMgt release];
+    //cameraListMgt = nil;
+    //[self StopPPPP];
+    if (netWorkUtile!=nil) {
+        netWorkUtile.networkProtocol=nil;
+        netWorkUtile=nil;
+    }
+    if (pPPPPChannelMgt!=nil) {
+        pPPPPChannelMgt->pCameraViewController = nil;
+    }
+    SAFE_DELETE(pPPPPChannelMgt);
+    if(ppppChannelMgntCondition){
+        ppppChannelMgntCondition=nil;
+    }
+    [PSNotificationCenter removeObserver:self forKeyPath:@"enterbackground"];
+    [PSNotificationCenter removeObserver:self forKeyPath:@"becomeActive"];
+}
 
 @end
