@@ -1390,7 +1390,11 @@
          name:@"enterbackground"
          object:nil];
     }
-    
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(createPlay)
+     name:@"becomeActive"
+     object:nil];
 }
 
 -(void)popToHome{
@@ -1401,6 +1405,7 @@
     if (isMoreView) {
         NSLog(@"PlayViewController....more..viewWillDisappear");
         [[NSNotificationCenter defaultCenter]removeObserver:self name:@"enterbackground" object:nil];
+        [[NSNotificationCenter defaultCenter]removeObserver:self name:@"becomeActive" object:nil];
     }
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
 }
@@ -2519,51 +2524,7 @@
     [self.progressView setHidden:NO];
     [self.progressView startAnimating];
     
-    if (isP2P) {
-        m_pPPPPChannelMgt->SetDateTimeDelegate((char*)[strDID UTF8String], self);
-        m_pPPPPChannelMgt->PPPPSetSystemParams((char*)[strDID UTF8String], MSG_TYPE_GET_PARAMS, NULL, 0);
-    }else{
-        netUtiles.dateProtocol=self;
-        //[netUtiles getCameraParam:m_strIp Port:m_strPort User:m_strUser Pwd:m_strPwd ParamType:4];
-        
-    }
-    
-    if(isP2P){
-        if (m_pPPPPChannelMgt != NULL) {
-            //如果请求视频失败，则退出播放
-            // NSLog(@"kkkkkkkk===startPPPPLivestream 111111==============================");
-            //            if( m_pPPPPChannelMgt->StartPPPPLivestream([strDID UTF8String], 0, self) == 0 ){
-            //                [self performSelectorOnMainThread:@selector(StopPlay:) withObject:nil waitUntilDone:NO];
-            //                // NSLog(@"kkkkkkkk===startPPPPLivestream 2222222==============================");
-            //                return;
-            //            }
-            dispatch_queue_t queue = dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-            dispatch_async(queue, ^{
-                while (true) {
-                    if( m_pPPPPChannelMgt->StartPPPPLivestream([strDID UTF8String], 0, self) == 0 ){
-                        sleep(1);
-                        continue;
-                    }else{
-                        break;
-                    }
-                }
-            });
-            //NSLog(@"kkkkkkkk===startPPPPLivestream 33333=====================================");
-            //[self getCameraParams];
-        }
-        
-    }else{//ddns
-        
-        
-        
-        //
-        //        [btnAudioControl setEnabled:NO];
-        //        [btnTalkControl setEnabled:NO];
-        
-        netUtiles.imageNotifyProtocol=self;
-        [self StartPlay];
-    }
-    [self getCameraParams];
+   
     [self performSelector:@selector(playViewTouch:) withObject:nil afterDelay:1];
     
     imgStartWidth=imgView.frame.size.width;
@@ -2571,7 +2532,7 @@
     
     //return ;
     
-    
+    [self createPlay];
     //////
     
     myToolBarItems = [NSMutableArray array];
@@ -2787,6 +2748,56 @@
     
     
 }
+
+
+-(void)createPlay{
+    if (isP2P) {
+        m_pPPPPChannelMgt->SetDateTimeDelegate((char*)[strDID UTF8String], self);
+        m_pPPPPChannelMgt->PPPPSetSystemParams((char*)[strDID UTF8String], MSG_TYPE_GET_PARAMS, NULL, 0);
+    }else{
+        netUtiles.dateProtocol=self;
+        //[netUtiles getCameraParam:m_strIp Port:m_strPort User:m_strUser Pwd:m_strPwd ParamType:4];
+        
+    }
+    
+    if(isP2P){
+        if (m_pPPPPChannelMgt != NULL) {
+            //如果请求视频失败，则退出播放
+            // NSLog(@"kkkkkkkk===startPPPPLivestream 111111==============================");
+            //            if( m_pPPPPChannelMgt->StartPPPPLivestream([strDID UTF8String], 0, self) == 0 ){
+            //                [self performSelectorOnMainThread:@selector(StopPlay:) withObject:nil waitUntilDone:NO];
+            //                // NSLog(@"kkkkkkkk===startPPPPLivestream 2222222==============================");
+            //                return;
+            //            }
+            dispatch_queue_t queue = dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+            dispatch_async(queue, ^{
+                while (true) {
+                    if( m_pPPPPChannelMgt->StartPPPPLivestream([strDID UTF8String], 0, self) == 0 ){
+                        sleep(1);
+                        continue;
+                    }else{
+                        break;
+                    }
+                }
+            });
+            //NSLog(@"kkkkkkkk===startPPPPLivestream 33333=====================================");
+            //[self getCameraParams];
+        }
+        
+    }else{//ddns
+        
+        
+        
+        //
+        //        [btnAudioControl setEnabled:NO];
+        //        [btnTalkControl setEnabled:NO];
+        
+        netUtiles.imageNotifyProtocol=self;
+        [self StartPlay];
+    }
+    [self getCameraParams];
+}
+
 - (void) StartPlay
 {
     m_pVideoBuf = new CCircleBuf();
