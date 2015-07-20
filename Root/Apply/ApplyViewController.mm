@@ -184,20 +184,32 @@
         }
             break;
         case 3:{
-            RoutingListController *routingController=[[RoutingListController alloc]init];
-            [self.navigationController pushViewController:routingController animated:YES];
+            BOOL isBound=[GlobalShare isBindMac];
+            if (isBound) {
+                RoutingListController *routingController=[[RoutingListController alloc]init];
+                [self.navigationController pushViewController:routingController animated:YES];
+            }else{
+                [self showToast:@"未绑定路由，请绑定路由再添加" Long:1.5];
+            }
+
         }
             break;
         case 4:{
-            NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
-            id password=[user objectForKey:NETPASSWORD];
-            if ([password length]>0) {
-                NetSaveViewController *saveController=[[NetSaveViewController alloc]init];
-                [self.navigationController pushViewController:saveController animated:YES];
+            BOOL isBound=[GlobalShare isBindMac];
+            if (isBound) {
+                NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+                id password=[user objectForKey:NETPASSWORD];
+                if ([password length]>0) {
+                    NetSaveViewController *saveController=[[NetSaveViewController alloc]init];
+                    [self.navigationController pushViewController:saveController animated:YES];
+                }else{
+                    NetWorkViewController *workController=[[NetWorkViewController alloc]init];
+                    [self.navigationController pushViewController:workController animated:YES];
+                }
             }else{
-                NetWorkViewController *workController=[[NetWorkViewController alloc]init];
-                [self.navigationController pushViewController:workController animated:YES];
+                [self showToast:@"未绑定路由，请绑定路由再添加" Long:1.5];
             }
+
             //                [self setMacBounds];
         }
             break;
@@ -277,11 +289,11 @@
 #pragma -mark 传递数据处理
 -(void)pushViewDataSource:(id)dataSource{
     NSInteger count=[dataSource integerValue];
-//    UIImageView *image=_imgArr[count];
-//    if(image.tag!=count+1){
-//        image.tag=count+1;
-//        [self startAnimation:image];
-//    }
+    UIImageView *image=_imgArr[count];
+    if(image.tag!=count+1){
+        image.tag=count+1;
+        [self startAnimation:image];
+    }
     if(count==0){
         [self createCamera];
     }

@@ -30,18 +30,17 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self createNav];
-    NSString *wifiiName=[self getWifiName];
-    NSLog(@"---[%@]---",wifiiName);
 }
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     self.navigationController.navigationBarHidden=YES;
+    [self showConnect];
 }
 
 -(void)createNav{
     self.view.backgroundColor=RGBCommon(63, 205, 225);
-    CGFloat gh=0;
+    CGFloat gh=-20;
     if (is_iOS7()) {
         gh=20;
     }
@@ -136,6 +135,19 @@
     }
 
 }
+//判断是否连接当前摄像头
+-(void)showConnect{
+    NSString *wifiiName=[self getWifiName];
+    if ([wifiiName hasPrefix:@"IPCAM-"]) {
+        isConnect=YES;
+        CameraMessage *msg=[[CameraMessage alloc]init];
+        msg.camdevicewifiname=wifiiName;
+        _cameraMsg=msg;
+        [self setStepsCount:2];
+        [self.btnStart alterNormalTitle:@"开始智能连接"];
+    }
+    NSLog(@"---[%@]---",wifiiName);
+}
 
 
 #pragma mark - Update Views
@@ -171,7 +183,6 @@
 
 -(void)scannerMessage:(NSString *)msg{
     if (![msg isEqualToString:@""]) {
-        isConnect=YES;
         [self setStepsCount:1];
         self.lbMsg.text=[NSString stringWithFormat:@"连接摄像机设备ID:%@",msg];
 //        /platports/pifii/plat/plug/getCamera?camid=HDXQ-005664-CEGGN
@@ -189,13 +200,10 @@
         self.cameraMsg=msg;
         PSLog(@"%@",msg);
         if(msg.isOpen){
+            isConnect=YES;
             [self setStepsCount:5];
             [self.btnStart alterNormalTitle:@"开始智能连接"];
-        }else{
-            [self.btnStart alterNormalTitle:@"开始智能连接"];
         }
-
-
     }
 }
 
