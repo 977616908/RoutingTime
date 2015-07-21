@@ -103,7 +103,8 @@
     UIImageView *image=_imgArr[0];
     if (image.tag==1) {
         [self createCamera];
-        [self performSelector:@selector(start) withObject:nil afterDelay:.25];
+//        [self performSelector:@selector(start) withObject:nil afterDelay:.25];
+        [self start];
     }
 }
 
@@ -118,6 +119,7 @@
     [self.applyView moveTransiton:YES];
     _applyView.type=^(NSInteger tag){
         PSLog(@"---[%d]---",tag);
+        BOOL isBound=[GlobalShare isBindMac];
         switch (tag) {
             case 0:{
                 AlbumInstallController  *albumController=[[AlbumInstallController alloc]init];
@@ -126,15 +128,25 @@
             }
                 break;
             case 1:{
-                CameraViewController *cameraController=[[CameraViewController alloc]init];
-                cameraController.pifiiDelegate=self;
-                [self.navigationController pushViewController:cameraController animated:YES];
+                if (isBound) {
+                    CameraViewController *cameraController=[[CameraViewController alloc]init];
+                    cameraController.pifiiDelegate=self;
+                    [self.navigationController pushViewController:cameraController animated:YES];
+                }else{
+                    [self showToast:@"未绑定路由，请绑定路由再添加" Long:1.5];
+                }
+         
             }
                 break;
             case 2:{
-                NetInstallController *netController=[[NetInstallController alloc]init];
-                netController.pifiiDelegate=self;
-                [self.navigationController pushViewController:netController animated:YES];
+                if (isBound) {
+                    NetInstallController *netController=[[NetInstallController alloc]init];
+                    netController.pifiiDelegate=self;
+                    [self.navigationController pushViewController:netController animated:YES];
+                }else{
+                    [self showToast:@"未绑定路由，请绑定路由再添加" Long:1.5];
+                }
+    
             }
                 break;
             default:
@@ -186,32 +198,20 @@
         }
             break;
         case 3:{
-            BOOL isBound=[GlobalShare isBindMac];
-            if (isBound) {
-                RoutingListController *routingController=[[RoutingListController alloc]init];
-                [self.navigationController pushViewController:routingController animated:YES];
-            }else{
-                [self showToast:@"未绑定路由，请绑定路由再添加" Long:1.5];
-            }
-
+            RoutingListController *routingController=[[RoutingListController alloc]init];
+            [self.navigationController pushViewController:routingController animated:YES];
         }
             break;
         case 4:{
-            BOOL isBound=[GlobalShare isBindMac];
-            if (isBound) {
-                NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
-                id password=[user objectForKey:NETPASSWORD];
-                if ([password length]>0) {
-                    NetSaveViewController *saveController=[[NetSaveViewController alloc]init];
-                    [self.navigationController pushViewController:saveController animated:YES];
-                }else{
-                    NetWorkViewController *workController=[[NetWorkViewController alloc]init];
-                    [self.navigationController pushViewController:workController animated:YES];
-                }
+            NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+            id password=[user objectForKey:NETPASSWORD];
+            if ([password length]>0) {
+                NetSaveViewController *saveController=[[NetSaveViewController alloc]init];
+                [self.navigationController pushViewController:saveController animated:YES];
             }else{
-                [self showToast:@"未绑定路由，请绑定路由再添加" Long:1.5];
+                NetWorkViewController *workController=[[NetWorkViewController alloc]init];
+                [self.navigationController pushViewController:workController animated:YES];
             }
-
             //                [self setMacBounds];
         }
             break;
@@ -387,11 +387,13 @@
 }
 
 -(void)startCamera{
-    NSString *strDID = @"HDXQ-005664-CEGGN";
-    NSString *strUser = @"admin";
-    NSString *strPwd = @"admin";
-    
-    pPPPPChannelMgt->Start([strDID UTF8String], [strUser UTF8String], [strPwd UTF8String]);
+    if (pPPPPChannelMgt) {
+        NSString *strDID = @"HDXQ-005664-CEGGN";
+        NSString *strUser = @"admin";
+        NSString *strPwd = @"admin";
+        
+        pPPPPChannelMgt->Start([strDID UTF8String], [strUser UTF8String], [strPwd UTF8String]);
+    }
 }
 
 -(NSString *)serverFilePath{

@@ -212,9 +212,7 @@
             NSURL *url = [NSURL URLWithString:@"https://itunes.apple.com"];
             [[UIApplication sharedApplication]openURL:url];
         }else{
-            NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
-            [user removeObjectForKey:NETPASSWORD];
-            [user removeObjectForKey:ISLOGIN];
+            [self clearUserMessage];
             [self.navigationController.view.layer addAnimation:[self customAnimation:self.view upDown:YES] forKey:@"animation"];
             //推入
             LoginRegisterController *loginController=[[LoginRegisterController alloc]init];
@@ -222,6 +220,19 @@
             [self.navigationController pushViewController:loginController animated:NO];
         }
     }
+}
+
+#pragma -mark 注销用户信息
+-(void)clearUserMessage{
+    NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+    [user removeObjectForKey:NETPASSWORD];
+    [user removeObjectForKey:ISLOGIN];
+    [user removeObjectForKey:TOKEN];
+    [user removeObjectForKey:ROUTERIP];
+    [user removeObjectForKey:ROUTERMAC];
+    [user removeObjectForKey:ROUTERNAME];
+    [user removeObjectForKey:BOUNDMAC];
+    [user removeObjectForKey:@"APPDEVICE"];
 }
 
 @end

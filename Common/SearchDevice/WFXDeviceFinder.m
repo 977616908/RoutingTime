@@ -346,7 +346,11 @@ typedef NSArray* (^SeiveDevices)(NSArray* devicesInput);
 //            matched=allRouters[0];
 //        }else{
             [allRouters enumerateObjectsUsingBlock:^(DeviceEcho* echo, NSUInteger idx, BOOL *stop) {
-                if ([echo.macAddr isEqualToString:macAddr]&&echo.token) {
+                NSString *macBind=[[echo.macAddr stringByReplacingOccurrencesOfString:@":" withString:@""] lowercaseString];
+                macBind=[macBind substringToIndex:macBind.length-1];
+                NSString *address=[macAddr stringByReplacingOccurrencesOfString:@":" withString:@""];
+                address=[address substringToIndex:address.length-1];
+                if ([macBind isEqualToString:address]&&echo.token) {
                     matched = echo;
                     
                     // 找到匹配的echo时，提前结束循环，以提高搜索效率

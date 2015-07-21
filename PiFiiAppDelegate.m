@@ -77,13 +77,16 @@ void uncaughtExceptionHandler(NSException *exception)
        PSLog(@"----missed---%@",decho);
    } completion:^{
         PSLog(@"----completion---%@",decho);
+        NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
        if (decho) {
-           SaveToLoal(@(1), ISCONNECT);
-           SaveToLoal(decho.hostIP,ROUTERIP);
-           SaveToLoal(decho.token, TOKEN);
+           [user setObject:decho.token forKey:TOKEN];
+           [user setObject:decho.hostIP forKey:ROUTERIP];
+           [user setObject:decho.name forKey:ROUTERNAME];
+           [user setObject:@(1) forKey:ISCONNECT];
        }else{
-           SaveToLoal(@(0), ISCONNECT);
+           [user setObject:@(0) forKey:ISCONNECT];
        }
+       [user synchronize];
    }];
 }
 

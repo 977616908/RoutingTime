@@ -534,15 +534,18 @@ typedef enum{
                            if (_mydataArray.count >0) {
                                DeviceEcho *mymodels = [_mydataArray objectAtIndex:0];
                                mymodels.isConnect=YES;
-                                NSString *mac=[[mymodels.macAddr stringByReplacingOccurrencesOfString:@":" withString:@""]uppercaseString];
+                               
+                               NSString *macBind=[[mymodels.macAddr stringByReplacingOccurrencesOfString:@":" withString:@""] lowercaseString];
                                if (macAddress) {
-                                   NSString *address=[[macAddress stringByReplacingOccurrencesOfString:@":" withString:@""]uppercaseString];
-                                   if ([address isEqualToString:mac]) {
+                                   macBind=[macBind substringToIndex:macBind.length-1];
+                                   NSString *address=[[macAddress stringByReplacingOccurrencesOfString:@":" withString:@""]lowercaseString];
+                                   address=[address substringToIndex:macAddress.length-1];
+                                   if ([address isEqualToString:macBind]) {
                                         [self bindMacWithDeviceEcho:mymodels];
                                         [[[UIAlertView alloc]initWithTitle:@"提示" message:@"登录成功!" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil]show];
                                    }else{
-//                                       _echo.isConnect=NO;
-//                                       [self bindMacWithDeviceEcho:_echo];
+                                       _echo.isConnect=NO;
+                                       [self bindMacWithDeviceEcho:_echo];
                                         [[[UIAlertView alloc]initWithTitle:@"提示" message:@"登录成功,该账号不是当前绑定路由,请解除绑定后再绑定！" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil]show];
                                    }
                                }else{
@@ -550,7 +553,7 @@ typedef enum{
                                    [self initPostWithPath:@"routerBind"
                                                     paras:@{@"tradeCode": @(1005),
                                                             @"user": userPhone,
-                                                            @"mac":mac,
+                                                            @"mac":macBind,
                                                             @"wifiname":mymodels.name
                                                             }
                                                      mark:@"bind"
@@ -567,15 +570,16 @@ typedef enum{
 
 -(void)bindMacWithDeviceEcho:(DeviceEcho *)deviceEcho{
     NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
-    [user setObject:deviceEcho.token forKey:TOKEN];
-    [user setObject:deviceEcho.hostIP forKey:ROUTERIP];
+    if (deviceEcho.isConnect) {
+        [user setObject:deviceEcho.token forKey:TOKEN];
+        [user setObject:deviceEcho.hostIP forKey:ROUTERIP];
+    }
     [user setObject:deviceEcho.macAddr forKey:ROUTERMAC];
     [user setObject:deviceEcho.name forKey:ROUTERNAME];
     [user setObject:@YES forKey:BOUNDMAC];
     [user setObject:@(deviceEcho.isConnect) forKey:ISCONNECT];
     [user synchronize];
     if(deviceEcho.isConnect)[self getImg];//获取绑定的图片
-    
 }
 
 - (void)handleRequestFail:(NSError *)error mark:(NSString *)mark
