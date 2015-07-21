@@ -23,7 +23,7 @@
 
 #define DEVICE @"APPDEVICE"
 
-@interface ApplyViewController ()<PiFiiBaseViewDelegate,UserPwdProtocol,PPPPStatusProtocol>{
+@interface ApplyViewController ()<PiFiiBaseViewDelegate,PPPPStatusProtocol>{
     NSArray *arrImg;
     NSInteger showCount;
     
@@ -32,7 +32,6 @@
     CameraListMgt *m_pCameraListMgt;
     CPPPPChannelManagement *pPPPPChannelMgt;
     NSCondition *ppppChannelMgntCondition;
-    NetWorkUtiles *netWorkUtile;
     BOOL isCamera;
     BOOL isDefaultServer;
     NSMutableArray *arrDevice;
@@ -97,7 +96,6 @@
 }
 
 -(void)addDevice:(NSArray *)arr{
-    PSLog(@"---[%@]---",arr);
     if (arr) {
         for (NSNumber *data in arr) {
             NSInteger count=[data integerValue];
@@ -107,12 +105,6 @@
                 [self startAnimation:image];
             }
         }
-    }
-    UIImageView *image=_imgArr[0];
-    if (image.tag==1) {
-        [self createCamera];
-//        [self performSelector:@selector(start) withObject:nil afterDelay:.25];
-        [self start];
     }
 }
 
@@ -137,13 +129,13 @@
                 break;
             case 1:{
                 if (isBound) {
+                    self.cameraMsg=nil;
                     CameraViewController *cameraController=[[CameraViewController alloc]init];
                     cameraController.pifiiDelegate=self;
                     [self.navigationController pushViewController:cameraController animated:YES];
                 }else{
                     [self showToast:@"未绑定路由，请绑定路由再添加" Long:1.5];
                 }
-         
             }
                 break;
             case 2:{
@@ -175,8 +167,17 @@
             CameraMessage *msg=[[CameraMessage alloc]initWithData:data];
             PSLog(@"%@",msg);
             if(msg.isOpen){
+                UIImageView *image=_imgArr[0];
+                if (image.tag!=1) {
+                    image.tag=1;
+                    [self startAnimation:image];
+                }
                 self.lbMsg.hidden=NO;
+                self.lbMsg.textColor=RGBCommon(210, 79, 86);
+                self.lbMsg.text=@"在线";
                 self.cameraMsg=msg;
+                [self createCamera];
+                [self performSelector:@selector(start) withObject:nil afterDelay:.25];
             }
         }
     }
@@ -274,7 +275,7 @@
     
     
     
-    playViewController.strDID = @"HDXQ-005664-CEGGN";
+    playViewController.strDID = self.cameraMsg.camid;
     playViewController.m_nP2PMode = 1;
     [self presentViewController:playViewController animated:YES completion:nil];
 }
@@ -324,10 +325,10 @@
         image.tag=count+1;
         [self startAnimation:image];
     }
-    if(count==0){
-        [self createCamera];
+    if(count!=0){
+        [self saveDevice:dataSource];
     }
-    [self saveDevice:dataSource];
+    
 }
 
 -(void)saveDevice:(id)data{
@@ -399,26 +400,24 @@
         m_pRecPathMgt = [[RecPathManagement alloc] init];
         m_pCameraListMgt = [[CameraListMgt alloc] init];
         [m_pCameraListMgt selectP2PAll:YES];
-        netWorkUtile=[[NetWorkUtiles alloc]init];
-        netWorkUtile.userProtocol=self;
-        pPPPPChannelMgt->CameraControl([@"HDXQ-005664-CEGGN" UTF8String], 0, 1);
-        pPPPPChannelMgt->StartPPPPLivestream([@"HDXQ-005664-CEGGN" UTF8String], 0, self);
-        //    [self start];
-//        [self updateAuthority:@"HDXQ-005664-CEGGN"];
-        
+//        netWorkUtile=[[NetWorkUtiles alloc]init];
+//        netWorkUtile.userProtocol=self;
+        pPPPPChannelMgt->CameraControl([self.cameraMsg.camid UTF8String], 0, 1);
+        pPPPPChannelMgt->StartPPPPLivestream([self.cameraMsg.camid UTF8String], 0, self);
         InitAudioSession();
+        [ppppChannelMgntCondition lock];
+        [NSThread detachNewThreadSelector:@selector(startCamera) toTarget:self withObject:nil];
+        [ppppChannelMgntCondition unlock];
     }
-    [ppppChannelMgntCondition lock];
-    [NSThread detachNewThreadSelector:@selector(startCamera) toTarget:self withObject:nil];
-    [ppppChannelMgntCondition unlock];
+
 
 }
 
 -(void)startCamera{
     if (pPPPPChannelMgt) {
-        NSString *strDID = @"HDXQ-005664-CEGGN";
-        NSString *strUser = @"admin";
-        NSString *strPwd = @"admin";
+        NSString *strDID = self.cameraMsg.camid;
+        NSString *strUser = self.cameraMsg.camname;
+        NSString *strPwd = self.cameraMsg.campas;
         
         pPPPPChannelMgt->Start([strDID UTF8String], [strUser UTF8String], [strPwd UTF8String]);
     }
@@ -446,6 +445,8 @@
 
 - (void) StopPPPPByDID:(NSString*)did
 {
+    self.lbMsg.textColor=RGBCommon(128, 128, 128);
+    self.lbMsg.text=@"正在连接";
     pPPPPChannelMgt->Stop([did UTF8String]);
 }
 
@@ -454,22 +455,9 @@
     [super viewWillDisappear:animated];
     if (!isCamera) {
         if (pPPPPChannelMgt) {
-            [self StopPPPPByDID:@"HDXQ-005664-CEGGN"];
+            [self StopPPPPByDID:self.cameraMsg.camid];
         }
     }
-}
-
-
-
-#pragma mark -
-#pragma mark UserPwdProtocol
--(void)UserPwdResult:(NSString *)did user1:(NSString *)strUser1 pwd1:(NSString *)strPwd1 user2:(NSString *)strUser2 pwd2:(NSString *)strPwd2 user3:(NSString *)strUser3 pwd3:(NSString *)strPwd3{
-    NSLog(@"获取权限返回的结果  did=%@  user1=%@ pwd1=%@  user2=%@ pwd2=%@  user3=%@ pwd3=%@",did,strUser1,strPwd1,strUser2,strPwd2,strUser3,strPwd3);
-    [m_pCameraListMgt UpdateCameraAuthority:did User:strUser3 Pwd:strPwd3];
-    
-    
-    
-    //[self performSelectorOnMainThread:@selector(ReloadCameraTableView) withObject:nil waitUntilDone:NO];
 }
 
 -(void)updateAuthority:(NSString *)did{
@@ -480,6 +468,42 @@
     pPPPPChannelMgt->PPPPSetSystemParams((char*)[did UTF8String], MSG_TYPE_GET_PARAMS, NULL, 0);
 }
 
+-(void)reloadCamera{
+    NSDictionary *cameraDic = [m_pCameraListMgt GetCameraAtIndex:0];
+    NSNumber *nPPPPStatus = [cameraDic objectForKey:@STR_PPPP_STATUS];
+    self.lbMsg.textColor=RGBCommon(128, 128, 128);
+    switch ([nPPPPStatus integerValue]) {
+        case PPPP_STATUS_UNKNOWN://未知
+            self.lbMsg.text=@"离线";
+            break;
+        case PPPP_STATUS_CONNECTING://正在连接
+             self.lbMsg.text=@"离线";
+            break;
+        case PPPP_STATUS_INITIALING://正在初始化
+             self.lbMsg.text=@"离线";
+            break;
+        case PPPP_STATUS_CONNECT_FAILED://连接失败
+             self.lbMsg.text=@"离线";
+            break;
+        case PPPP_STATUS_DISCONNECT://连接断开
+             self.lbMsg.text=@"离线";
+            break;
+        case PPPP_STATUS_INVALID_ID://无效ID
+             self.lbMsg.text=@"离线";
+            break;
+        case PPPP_STATUS_ON_LINE://在线
+            self.lbMsg.textColor=RGBCommon(210, 79, 86);
+             self.lbMsg.text=@"在线";
+            break;
+        case PPPP_STATUS_DEVICE_NOT_ON_LINE://摄像机不在线
+             self.lbMsg.text=@"离线";
+            break;
+        case PPPP_STATUS_CONNECT_TIMEOUT://连接超时
+            self.lbMsg.text=@"离线";
+            break;
+    }
+
+}
 
 #pragma mark -
 #pragma mark  PPPPStatusProtocol
@@ -508,10 +532,10 @@
                 NSLog(@"状态改变");
                 //                [self performSelectorOnMainThread:@selector(notifyCameraStatusChange:) withObject:strDID waitUntilDone:NO];
             }
-            //            [self performSelectorOnMainThread:@selector(ReloadCameraTableView) withObject:nil waitUntilDone:NO];
+           
         }
         
-        
+         [self performSelectorOnMainThread:@selector(reloadCamera) withObject:nil waitUntilDone:NO];
         //如果是ID号无效，则停止该设备的P2P
         if (status == PPPP_STATUS_INVALID_ID
             || status == PPPP_STATUS_CONNECT_TIMEOUT
@@ -530,10 +554,6 @@
     //[cameraListMgt release];
     //cameraListMgt = nil;
     //[self StopPPPP];
-    if (netWorkUtile!=nil) {
-        netWorkUtile.networkProtocol=nil;
-        netWorkUtile=nil;
-    }
     if (pPPPPChannelMgt!=nil) {
         pPPPPChannelMgt->pCameraViewController = nil;
     }
