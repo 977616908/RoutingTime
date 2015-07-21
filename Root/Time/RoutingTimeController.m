@@ -587,7 +587,7 @@ typedef enum{
     float h = size.height;
     float reload_distance = 10;
     if(y > h + reload_distance) {
-        if (pageCount!=-1&&pageCount!=0&&!isRefresh) {
+        if (pageCount!=-1&&pageCount!=0&&!isRefresh&&!self.header.isRefreshing) {
             isRefresh=YES;
             [self.footer beginRefreshing];
             [self getRequestPage:pageCount mark:@"footer"];
@@ -770,6 +770,11 @@ typedef enum{
     [self.header free];
     [self.footer free];
     [PSNotificationCenter removeObserver:self name:@"UPDATE" object:nil];
+}
+
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [self stopAnimation];
 }
 
 #pragma -mark 上传头像

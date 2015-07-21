@@ -19,6 +19,7 @@
 #import "PlayViewController.h"
 #import "CameraListMgt.h"
 #import "PPPPDefine.h"
+#import "CameraMessage.h"
 
 #define DEVICE @"APPDEVICE"
 
@@ -38,8 +39,12 @@
 }
 - (IBAction)onClick:(id)sender;
 @property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *imgArr;
-@property (nonatomic,weak)ApplyView *applyView;
 @property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *wfImgs;
+@property (nonatomic,weak)IBOutlet UILabel *lbMsg;
+@property (nonatomic,weak)ApplyView *applyView;
+
+@property (nonatomic,strong)CameraMessage *cameraMsg;
+
 @end
 
 @implementation ApplyViewController
@@ -81,10 +86,13 @@
         NSArray *arr=[[NSUserDefaults standardUserDefaults]objectForKey:DEVICE];
         //绑定后有没有添加其它设备
         [self addDevice:arr];
-        
-        
     }
-
+    if (!self.cameraMsg) {
+        NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+        NSDictionary *userData= [user objectForKey:USERDATA];
+        NSString *userPhone=userData[@"userPhone"];
+        [self initPostWithURL:ROUTINGCAMERA path:@"getCamera" paras:@{@"username":userPhone} mark:@"user" autoRequest:YES];
+    }
     
 }
 
@@ -157,6 +165,26 @@
     
 }
 
+
+-(void)handleRequestOK:(id)response mark:(NSString *)mark{
+    PSLog(@"%@:%@",response,mark);
+    NSNumber *returnCode=[response objectForKey:@"returnCode"];
+    if ([mark isEqualToString:@"user"]) {
+        if ([returnCode intValue]==200) {
+            NSDictionary *data=response[@"data"];
+            CameraMessage *msg=[[CameraMessage alloc]initWithData:data];
+            PSLog(@"%@",msg);
+            if(msg.isOpen){
+                self.lbMsg.hidden=NO;
+                self.cameraMsg=msg;
+            }
+        }
+    }
+}
+
+-(void)handleRequestFail:(NSError *)error mark:(NSString *)mark{
+    
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

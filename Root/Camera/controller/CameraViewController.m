@@ -24,7 +24,7 @@
 @property(nonatomic,weak)CCButton *btnStart;
 @property(nonatomic,weak)CCButton *btnSearch;
 @property(nonatomic,weak)CCLabel *lbMsg;
-@property(nonatomic,weak)CameraMessage *cameraMsg;
+@property(nonatomic,strong)CameraMessage *cameraMsg;
 @end
 
 @implementation CameraViewController
