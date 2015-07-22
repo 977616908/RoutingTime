@@ -1405,8 +1405,9 @@
     if (isMoreView) {
         NSLog(@"PlayViewController....more..viewWillDisappear");
         [[NSNotificationCenter defaultCenter]removeObserver:self name:@"enterbackground" object:nil];
-        [[NSNotificationCenter defaultCenter]removeObserver:self name:@"becomeActive" object:nil];
+        
     }
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:@"becomeActive" object:nil];
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
 }
 

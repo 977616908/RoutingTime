@@ -12,12 +12,15 @@
 #import <SystemConfiguration/CaptiveNetwork.h>
 #import "CameraMessage.h"
 #import "CameraSearchViewController.h"
+#import "PPPPChannelManagement.h"
+#import "WifiParamsProtocol.h"
 
-@interface CameraViewController ()<ScannerMacDelegate,SearchAddCameraInfoProtocol>{
+@interface CameraViewController ()<ScannerMacDelegate,SearchAddCameraInfoProtocol,WifiParamsProtocol>{
     CGFloat downloadedBytes;
     NSTimer *timer;
     BOOL isConnect;
     NSMutableArray *arrSteps;
+    CPPPPChannelManagement *m_pPPPPChannelMgt;
 }
 @property(nonatomic,weak)PFDownloadIndicator *downIndicator;
 @property(nonatomic,weak)CCLabel *downMsg;
@@ -125,7 +128,10 @@
     [btnSearch alterNormalTitle:@"局域网搜索"];
     self.btnSearch=btnSearch;
     [bgView addSubview:btnSearch];
-
+    
+    
+    self.cameraMsg=[[CameraMessage alloc]init];
+    [PSNotificationCenter addObserver:self selector:@selector(showConnect) name:@"becomeActive" object:nil];
 }
 
 
@@ -141,8 +147,14 @@
     }else{
         if (isConnect) {
             self.btnStart.enabled=NO;
-            [self createCamera];
+            if (self.cameraMsg.isOpen) {
+                [self createCamera];
+            }else{
+                [self setCameraWifi:self.cameraMsg.camid];
+            }
+  
             [self startAnimation];
+            
         }else{
             [self.navigationController.view.layer addAnimation:[self customAnimation1:self.view upDown:YES] forKey:@"animation1"];
             ScannerViewController *svc = [[ScannerViewController alloc]init];
@@ -156,12 +168,11 @@
 #pragma -mark 判断是否连接当前摄像头
 -(void)showConnect{
     NSString *wifiiName=[self getWifiName];
-    if ([wifiiName hasPrefix:@"IPCAM-"]) {
+    if ([wifiiName hasPrefix:@"IPCAM-"]&&![self.cameraMsg.camid isEqualToString:@""]) {
         isConnect=YES;
-        CameraMessage *msg=[[CameraMessage alloc]init];
-        msg.camdevicewifiname=wifiiName;
-        self.cameraMsg=msg;
+        self.cameraMsg.camdevicewifiname=wifiiName;
         [self setStepsCount:2];
+        self.btnSearch.hidden=YES;
         [self.btnStart alterNormalTitle:@"开始智能连接"];
     }else{
         
@@ -176,12 +187,6 @@
     }
 }
 
--(void)scannerMessage:(NSString *)msg{
-    if (![msg isEqualToString:@""]) {
-        [self cameraConnect:msg];
-    }
-
-}
 
 -(void)cameraConnect:(NSString *)msg{
     [self setStepsCount:1];
@@ -230,6 +235,39 @@
 }
 
 -(void)handleRequestFail:(NSError *)error mark:(NSString *)mark{
+    PSLog(@"%@:%@",error,mark);
+    [self showConnect];
+}
+
+
+
+#pragma -mark 代码事件
+
+-(void)scannerMessage:(NSString *)msg{
+    if (![msg isEqualToString:@""]) {
+        [self cameraConnect:msg];
+        self.cameraMsg.camid=msg;
+    }
+    
+}
+
+-(void)AddCameraInfo: (NSString*) strCameraName DID: (NSString*) strDID IP:(NSString *)strIP Port:(NSString *)port{
+    PSLog(@"%@->%@->%@",strCameraName,strDID,strIP);
+    if (strDID&&![strDID isEqualToString:@""]) {
+        self.cameraMsg.camid=strDID;
+        [self cameraConnect:strDID];
+    }
+    
+}
+
+
+-(void)setCameraWifi:(NSString *)strDID{
+    m_pPPPPChannelMgt = new CPPPPChannelManagement();
+    m_pPPPPChannelMgt->CameraControl([strDID UTF8String], 0, 1);
+    m_pPPPPChannelMgt->StartPPPPLivestream([strDID UTF8String], 0, self);
+    m_pPPPPChannelMgt->SetWifiParamDelegate((char*)[strDID UTF8String], self);
+    m_pPPPPChannelMgt->PPPPSetSystemParams((char*)[strDID UTF8String], MSG_TYPE_GET_PARAMS, NULL, 0);
+    m_pPPPPChannelMgt->PPPPSetSystemParams((char*)[strDID UTF8String], MSG_TYPE_WIFI_SCAN, NULL, 0);
     
 }
 
@@ -255,15 +293,6 @@
     return wifiName;
     
 }
-
--(void)AddCameraInfo: (NSString*) strCameraName DID: (NSString*) strDID IP:(NSString *)strIP Port:(NSString *)port{
-    PSLog(@"%@->%@->%@",strCameraName,strDID,strIP);
-    if (strDID&&![strDID isEqualToString:@""]) {
-        [self cameraConnect:strDID];
-    }
-    
-}
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -301,10 +330,45 @@
     }
 }
 
+#pragma mark -
+#pragma mark WifiParamsProtocol
+
+- (void) WifiParams:(NSString *)strDID enable:(NSInteger)enable ssid:(NSString *)strSSID channel:(NSInteger)channel mode:(NSInteger)mode authtype:(NSInteger)authtype encryp:(NSInteger)encryp keyformat:(NSInteger)keyformat defkey:(NSInteger)defkey strKey1:(NSString *)strKey1 strKey2:(NSString *)strKey2 strKey3:(NSString *)strKey3 strKey4:(NSString *)strKey4 key1_bits:(NSInteger)key1_bits key2_bits:(NSInteger)key2_bits key3_bits:(NSInteger)key3_bits key4_bits:(NSInteger)key4_bits wpa_psk:(NSString *)wpa_psk
+{
+    NSLog(@"WifiParams.....strDID: %@, enable:%d, ssid:%@, channel:%d, mode:%d, authtype:%d, encryp:%d, keyformat:%d, defkey:%d, strKey1:%@, strKey2:%@, strKey3:%@, strKey4:%@, key1_bits:%d, key2_bits:%d, key3_bits:%d, key4_bits:%d, wap_psk:%@", strDID, enable, strSSID, channel, mode, authtype, encryp, keyformat, defkey, strKey1, strKey2, strKey3, strKey4, key1_bits, key2_bits, key3_bits, key4_bits, wpa_psk);
+    
+//    m_strSSID = [[NSString alloc] initWithString:strSSID];
+//    m_channel = channel;
+//    m_authtype = authtype;
+//    m_strWEPKey = strKey1;
+//    m_strWPA_PSK = wpa_psk;
+    
+}
+
+- (void) WifiScanResult:(NSString *)strDID ssid:(NSString *)strSSID mac:(NSString *)strMac security:(NSInteger)security db0:(NSInteger)db0 db1:(NSInteger)db1 mode:(NSInteger)mode channel:(NSInteger)channel bEnd:(NSInteger)bEnd
+{
+    NSLog(@"WifiScanResult.....strDID:%@, ssid:%@, mac:%@, security:%d, db0:%d, db1:%d, mode:%d, channel:%d, bEnd:%d", strDID, strSSID, strMac, security, db0, db1, mode, channel, bEnd);
+    
+    NSString *ssid=[NSString stringWithFormat:@"%@",strSSID];
+    if (ssid==nil||[ssid length]==0) {
+        NSLog(@"strSSID==nil");
+        return;
+    }
+    
+//    NSNumber *nSecurity = [NSNumber numberWithInt:security];
+//    NSNumber *nDB0 = [NSNumber numberWithInt:db0];
+//    NSNumber *nChannel = [NSNumber numberWithInt:channel];
+//    NSDictionary *wifiscan = [NSDictionary dictionaryWithObjectsAndKeys:ssid, @STR_SSID, nSecurity, @STR_SECURITY, nDB0, @STR_DB0, nChannel, @STR_CHANNEL, nil];
+//    
+//    [m_wifiScanResult addObject:wifiscan];
+    
+}
+
+
 -(CATransition *)customAnimation1:(UIView *)viewNum upDown:(BOOL )boolUpDown{
     CATransition *animation = [CATransition animation];
     animation.duration = 0.5f ;
-    animation.timingFunction = UIViewAnimationCurveEaseInOut;
+//    animation.timingFunction = UIViewAnimationCurveEaseInOut;
     animation.fillMode = kCAFillModeForwards;
     animation.endProgress = 1;
     animation.removedOnCompletion = NO;
@@ -315,6 +379,11 @@
         animation.subtype = kCATransitionFromLeft;
     }
     return animation;
+}
+
+-(void)exitCurrentController{
+    [PSNotificationCenter removeObserver:self name:@"becomeActive" object:nil];
+    [super exitCurrentController];
 }
 
 @end

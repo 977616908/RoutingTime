@@ -565,8 +565,11 @@
     if(ppppChannelMgntCondition){
         ppppChannelMgntCondition=nil;
     }
-    [PSNotificationCenter removeObserver:self forKeyPath:@"enterbackground"];
-    [PSNotificationCenter removeObserver:self forKeyPath:@"becomeActive"];
+    
+    [PSNotificationCenter removeObserver:self name:@"enterbackground" object:nil];
+    [PSNotificationCenter removeObserver:self name:@"becomeActive" object:nil];
+//    [PSNotificationCenter removeObserver:self forKeyPath:@"enterbackground"];
+//    [PSNotificationCenter removeObserver:self forKeyPath:@"becomeActive"];
 }
 
 @end
