@@ -56,6 +56,7 @@
     [self startWifiiAnimation];
     [PSNotificationCenter addObserver:self selector:@selector(StopPPPP) name:@"enterbackground" object:nil];
     [PSNotificationCenter addObserver:self selector:@selector(startCamera) name:@"becomeActive" object:nil];
+    [self createCamera];
 }
 
 -(void)coustomNav{
@@ -176,7 +177,6 @@
                 self.lbMsg.textColor=RGBCommon(210, 79, 86);
                 self.lbMsg.text=@"在线";
                 self.cameraMsg=msg;
-                [self createCamera];
                 m_pCameraListMgt = [[CameraListMgt alloc] init];
                 [m_pCameraListMgt selectP2PAll:YES];
                 [m_pCameraListMgt AddCamera:@"WIFICAM" DID:msg.camid User:msg.camname Pwd:msg.campas Snapshot:nil];
@@ -276,8 +276,6 @@
     playViewController.m_pRecPathMgt = m_pRecPathMgt;
     playViewController.isP2P=YES;
     playViewController.cameraName = @"时光路游";
-    
-    
     
     playViewController.strDID = self.cameraMsg.camid;
     playViewController.m_nP2PMode = 1;
