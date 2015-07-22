@@ -72,7 +72,7 @@
         AFHTTPRequestSerializer *_requestSerializer = [AFHTTPRequestSerializer serializer];
         NSError *myError=nil;
         _mRequest=[_requestSerializer requestWithMethod:_method URLString:wholeURL parameters:_paras error:&myError];
-        [_mRequest setTimeoutInterval:10];
+        [_mRequest setTimeoutInterval:5];
         _requestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:_mRequest];
         _requestOperation.responseSerializer = [AFHTTPResponseSerializer serializer];
         //_requestOperation.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html",@"application/json", nil];
