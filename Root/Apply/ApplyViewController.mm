@@ -177,6 +177,9 @@
                 self.lbMsg.text=@"在线";
                 self.cameraMsg=msg;
                 [self createCamera];
+                m_pCameraListMgt = [[CameraListMgt alloc] init];
+                [m_pCameraListMgt selectP2PAll:YES];
+                [m_pCameraListMgt AddCamera:@"WIFICAM" DID:msg.camid User:msg.camname Pwd:msg.campas Snapshot:nil];
                 [self performSelector:@selector(start) withObject:nil afterDelay:.25];
             }
         }
@@ -250,21 +253,22 @@
 
 #pragma -mark 跳转摄像头
 -(void)startPlayer{
-    //    NSDictionary *cameraDic = [m_pCameraListMgt GetCameraAtIndex:0];
-    //    NSNumber *nPPPPStatus = [cameraDic objectForKey:@STR_PPPP_STATUS];
+        NSDictionary *cameraDic = [m_pCameraListMgt GetCameraAtIndex:0];
+        NSNumber *nPPPPStatus = [cameraDic objectForKey:@STR_PPPP_STATUS];
     //    if ([nPPPPStatus intValue] == PPPP_STATUS_INVALID_ID) {
     //        return;
     //    }
     //    NSLog(@"---%d---",[nPPPPStatus integerValue]);
-    //    if ([nPPPPStatus intValue] != PPPP_STATUS_ON_LINE) {
-    //        NSString *strDID = [cameraDic objectForKey:@STR_DID];
-    //        NSString *strUser = [cameraDic objectForKey:@STR_USER];
-    //        NSString *strPwd = [cameraDic objectForKey:@STR_PWD];
-    //
-    //        pPPPPChannelMgt->Start([strDID UTF8String], [strUser UTF8String], [strPwd UTF8String]);
-    //
-    //        //            return;
-    //    }
+        if ([nPPPPStatus intValue] != PPPP_STATUS_ON_LINE) {
+            [self showToast:@"摄像头不在线，重新启动..." Long:1.5];
+            NSString *strDID = [cameraDic objectForKey:@STR_DID];
+            NSString *strUser = [cameraDic objectForKey:@STR_USER];
+            NSString *strPwd = [cameraDic objectForKey:@STR_PWD];
+    
+            pPPPPChannelMgt->Start([strDID UTF8String], [strUser UTF8String], [strPwd UTF8String]);
+            
+            return;
+        }
     
     PlayViewController *playViewController = [[PlayViewController alloc] init];
     playViewController.m_pPPPPChannelMgt = pPPPPChannelMgt;
@@ -398,8 +402,6 @@
         pPPPPChannelMgt->pCameraViewController=self;
         m_pPicPathMgt = [[PicPathManagement alloc] init];
         m_pRecPathMgt = [[RecPathManagement alloc] init];
-        m_pCameraListMgt = [[CameraListMgt alloc] init];
-        [m_pCameraListMgt selectP2PAll:YES];
 //        netWorkUtile=[[NetWorkUtiles alloc]init];
 //        netWorkUtile.userProtocol=self;
         pPPPPChannelMgt->CameraControl([self.cameraMsg.camid UTF8String], 0, 1);
@@ -477,16 +479,16 @@
             self.lbMsg.text=@"离线";
             break;
         case PPPP_STATUS_CONNECTING://正在连接
-             self.lbMsg.text=@"离线";
+             self.lbMsg.text=@"正在连接";
             break;
         case PPPP_STATUS_INITIALING://正在初始化
-             self.lbMsg.text=@"离线";
+             self.lbMsg.text=@"正在初始化";
             break;
         case PPPP_STATUS_CONNECT_FAILED://连接失败
-             self.lbMsg.text=@"离线";
+             self.lbMsg.text=@"连接失败";
             break;
         case PPPP_STATUS_DISCONNECT://连接断开
-             self.lbMsg.text=@"离线";
+             self.lbMsg.text=@"连接断开";
             break;
         case PPPP_STATUS_INVALID_ID://无效ID
              self.lbMsg.text=@"离线";
@@ -499,7 +501,7 @@
              self.lbMsg.text=@"离线";
             break;
         case PPPP_STATUS_CONNECT_TIMEOUT://连接超时
-            self.lbMsg.text=@"离线";
+            self.lbMsg.text=@"连接超时";
             break;
     }
 

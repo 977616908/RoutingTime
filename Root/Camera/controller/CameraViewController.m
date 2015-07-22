@@ -175,7 +175,7 @@
     self.downMsg.hidden=NO;
     self.downIndicator.hidden=NO;
     downloadedBytes = 0;
-    timer=[NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(updateView) userInfo:nil repeats:YES];
+    timer=[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(updateView) userInfo:nil repeats:YES];
 }
 
 - (void)updateView
