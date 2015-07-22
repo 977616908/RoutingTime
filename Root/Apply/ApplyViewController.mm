@@ -254,6 +254,9 @@
 #pragma -mark 跳转摄像头
 -(void)startPlayer{
         NSDictionary *cameraDic = [m_pCameraListMgt GetCameraAtIndex:0];
+        NSString *strDID = [cameraDic objectForKey:@STR_DID];
+        NSString *strUser = [cameraDic objectForKey:@STR_USER];
+        NSString *strPwd = [cameraDic objectForKey:@STR_PWD];
         NSNumber *nPPPPStatus = [cameraDic objectForKey:@STR_PPPP_STATUS];
     //    if ([nPPPPStatus intValue] == PPPP_STATUS_INVALID_ID) {
     //        return;
@@ -261,9 +264,7 @@
     //    NSLog(@"---%d---",[nPPPPStatus integerValue]);
         if ([nPPPPStatus intValue] != PPPP_STATUS_ON_LINE) {
             [self showToast:@"摄像头不在线，重新启动..." Long:1.5];
-            NSString *strDID = [cameraDic objectForKey:@STR_DID];
-            NSString *strUser = [cameraDic objectForKey:@STR_USER];
-            NSString *strPwd = [cameraDic objectForKey:@STR_PWD];
+
     
             pPPPPChannelMgt->Start([strDID UTF8String], [strUser UTF8String], [strPwd UTF8String]);
             
@@ -277,7 +278,7 @@
     playViewController.isP2P=YES;
     playViewController.cameraName = @"时光路游";
     
-    playViewController.strDID = self.cameraMsg.camid;
+    playViewController.strDID = strDID;
     playViewController.m_nP2PMode = 1;
     [self presentViewController:playViewController animated:YES completion:nil];
 }
@@ -394,31 +395,32 @@
 
 -(void)start{
     isCamera=NO;
-    if (!pPPPPChannelMgt) {
-        ppppChannelMgntCondition = [[NSCondition alloc] init];
-        pPPPPChannelMgt = new CPPPPChannelManagement();
-        pPPPPChannelMgt->pCameraViewController=self;
-        m_pPicPathMgt = [[PicPathManagement alloc] init];
-        m_pRecPathMgt = [[RecPathManagement alloc] init];
+    NSDictionary *cameraDic = [m_pCameraListMgt GetCameraAtIndex:0];
+    NSString *strDID = [cameraDic objectForKey:@STR_DID];
+    ppppChannelMgntCondition = [[NSCondition alloc] init];
+    pPPPPChannelMgt = new CPPPPChannelManagement();
+    pPPPPChannelMgt->pCameraViewController=self;
+    m_pPicPathMgt = [[PicPathManagement alloc] init];
+    m_pRecPathMgt = [[RecPathManagement alloc] init];
 //        netWorkUtile=[[NetWorkUtiles alloc]init];
 //        netWorkUtile.userProtocol=self;
-        pPPPPChannelMgt->CameraControl([self.cameraMsg.camid UTF8String], 0, 1);
-        pPPPPChannelMgt->StartPPPPLivestream([self.cameraMsg.camid UTF8String], 0, self);
-        InitAudioSession();
-        [ppppChannelMgntCondition lock];
-        [NSThread detachNewThreadSelector:@selector(startCamera) toTarget:self withObject:nil];
-        [ppppChannelMgntCondition unlock];
-    }
-
+    
+    
+    pPPPPChannelMgt->CameraControl([strDID UTF8String], 0, 1);
+    pPPPPChannelMgt->StartPPPPLivestream([strDID UTF8String], 0, self);
+    InitAudioSession();
+    [ppppChannelMgntCondition lock];
+    [NSThread detachNewThreadSelector:@selector(startCamera) toTarget:self withObject:nil];
+    [ppppChannelMgntCondition unlock];
 
 }
 
 -(void)startCamera{
     if (pPPPPChannelMgt) {
-        NSString *strDID = self.cameraMsg.camid;
-        NSString *strUser = self.cameraMsg.camname;
-        NSString *strPwd = self.cameraMsg.campas;
-        
+        NSDictionary *cameraDic = [m_pCameraListMgt GetCameraAtIndex:0];
+        NSString *strDID = [cameraDic objectForKey:@STR_DID];
+        NSString *strUser = [cameraDic objectForKey:@STR_USER];
+        NSString *strPwd = [cameraDic objectForKey:@STR_PWD];
         pPPPPChannelMgt->Start([strDID UTF8String], [strUser UTF8String], [strPwd UTF8String]);
     }
 }
@@ -455,7 +457,9 @@
     [super viewWillDisappear:animated];
     if (!isCamera) {
         if (pPPPPChannelMgt) {
-            [self StopPPPPByDID:self.cameraMsg.camid];
+            NSDictionary *cameraDic = [m_pCameraListMgt GetCameraAtIndex:0];
+            NSString *strDID = [cameraDic objectForKey:@STR_DID];
+            [self StopPPPPByDID:strDID];
         }
     }
 }
