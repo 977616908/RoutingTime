@@ -532,10 +532,10 @@
                 NSLog(@"状态改变");
                 //                [self performSelectorOnMainThread:@selector(notifyCameraStatusChange:) withObject:strDID waitUntilDone:NO];
             }
-           
+           [self performSelectorOnMainThread:@selector(reloadCamera) withObject:nil waitUntilDone:NO];
         }
         
-         [self performSelectorOnMainThread:@selector(reloadCamera) withObject:nil waitUntilDone:NO];
+        
         //如果是ID号无效，则停止该设备的P2P
         if (status == PPPP_STATUS_INVALID_ID
             || status == PPPP_STATUS_CONNECT_TIMEOUT
