@@ -23,4 +23,16 @@
     return self;
 }
 
+-(instancetype)init{
+    if (self=[super init]) {
+        _camdevice=@"";
+        _camdevicewifiname=@"";;
+        _camid=@"";
+        _camname=@"admin";;
+        _campas=@"admin";;
+        _camwifiname=@"";;
+    }
+    return self;
+}
+
 @end

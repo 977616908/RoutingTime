@@ -14,6 +14,7 @@
 #import "CameraSearchViewController.h"
 #import "PPPPChannelManagement.h"
 #import "WifiParamsProtocol.h"
+#import "PPPPDefine.h"
 
 @interface CameraViewController ()<ScannerMacDelegate,SearchAddCameraInfoProtocol,WifiParamsProtocol>{
     CGFloat downloadedBytes;
@@ -131,7 +132,11 @@
     
     
     self.cameraMsg=[[CameraMessage alloc]init];
+    self.cameraMsg.camwifiname=[[NSUserDefaults standardUserDefaults]objectForKey:ROUTERNAME];
     [PSNotificationCenter addObserver:self selector:@selector(showConnect) name:@"becomeActive" object:nil];
+    m_pPPPPChannelMgt = new CPPPPChannelManagement();
+    m_pPPPPChannelMgt->pCameraViewController=self;
+    
 }
 
 
@@ -147,13 +152,14 @@
     }else{
         if (isConnect) {
             self.btnStart.enabled=NO;
+            CGFloat duration=0.1;
             if (self.cameraMsg.isOpen) {
                 [self createCamera];
             }else{
-                [self setCameraWifi:self.cameraMsg.camid];
+                duration=0.3;
+                [self setCameraWifiPwd:self.cameraMsg.camid];
             }
-  
-            [self startAnimation];
+            [self startAnimation:duration];
             
         }else{
             [self.navigationController.view.layer addAnimation:[self customAnimation1:self.view upDown:YES] forKey:@"animation1"];
@@ -174,8 +180,9 @@
         [self setStepsCount:2];
         self.btnSearch.hidden=YES;
         [self.btnStart alterNormalTitle:@"开始智能连接"];
+        [self start:self.cameraMsg.camid];
     }else{
-        
+        [self showToast:@"设备不正确或未连接“IPCAM-XXX”的WIFI" Long:1.5];
     }
     NSLog(@"---[%@]---",wifiiName);
 }
@@ -261,14 +268,78 @@
 }
 
 
--(void)setCameraWifi:(NSString *)strDID{
-    m_pPPPPChannelMgt = new CPPPPChannelManagement();
+
+#pragma mark -
+#pragma mark  PPPPStatusProtocol
+- (void) PPPPStatus:(NSString *)strDID statusType:(NSInteger)statusType status:(NSInteger)status
+{
+    NSLog(@"PPPPStatus ..... strDID: %@, statusType: %d, status: %d", strDID, statusType, status);
+    if (statusType == MSG_NOTIFY_TYPE_PPPP_STATUS) {
+        //如果是ID号无效，则停止该设备的P2P
+        if (status == PPPP_STATUS_INVALID_ID
+            || status == PPPP_STATUS_CONNECT_TIMEOUT
+            || status == PPPP_STATUS_DEVICE_NOT_ON_LINE
+            || status == PPPP_STATUS_CONNECT_FAILED||statusType==PPPP_STATUS_INVALID_USER_PWD) {
+            [self performSelectorOnMainThread:@selector(StopPPPPByDID:) withObject:strDID waitUntilDone:NO];
+            return;
+        }
+        if (status==PPPP_STATUS_ON_LINE) {//
+            NSLog(@"用户在线，去获取权限");
+            // [self performSelector:@selector(updateAuthority:) withObject:strDID afterDelay:1];
+            //[self performSelectorOnMainThread:@selector(updateAuthority:) withObject:strDID waitUntilDone:NO];
+            //[self updateAuthority:strDID];
+            [NSThread detachNewThreadSelector:@selector(setCameraWifi:) toTarget:self withObject:strDID];
+        }
+        
+    }
+}
+
+-(void)start:(NSString *)strDID{
+    NSCondition *ppppChannelMgntCondition = [[NSCondition alloc] init];
     m_pPPPPChannelMgt->CameraControl([strDID UTF8String], 0, 1);
     m_pPPPPChannelMgt->StartPPPPLivestream([strDID UTF8String], 0, self);
+    [ppppChannelMgntCondition lock];
+    [NSThread detachNewThreadSelector:@selector(startCamera:) toTarget:self withObject:strDID];
+    [ppppChannelMgntCondition unlock];
+    //    [self updateAuthority:strDID];
+    
+}
+
+-(void)startCamera:(NSString *)strDID{
+    if (m_pPPPPChannelMgt) {
+        //        NSString *strDID = [cameraDic objectForKey:@""];
+        NSString *strUser = @"admin";
+        NSString *strPwd = @"admin";
+        m_pPPPPChannelMgt->Start([strDID UTF8String], [strUser UTF8String], [strPwd UTF8String]);
+    }
+}
+
+-(void)setCameraWifi:(NSString *)strDID{
+    [self setStepsCount:3];
     m_pPPPPChannelMgt->SetWifiParamDelegate((char*)[strDID UTF8String], self);
     m_pPPPPChannelMgt->PPPPSetSystemParams((char*)[strDID UTF8String], MSG_TYPE_GET_PARAMS, NULL, 0);
     m_pPPPPChannelMgt->PPPPSetSystemParams((char*)[strDID UTF8String], MSG_TYPE_WIFI_SCAN, NULL, 0);
-    
+}
+
+
+-(void)setCameraWifiPwd:(NSString *)m_strDID{
+    [self setStepsCount:4];
+    NSString *wifiName=self.cameraMsg.camwifiname;
+    NSString *pwd=@"88888888";
+    m_pPPPPChannelMgt->SetWifi((char*)[m_strDID UTF8String], 1, (char*)[wifiName UTF8String], 1, 0, 2, 0, 0, 0, (char*)"", (char*)"", (char*)"", (char*)"", 0, 0, 0, 0, (char*)[pwd UTF8String]);
+    m_pPPPPChannelMgt->PPPPSetSystemParams((char*)[m_strDID UTF8String], MSG_TYPE_REBOOT_DEVICE, NULL, 0);
+}
+
+-(void)updateAuthority:(NSString *)did{
+    //NSLog(@"updateAuthority  00000  did=%@",did);
+    sleep(1);
+    m_pPPPPChannelMgt->SetUserPwdParamDelegate((char*)[did UTF8String], self);
+    m_pPPPPChannelMgt->PPPPSetSystemParams((char*)[did UTF8String], MSG_TYPE_GET_PARAMS, NULL, 0);
+}
+
+- (void) StopPPPPByDID:(NSString*)did
+{
+    m_pPPPPChannelMgt->Stop([did UTF8String]);
 }
 
 - (NSString *)getWifiName
@@ -306,12 +377,12 @@
 }
 
 #pragma mark - Update Views
-- (void)startAnimation
+- (void)startAnimation:(CGFloat)duration
 {
     self.downMsg.hidden=NO;
     self.downIndicator.hidden=NO;
     downloadedBytes = 0;
-    timer=[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(updateView) userInfo:nil repeats:YES];
+    timer=[NSTimer scheduledTimerWithTimeInterval:duration target:self selector:@selector(updateView) userInfo:nil repeats:YES];
 }
 
 - (void)updateView
@@ -319,6 +390,10 @@
     downloadedBytes+=arc4random()%5;
     downloadedBytes=downloadedBytes>100?100:downloadedBytes;
     _downMsg.text=[NSString stringWithFormat:@"正在为您连接摄像头...(%.0f%%)",downloadedBytes];
+    if (downloadedBytes>=80&&!self.cameraMsg.isOpen) {
+        [self setStepsCount:5];
+        [self createCamera];
+    }
     [_downIndicator updateWithTotalBytes:100 downloadedBytes:downloadedBytes];
     if(downloadedBytes>=100){
         [timer invalidate];
@@ -382,6 +457,14 @@
 }
 
 -(void)exitCurrentController{
+
+    if(!self.cameraMsg.isOpen){
+        [self StopPPPPByDID:self.cameraMsg.camid];
+    }
+    if (m_pPPPPChannelMgt!=nil) {
+        m_pPPPPChannelMgt->pCameraViewController = nil;
+    }
+    SAFE_DELETE(m_pPPPPChannelMgt);
     [PSNotificationCenter removeObserver:self name:@"becomeActive" object:nil];
     [super exitCurrentController];
 }
