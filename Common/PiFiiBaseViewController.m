@@ -330,9 +330,11 @@
     if (!isBound) {
         [[[UIAlertView alloc]initWithTitle:@"提示" message:@"网络异常或未绑定PiFii路由" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil] show];
     }else{
-        BOOL isConnect=[[[NSUserDefaults standardUserDefaults]objectForKey:ISCONNECT]boolValue];
+        NSUserDefaults *user=[NSUserDefaults standardUserDefaults];
+        BOOL isConnect=[[user objectForKey:ISCONNECT]boolValue];
         if (!isConnect) {
-            [[[UIAlertView alloc]initWithTitle:@"提示" message:@"未连接绑定PiFii路由" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil] show];
+            NSString *name=[user objectForKey:ROUTERNAME];
+            [[[UIAlertView alloc]initWithTitle:@"提示" message:[NSString stringWithFormat:@"未连接绑定[%@]路由",name] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil] show];
             isBound=NO;
         }
     }

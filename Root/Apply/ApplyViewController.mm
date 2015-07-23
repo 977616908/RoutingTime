@@ -20,6 +20,7 @@
 #import "CameraListMgt.h"
 #import "PPPPDefine.h"
 #import "CameraMessage.h"
+#import "RoutingCameraController.h"
 
 #define DEVICE @"APPDEVICE"
 
@@ -230,8 +231,12 @@
         }
             break;
         case 3:{
-            RoutingListController *routingController=[[RoutingListController alloc]init];
-            [self.navigationController pushViewController:routingController animated:YES];
+//            RoutingListController *routingController=[[RoutingListController alloc]init];
+//            [self.navigationController pushViewController:routingController animated:YES];
+            RoutingCameraController *routingController=[[RoutingCameraController alloc]init];
+            routingController.arrCamera=[NSMutableArray array];
+//            routingController.dateStr=sb;
+            [self presentViewController:routingController animated:YES completion:nil];
         }
             break;
         case 4:{
