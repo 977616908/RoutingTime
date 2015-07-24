@@ -289,16 +289,16 @@
 #pragma -mark 绑定与未绑定
 -(void)bindMacListener:(CCButton *)sendar{
     self.btnWifii=sendar;
-    if (!_bindView) {
+    if (!self.bindView) {
         CGFloat gh=0;
         if(is_iOS7())gh=50;
         BindView *bindView=[[BindView alloc]initWithFrame:CGRectMake(0,0, CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame)-gh)];
         self.bindView=bindView;
         [self.view addSubview:bindView];
     }
-    _bindView.isBind=isMacBounds;
-    [_bindView moveTransiton:YES];
-    _bindView.type=^(NSInteger tag,NSString *statue){
+    self.bindView.isBind=isMacBounds;
+    [self.bindView moveTransiton:YES];
+    self.bindView.type=^(NSInteger tag,NSString *statue){
         switch (tag) {
             case 1://扫一扫
             {
@@ -378,7 +378,9 @@
         NSNumber *returnCode=[response objectForKey:@"returnCode"];
         if ([returnCode intValue]==200) {
             [self bindMac:YES DeviceEcho:self.echo];
+            self.echo=nil;
             stateView.labelText=@"绑定成功";
+            self.bindView=nil;
             [self performSelector:@selector(setStateView:) withObject:@"success" afterDelay:1.5];
         }else{
             NSString *msg=[response objectForKey:@"desc"];
@@ -392,6 +394,7 @@
         NSNumber *returnCode=[response objectForKey:@"returnCode"];
         if ([returnCode intValue]==200) {
             [self bindMac:NO DeviceEcho:nil];
+            self.bindView=nil;
             stateView.labelText=@"解绑成功";
             [self performSelector:@selector(setStateView:) withObject:@"success" afterDelay:1.5];
         }else{

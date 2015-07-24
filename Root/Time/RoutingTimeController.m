@@ -251,6 +251,7 @@ typedef enum{
                 pageCount+=1;
             }
             [self.rootTable reloadData];
+            if (_arrTime.count<=0)[self setLoading:NO];
             [self saveRoutingTime:response];
         }
 
@@ -327,9 +328,20 @@ typedef enum{
         [loginController setCustomAnimation:YES];
         [self.navigationController pushViewController:loginController animated:NO];
     }
+
+}
+
+-(void)setLoading:(BOOL)isLoad{
+    NSUserDefaults *userDefaultes = [NSUserDefaults standardUserDefaults];
     BOOL isLoading=[[userDefaultes objectForKey:ISLOADING]boolValue];
     if(isLoading){
-        self.bgLoad.hidden=NO;
+        if (isLoad) {
+            self.bgLoad.hidden=YES;
+            [userDefaultes setObject:@NO forKey:ISLOADING];
+            [userDefaultes synchronize];
+        }else{
+            self.bgLoad.hidden=NO;
+        }
     }else{
         self.bgLoad.hidden=YES;
     }
@@ -343,10 +355,7 @@ typedef enum{
     }
     [action showInView:self.view];
     if (!self.bgLoad.isHidden) {
-        self.bgLoad.hidden=YES;
-        NSUserDefaults *userDefaultes = [NSUserDefaults standardUserDefaults];
-        [userDefaultes setObject:@NO forKey:ISLOADING];
-        [userDefaultes synchronize];
+        [self setLoading:YES];
     }
     
 }
