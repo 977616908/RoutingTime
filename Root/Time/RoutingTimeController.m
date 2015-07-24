@@ -57,6 +57,9 @@ typedef enum{
 - (void)viewDidLoad {
     [super viewDidLoad];
     pathArchive=pathInCacheDirectory(@"AppCache/RoutingTime.archiver");
+    if(ScreenHeight()<=480){
+        self.rootTable.height=CGRectGetHeight(self.rootTable.frame)-88;
+    }
     [self setupRefreshView];
     [self judgeWithLogin];
     [self createImage];

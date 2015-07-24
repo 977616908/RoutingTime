@@ -40,7 +40,7 @@
         gh+=20;
     }
     CCScrollView *rootScrollView=CCScrollViewCreateNoneIndicatorWithFrame(CGRectMake(0, 0, CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame)-gh), nil, NO);
-    rootScrollView.contentSize=CGSizeMake(0, 568);
+    rootScrollView.contentSize=CGSizeMake(0, 568-gh);
     _rootScrollView=rootScrollView;
     [self.view addSubview:rootScrollView];
     
@@ -54,7 +54,8 @@
 }
 
 -(void)createView{
-    UIView *oneView=[[UIView alloc]initWithFrame:CGRectMake(10, 10, CGRectGetWidth(self.view.frame)-20, 134)];
+    CGFloat hg=15;
+    UIView *oneView=[[UIView alloc]initWithFrame:CGRectMake(10, hg, CGRectGetWidth(self.view.frame)-20, 134)];
     oneView.backgroundColor=RGBCommon(215, 234, 240);
     oneView.layer.masksToBounds=YES;
     oneView.layer.cornerRadius=5;
@@ -91,8 +92,11 @@
         }
         [oneView addSubview:bgView];
     }
+    if (ScreenHeight()>480) {
+        hg=15*2;
+    }
     
-    UIView *secondView=[[UIView alloc]initWithFrame:CGRectMake(10, CGRectGetMaxY(oneView.frame)+10, CGRectGetWidth(self.view.frame)-20, 325)];
+    UIView *secondView=[[UIView alloc]initWithFrame:CGRectMake(10, CGRectGetMaxY(oneView.frame)+hg, CGRectGetWidth(self.view.frame)-20, 325-95)];
     secondView.backgroundColor=RGBCommon(215, 234, 240);
     secondView.layer.masksToBounds=YES;
     secondView.layer.cornerRadius=5;
@@ -103,8 +107,8 @@
     [lbTitle alterFontColor:RGBCommon(38, 38, 38)];
     [secondView addSubview:imgIcon2];
     [secondView addSubview:lbTitle2];
-    NSArray *imageArray2 = @[@"0605hm_xz",@"0605hm_tp",@"0605hm_yy",@"0605hm_sp",@"0605hm_wd",@""];
-    NSArray * nameLable2 = @[@"云下载",@"云图片",@"云音乐",@"云视频",@"云文档",@""];
+    NSArray *imageArray2 = @[@"0605hm_tp",@"0605hm_yy",@"0605hm_sp",@"0605hm_wd"];
+    NSArray * nameLable2 = @[@"云图片",@"云音乐",@"云视频",@"云文档"];
     for (NSInteger i=0 ;i<nameLable2.count; i++) {
         int rowX=i%2;
         int rowY=i/2;
@@ -148,37 +152,37 @@
     if(![self setMacBounds])return;
     
     switch (sender.tag) {
-        case 0:
-            
-            [self.navigationController pushViewController:[[DownLoadViewController alloc]init] animated:YES];
-
-            break;
-        case 1:{
+//        case 0:
+//            
+//            [self.navigationController pushViewController:[[DownLoadViewController alloc]init] animated:YES];
+//
+//            break;
+        case 0:{
     
             REPhotoCollectionController *imgVC = [[REPhotoCollectionController alloc]init];
             [self.navigationController pushViewController:imgVC animated:YES];
         }
             break;
-        case 2:{
+        case 1:{
                 MusicViewController *vam = [[MusicViewController alloc]init];
                 [self.navigationController pushViewController:vam animated:YES];
         }
             break;
-        case 3:{
+        case 2:{
 //            VideoMusicViewController *vam = [[VideoMusicViewController alloc]init];
 //            vam.dataModel = DataModelVideo;
             VedioViewController *vam=[[VedioViewController alloc]init];
             [self.navigationController pushViewController:vam animated:YES];
         }
             break;
-        case 4:{
+        case 3:{
             
             DocumentsViewController *imgVC = [DocumentsViewController new];
 //            imgVC.viewModel = ViewModelDocument;
             [self.navigationController pushViewController:imgVC animated:YES];
         }
             break;
-        case 5:
+        case 4:
         {
             
             DocumentsViewController *imgVC = [DocumentsViewController new];
