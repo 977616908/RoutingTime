@@ -265,20 +265,20 @@
 //@property (nonatomic, retain) UIBarButtonItem *btnSnapshot;
 //@property (nonatomic, retain) IBOutlet UIButton *btnMicrophone;
 
-- (IBAction) btnItemResolutionPressed:(id)sender;
-- (IBAction) btnItemDefaultVideoParamsPressed:(id)sender;
-- (void)StopPlay: (int) bForce;
-- (IBAction) btnAudioControl: (id) sender;
-- (IBAction) btnTalkControl:(id)sender;
-- (IBAction) btnStop:(id)sender;
-- (IBAction) btnUpDown:(id)sender;
-- (IBAction) btnLeftRight:(id)sender;
-- (IBAction) btnUpDownMirror:(id)sender;
-- (IBAction) btnLeftRightMirror:(id)sender;
-- (IBAction) btnSetContrast:(id)sender;
-- (IBAction) btnSetBrightness:(id)sender;
-- (IBAction) btnSwitchDisplayMode:(id)sender;
-- (IBAction) btnSnapshot:(id)sender;
-- (IBAction) btnRecord:(id)sender;
-- (IBAction) btnMore:(id)sender;
+//- (IBAction) btnItemResolutionPressed:(id)sender;
+//- (IBAction) btnItemDefaultVideoParamsPressed:(id)sender;
+//- (void)StopPlay: (int) bForce;
+//- (IBAction) btnAudioControl: (id) sender;
+//- (IBAction) btnTalkControl:(id)sender;
+//- (IBAction) btnStop:(id)sender;
+//- (IBAction) btnUpDown:(id)sender;
+//- (IBAction) btnLeftRight:(id)sender;
+//- (IBAction) btnUpDownMirror:(id)sender;
+//- (IBAction) btnLeftRightMirror:(id)sender;
+//- (IBAction) btnSetContrast:(id)sender;
+//- (IBAction) btnSetBrightness:(id)sender;
+//- (IBAction) btnSwitchDisplayMode:(id)sender;
+//- (IBAction) btnSnapshot:(id)sender;
+//- (IBAction) btnRecord:(id)sender;
+//- (IBAction) btnMore:(id)sender;
 @end

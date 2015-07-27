@@ -34,6 +34,7 @@
     NSInteger downCount;
     UIView       *_toolbar;
     BOOL  isDelete;
+    NSInteger deleteCount;
 }
 
 @property(nonatomic,weak)CCTextView *textView;
@@ -195,6 +196,10 @@
     [deleteBtn addTarget:self action:@selector(onClick:) forControlEvents:UIControlEventTouchUpInside];
     [_toolbar addSubview:deleteBtn];
     [self.view addSubview:_toolbar];
+    
+    
+    stateView=[MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    stateView.hidden=YES;
 }
 
 -(void)onCommentClick:(CCButton *)sendar{
@@ -361,7 +366,17 @@
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
     if (buttonIndex==0) {
         if (actionSheet.tag==1) {
-            PSLog(@"下载图片");
+            PSLog(@"下载");
+            if (_deleteArr.count>0) {
+                [self downImageWithVedio];
+                for (UIImageView *delImg in _photosView.totalImages) {
+                    if(delImg.subviews.count>0&&delImg.alpha<1.0){
+                        delImg.alpha=1.0;
+                        [[delImg.subviews lastObject] removeFromSuperview];
+                    }
+                }
+            }
+
         }else{
             PSLog(@"删除图片");
             NSMutableString *sb=[NSMutableString string];
@@ -420,6 +435,64 @@
 {
     [self.view endEditing:YES];
 }
+
+#pragma -mark 下载
+-(void)downImageWithVedio{
+    stateView.hidden=NO;
+    deleteCount=_deleteArr.count;
+    stateView.labelText=[NSString stringWithFormat:@"正在下载(0/%d)",deleteCount];
+    NSArray *downArr=_deleteArr.array;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        for (REPhoto *photo in downArr) {
+            if (photo.isVedio) {//下载视频
+                
+            }else{//下载图片
+                NSURL *url=photo.imageUrl.urlInstance;
+                NSData *data=[NSData dataWithContentsOfURL:url];
+                if (data) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [_deleteArr removeObject:photo];
+                        UIImageWriteToSavedPhotosAlbum([UIImage imageWithData:data], self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+                    });
+                }else{
+                    [self performSelectorOnMainThread:@selector(imageSavingWithError:) withObject:[[NSError alloc]init] waitUntilDone:NO];
+                    break;
+                }
+                
+            }
+        }
+        [_deleteArr removeAllObjects];
+    });
+
+    
+}
+
+- (void)imageSavingWithError:(NSError *)error
+{
+    if (error) {
+        stateView.labelText=@"下载失败";
+        [self performSelector:@selector(setStateView:) withObject:@"fail" afterDelay:0.5];
+    }
+}
+
+
+
+- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo{
+    if (error) {
+        PSLog(@"%@",[error description]);
+        stateView.labelText=@"下载失败";
+        [self performSelector:@selector(setStateView:) withObject:@"fail" afterDelay:0.5];
+    }else{
+        if (_deleteArr.count==0) {
+            stateView.labelText=@"下载完成";
+            [self performSelector:@selector(setStateView:) withObject:@"success" afterDelay:0.5];
+        }else{
+            stateView.labelText=[NSString stringWithFormat:@"正在下载(%d/%d)",deleteCount-_deleteArr.count,deleteCount];
+        }
+//        [self showToast:@"下载成功" Long:1.5];
+    }
+}
+
 
 #pragma -mark 分享信息
 -(void)shareSDK{
@@ -530,6 +603,19 @@
 -(void)textViewDidChange:(UITextView *)textView{
     self.navigationItem.rightBarButtonItem.enabled = (self.textView.text.length != 0);
     
+}
+
+-(void)setStateView:(NSString *)state{
+    [UIView animateWithDuration:1 animations:^{
+        stateView.alpha=0;
+    } completion:^(BOOL finished) {
+        stateView.alpha=1;
+        stateView.hidden=YES;
+        if ([state isEqualToString:@"fail"]) {
+            //            [self exitCurrentController];
+        }
+        
+    }];
 }
 
 -(CATransition *)customAnimationType:(NSString *)type upDown:(BOOL )boolUpDown{

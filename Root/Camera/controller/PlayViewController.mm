@@ -658,9 +658,22 @@
     }
     
     
+    UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+    
     //------save image--------
     
-//    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+//    [self saveFileManager:image];
+    
+    // NSLog(@"拍照完成....");
+    isTakepicturing=NO;
+    if (PicNotifyDelegate!=nil) {
+        [PicNotifyDelegate NotifyReloadData];
+    }
+    
+    
+}
+
+-(void)saveFileManager:(UIImage *)image{
     //创建文件管理器
     NSFileManager *fileManager = [NSFileManager defaultManager];
     //获取路径
@@ -715,20 +728,9 @@
         }
     }
     
-//    [pool release];
-    
-//    [formatter release];
-    
     [CustomToast showWithText:@"抓图成功"
                     superView:self.view
                     bLandScap:YES];
-    // NSLog(@"拍照完成....");
-    isTakepicturing=NO;
-    if (PicNotifyDelegate!=nil) {
-        [PicNotifyDelegate NotifyReloadData];
-    }
-    
-    
 }
 
 - (void) showOSD
