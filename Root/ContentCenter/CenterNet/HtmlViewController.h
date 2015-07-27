@@ -8,17 +8,8 @@
 
 
 
-@interface HtmlViewController : PiFiiBaseViewController<UIWebViewDelegate>
-{
-@private
-    UIActivityIndicatorView *_avc;
-}
-@property (strong, nonatomic) IBOutlet UIWebView *webView;
+@interface HtmlViewController : PiFiiBaseViewController
 
 @property (nonatomic,strong) NSString *url;
-
-@property (strong, nonatomic) IBOutlet UIView *underView;
-@property (weak, nonatomic) IBOutlet UILabel *sourceName;
 @property(strong,nonatomic)NSString * myTitle;
-- (IBAction)downloadAction:(id)sender;
 @end

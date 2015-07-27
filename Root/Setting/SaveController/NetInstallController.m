@@ -80,7 +80,11 @@
     downMsg.hidden=YES;
     [bgView addSubview:downMsg];
     
-    CCButton *btnStart=CCButtonCreateWithValue(CGRectMake(20, CGRectGetMaxY(downMsg.frame)+50, CGRectGetWidth(self.view.frame)-40, 42), @selector(onTypeClick:), self);
+    CGFloat hg=30;
+    if (ScreenHeight()>480) {
+        hg=hg*2;
+    }
+    CCButton *btnStart=CCButtonCreateWithValue(CGRectMake(20, CGRectGetMaxY(downMsg.frame)+hg, CGRectGetWidth(self.view.frame)-40, 42), @selector(onTypeClick:), self);
     btnStart.backgroundColor=RGBCommon(63, 205, 225);
     btnStart.tag=2;
     [btnStart alterFontSize:20];

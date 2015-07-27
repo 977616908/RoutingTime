@@ -94,7 +94,7 @@
         NSString *userPhone=userData[@"userPhone"];
         [self initPostWithURL:ROUTINGCAMERA path:@"getCamera" paras:@{@"username":userPhone} mark:@"user" autoRequest:YES];
     }
-    
+    [UIView setAnimationsEnabled:YES];
 }
 
 -(void)addDevice:(NSArray *)arr{
@@ -460,6 +460,7 @@
 
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
+    [UIView setAnimationsEnabled:NO];
     if (!isCamera) {
         if (pPPPPChannelMgt) {
             NSDictionary *cameraDic = [m_pCameraListMgt GetCameraAtIndex:0];

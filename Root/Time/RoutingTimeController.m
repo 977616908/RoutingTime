@@ -397,6 +397,14 @@ typedef enum{
 }
 
 
+-(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+    if (ScreenHeight()>480) {
+        return 0.0f;
+    }else{
+        return 94.0f;
+    }
+}
+
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
     NSLog(@"--[%d]---[%d]",actionSheet.tag,buttonIndex);
     switch (buttonIndex) {

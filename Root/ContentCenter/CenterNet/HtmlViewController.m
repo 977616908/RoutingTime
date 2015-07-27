@@ -8,7 +8,18 @@
 
 #import "HtmlViewController.h"
 //#import <AVFoundation/AVFoundation.h>
-@interface HtmlViewController ()
+@interface HtmlViewController ()<UIWebViewDelegate>
+{
+    UIActivityIndicatorView *_avc;
+}
+
+@property (weak, nonatomic) IBOutlet UIWebView *webView;
+
+
+@property (weak, nonatomic) IBOutlet UIView *underView;
+@property (weak, nonatomic) IBOutlet UILabel *sourceName;
+
+- (IBAction)downloadAction:(id)sender;
 
 @end
 
@@ -89,11 +100,18 @@
 }
 
 -(void)exitCurrentController{
-    if ([self.webView canGoBack]) {
-        [self.webView goBack];
-    }else{
+    if ([_avc isAnimating]) {
+        [_avc stopAnimating];
         [super exitCurrentController];
+    }else{
+        if ([self.webView canGoBack]) {
+            [self.webView goBack];
+        }else{
+            [super exitCurrentController];
+        }
     }
+
+  
 }
 
 @end
