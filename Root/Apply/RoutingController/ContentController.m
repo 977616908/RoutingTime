@@ -45,7 +45,7 @@
     }
     UIActivityIndicatorView *activityView=[[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
     activityView.color=[UIColor grayColor];
-    activityView.center=CGPointMake(bgView.center.x, bgView.center.y-moveX/2);
+    activityView.center=bgView.center;
     self.bgView=bgView;
     [bgView addSubview:activityView];
     [self.view addSubview:bgView];

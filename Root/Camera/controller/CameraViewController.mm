@@ -50,10 +50,19 @@
     if (is_iOS7()) {
         gh=20;
     }
-    UIView *bgView=[[UIView alloc]initWithFrame:CGRectMake(0, gh, CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame)-gh)];
-    bgView.backgroundColor=[UIColor whiteColor];
-    [self.view addSubview:bgView];
-    CCView *navTopView = [CCView createWithFrame:CGRectMake(0, 0, 80, 44) backgroundColor:[UIColor clearColor]];
+    CGRect bgRect=CGRectMake(0, gh, CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame)-gh);
+    CCScrollView *rootScrollView=CCScrollViewCreateNoneIndicatorWithFrame(bgRect, nil, NO);
+    rootScrollView.backgroundColor=[UIColor whiteColor];
+    rootScrollView.contentSize=CGSizeMake(0, 568-gh);
+    [self.view addSubview:rootScrollView];
+    UIView *bgView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, CGRectGetWidth(rootScrollView.frame), CGRectGetHeight(rootScrollView.frame))];
+
+    [rootScrollView addSubview:bgView];
+    CGFloat hg=0;
+    if(ScreenHeight()<=480){
+        hg-=15;
+    }
+    CCView *navTopView = [CCView createWithFrame:CGRectMake(0, hg, 80, 44) backgroundColor:[UIColor clearColor]];
     CCButton *btnBack=CCButtonCreateWithValue(CGRectMake(10, 0, 60, 44), @selector(exitCurrentController), self);
     [btnBack setImage:[UIImage imageNamed:@"hm_return"] forState:UIControlStateNormal];
     btnBack.contentHorizontalAlignment=UIControlContentHorizontalAlignmentLeft;
@@ -61,7 +70,7 @@
     [bgView addSubview:navTopView];
     
     
-    CCLabel *title=CCLabelCreateWithNewValue(@"连接智能摄像头", 16, CGRectMake(0,CGRectGetMaxY(navTopView.frame)+10,CGRectGetWidth(bgView.frame),16));
+    CCLabel *title=CCLabelCreateWithNewValue(@"连接智能摄像头", 16, CGRectMake(0,CGRectGetMaxY(navTopView.frame)+10+hg,CGRectGetWidth(bgView.frame),16));
     title.textColor=RGBCommon(63, 205, 225);
     title.textAlignment=NSTextAlignmentCenter;
     [bgView addSubview:title];
@@ -75,7 +84,7 @@
     CCImageView *img=CCImageViewCreateWithNewValue(@"hm_camera", CGRectMake(132,CGRectGetMaxY(msg.frame)+60, 56, 76));
     [bgView addSubview:img];
     
-    PFDownloadIndicator *downIndicator = [[PFDownloadIndicator alloc]initWithFrame:CGRectMake(90, CGRectGetMaxY(msg.frame)+50, 140, 140) type:kRMClosedIndicator];
+    PFDownloadIndicator *downIndicator = [[PFDownloadIndicator alloc]initWithFrame:CGRectMake(90, CGRectGetMaxY(msg.frame)+30, 140, 140) type:kRMClosedIndicator];
     [downIndicator setBackgroundColor:[UIColor clearColor]];
     [downIndicator setFillColor:RGBCommon(201, 201, 201)];
     [downIndicator setStrokeColor:RGBCommon(63, 205, 225)];
@@ -83,7 +92,7 @@
     
     self.downIndicator=downIndicator;
 //    downIndicator.hidden=YES;
-    [self.view addSubview:downIndicator];
+    [bgView addSubview:downIndicator];
     [downIndicator loadIndicator];
     
     CCLabel *downMsg=CCLabelCreateWithNewValue(@"正在为您下载模板中...", 15, CGRectMake(0,CGRectGetMaxY(downIndicator.frame)-10,CGRectGetWidth(bgView.frame),15));
@@ -114,7 +123,7 @@
     }
     [bgView addSubview:stepView];
     
-    CCButton *btnStart=CCButtonCreateWithValue(CGRectMake(20, CGRectGetMaxY(stepView.frame)+5, CGRectGetWidth(self.view.frame)-40, 42), @selector(onTypeClick:), self);
+    CCButton *btnStart=CCButtonCreateWithValue(CGRectMake(20, CGRectGetMaxY(stepView.frame)+5, CGRectGetWidth(bgView.frame)-40, 42), @selector(onTypeClick:), self);
     btnStart.backgroundColor=RGBCommon(63, 205, 225);
     btnStart.tag=1;
     [btnStart alterFontSize:20];
@@ -122,7 +131,7 @@
     self.btnStart=btnStart;
     [bgView addSubview:btnStart];
     
-    CCButton *btnSearch=CCButtonCreateWithValue(CGRectMake(20, CGRectGetMaxY(btnStart.frame)+10, CGRectGetWidth(self.view.frame)-40, 42), @selector(onTypeClick:), self);
+    CCButton *btnSearch=CCButtonCreateWithValue(CGRectMake(20, CGRectGetMaxY(btnStart.frame)+10, CGRectGetWidth(bgView.frame)-40, 42), @selector(onTypeClick:), self);
     btnSearch.backgroundColor=RGBCommon(63, 205, 225);
     btnSearch.tag=2;
     [btnSearch alterFontSize:20];

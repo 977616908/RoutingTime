@@ -62,7 +62,7 @@
     CCImageView *img=CCImageViewCreateWithNewValue(@"hm_routing", CGRectMake(110,CGRectGetMaxY(msg.frame)+100, 100, 67));
     [bgView addSubview:img];
     
-    PFDownloadIndicator *downIndicator = [[PFDownloadIndicator alloc]initWithFrame:CGRectMake(90, CGRectGetMaxY(msg.frame)+90, 140, 140) type:kRMClosedIndicator];
+    PFDownloadIndicator *downIndicator = [[PFDownloadIndicator alloc]initWithFrame:CGRectMake(90, CGRectGetMaxY(msg.frame)+70, 140, 140) type:kRMClosedIndicator];
     [downIndicator setBackgroundColor:[UIColor clearColor]];
     [downIndicator setFillColor:RGBCommon(201, 201, 201)];
     [downIndicator setStrokeColor:RGBCommon(63, 205, 225)];
@@ -70,7 +70,7 @@
     
     self.downIndicator=downIndicator;
 //    downIndicator.hidden=YES;
-    [self.view addSubview:downIndicator];
+    [bgView addSubview:downIndicator];
     [downIndicator loadIndicator];
     
     CCLabel *downMsg=CCLabelCreateWithNewValue(@"正在为您连接中...", 15, CGRectMake(0,CGRectGetMaxY(downIndicator.frame)+15,CGRectGetWidth(bgView.frame),15));
