@@ -182,7 +182,13 @@
         writtinController.dataObject=self.dataObject;
         [self presentViewController:writtinController animated:YES completion:nil];
     }else{
-        RoutingContentController *contentController=[[RoutingContentController alloc]init];
+        RoutingContentController *contentController;
+        if (ScreenWidth()<=480) {
+            contentController=[[RoutingContentController alloc]initWithNibName:@"RoutingContentController640x960" bundle:nil];
+        }else{
+            contentController=[[RoutingContentController alloc]initWithNibName:@"RoutingContentController" bundle:nil];
+        }
+        
         contentController.animView=gesture.view;
         [contentController show];
 //        [self presentViewController:contentController animated:NO completion:nil];

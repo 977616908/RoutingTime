@@ -8,6 +8,8 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RoutingWrittinController">
             <connections>
                 <outlet property="bgView" destination="8FC-Zq-1sd" id="eo1-uw-WmV"/>
+                <outlet property="btnOK" destination="YnM-0s-QNr" id="SwU-K1-qr2"/>
+                <outlet property="lbTitle" destination="H7J-3a-eK6" id="NFv-pO-EE7"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="B3D-ST-ByS"/>
             </connections>
         </placeholder>

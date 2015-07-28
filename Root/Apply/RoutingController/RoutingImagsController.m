@@ -37,6 +37,7 @@
 - (IBAction)onClick:(id)sender;
 @property (weak, nonatomic) IBOutlet UILabel *lbTitle;
 @property (weak, nonatomic) IBOutlet UILabel *lbDate;
+@property (nonatomic,weak) IBOutlet UIButton *btnOK;
 @end
 
 @implementation RoutingImagsController
@@ -55,6 +56,11 @@
     [super viewDidLoad];
     _photoArr=[NSMutableArray array];
     selectedIdx = [[NSMutableDictionary alloc] init];
+    if (ScreenWidth()<=480) {
+        self.lbTitle.transform=CGAffineTransformMakeTranslation(-44, 0);
+        self.btnOK.transform=CGAffineTransformMakeTranslation(-88, 0);
+    }
+    
     
     [self.collectionView registerClass:[ImagsCell class] forCellWithReuseIdentifier:@"Cell"];
     [self.collectionView setAllowsMultipleSelection:YES];
@@ -149,7 +155,12 @@
 //定义每个UICollectionView 的间距
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
 {
-    return UIEdgeInsetsMake(0, 20, 0, 20);
+    if (ScreenWidth()<=480) {
+       return UIEdgeInsetsMake(0, 20, 0, 108);
+    }else{
+       return UIEdgeInsetsMake(0, 20, 0, 20);
+    }
+    
 }
 
 - (void) setCellSelection:(UICollectionViewCell *)cell selected:(bool)selected

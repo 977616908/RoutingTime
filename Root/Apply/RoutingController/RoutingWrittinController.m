@@ -15,6 +15,8 @@
 - (IBAction)onClick:(id)sender;
 
 @property (weak, nonatomic) IBOutlet UIView *bgView;
+@property (nonatomic,weak) IBOutlet UIButton *btnOK;
+@property (nonatomic,weak) IBOutlet UILabel *lbTitle;
 @property (weak, nonatomic) CCTextView *txtContent;
 @end
 
@@ -26,7 +28,13 @@
 }
 
 -(void)initView{
-    CCTextView *txtContent=[[CCTextView alloc]initWithFrame:self.bgView.bounds];
+    CGRect bgRect=self.bgView.bounds;
+    if (ScreenWidth()<=480) {
+        self.lbTitle.transform=CGAffineTransformMakeTranslation(-44, 0);
+        self.btnOK.transform=CGAffineTransformMakeTranslation(-88, 0);
+        bgRect.size.width=450;
+    }
+    CCTextView *txtContent=[[CCTextView alloc]initWithFrame:bgRect];
     txtContent.placeholder=@"点击这里编辑文字...";
     txtContent.placeholderColor=RGBCommon(171, 171, 171);
     txtContent.textColor=RGBCommon(52, 52, 52);
