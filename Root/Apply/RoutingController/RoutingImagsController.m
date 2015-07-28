@@ -7,7 +7,7 @@
 //
 
 #import "RoutingImagsController.h"
-#import "RoutingCameraController.h"
+//#import "RoutingCameraController.h"
 #import "ImagsCell.h"
 #import "RoutingTime.h"
 #import "RoutingMsg.h"

@@ -17,6 +17,10 @@ FOUNDATION_EXPORT CGFloat ScreenHeight()
     return [UIScreen mainScreen].bounds.size.height;
 }
 
+FOUNDATION_EXPORT CGFloat ScreenWidth(){
+    return [UIScreen mainScreen].bounds.size.width;
+}
+
 + (NSString *)routerIP
 {
     NSString *ip=[[NSUserDefaults standardUserDefaults] objectForKey:ROUTERIP];

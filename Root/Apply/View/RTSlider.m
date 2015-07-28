@@ -53,8 +53,14 @@
 - (void)layoutSubviews
 {
     // the track background
-    _trackImageViewNormal.frame = CGRectMake(-22, 0, 390, CGRectGetHeight(self.frame)-2);
-    _trackImageViewHighlighted.frame = CGRectMake(-22, 0, 390, CGRectGetHeight(self.frame)-2);
+    CGFloat wh=390;
+    CGFloat whh=-22;
+    if (ScreenWidth()<=480) {
+        wh-=56;
+        whh+=12;
+    }
+    _trackImageViewNormal.frame = CGRectMake(whh, 0, wh, CGRectGetHeight(self.frame)-2);
+    _trackImageViewHighlighted.frame = CGRectMake(whh, 0, wh, CGRectGetHeight(self.frame)-2);
     
     // the thumb
 //    CGFloat thumbHeight = 98.f *  _trackImageViewNormal.bounds.size.height / 64.f;   // thumb height is relative to track height

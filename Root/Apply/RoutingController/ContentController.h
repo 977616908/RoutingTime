@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 
-@interface ContentViewController : UIViewController
+@interface ContentController : UIViewController
 @property(nonatomic,assign)BOOL isLeft;
 @property (strong,nonatomic)id dataObject;
 @end

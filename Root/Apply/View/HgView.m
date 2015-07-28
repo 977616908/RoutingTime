@@ -13,7 +13,12 @@
 -(instancetype)initWithFrame:(CGRect)frame{
     if (self=[super initWithFrame:frame]) {
         NSArray *array=[[NSBundle mainBundle]loadNibNamed:@"ContentView" owner:nil options:nil];
-        self=array[1];
+        if (ScreenWidth()<=480) {
+            self=array[3];
+        }else{
+            self=array[1];
+        }
+        
     }
     return self;
 }

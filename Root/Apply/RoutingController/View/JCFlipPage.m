@@ -52,15 +52,18 @@
         [bgView addSubview:btnSelect];
         
         [self addSubview:bgView];
-        
-        UIImage *img=[UIImage imageNamed:@"rt_end"];
+        NSString *scr;
+        if (ScreenWidth()<=480) {
+            scr=@"960";
+        }
+        UIImage *img=[UIImage imageNamed:[NSString stringWithFormat:@"rt_end%@",scr]];
         UIImageView *endImg=[[UIImageView alloc]initWithFrame:CGRectMake(0, 0, img.size.width, img.size.height)];
         endImg.image=img;
         self.endImg=endImg;
         endImg.hidden=YES;
         [self addSubview:endImg];
   
-        UIImage *imgs=[UIImage imageNamed:@"rt_start"];
+        UIImage *imgs=[UIImage imageNamed:[NSString stringWithFormat:@"rt_start%@",scr]];
         UIImageView *startImg=[[UIImageView alloc]initWithFrame:CGRectMake(CGRectGetWidth(self.frame)-imgs.size.width, 0, imgs.size.width, imgs.size.height)];
         startImg.image=imgs;
         startImg.hidden=YES;

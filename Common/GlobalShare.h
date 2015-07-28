@@ -19,6 +19,8 @@
 
 FOUNDATION_EXPORT CGFloat ScreenHeight();
 
+FOUNDATION_EXPORT CGFloat ScreenWidth();
+
 /**
  *  获取用户的Cookie
  *

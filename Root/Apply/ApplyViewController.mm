@@ -71,6 +71,7 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    [UIView setAnimationsEnabled:YES];
     self.navigationController.navigationBarHidden=NO;
     // 删除系统自动生成的UITabBarButton
     for (UIView *child in self.tabBarController.tabBar.subviews) {
@@ -233,7 +234,13 @@
         case 3:{
 //            RoutingListController *routingController=[[RoutingListController alloc]init];
 //            [self.navigationController pushViewController:routingController animated:YES];
-            RoutingCameraController *routingController=[[RoutingCameraController alloc]init];
+            
+            RoutingCameraController *routingController;
+            if (ScreenHeight()>480) {
+                routingController=[[RoutingCameraController alloc]initWithNibName:@"RoutingCameraController" bundle:nil];
+            }else{
+                routingController=[[RoutingCameraController alloc]initWithNibName:@"RoutingCameraController640x960" bundle:nil];
+            }
             routingController.arrCamera=[NSMutableArray array];
 //            routingController.dateStr=sb;
             [self presentViewController:routingController animated:YES completion:nil];

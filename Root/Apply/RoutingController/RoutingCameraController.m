@@ -7,7 +7,7 @@
 //
 
 #import "RoutingCameraController.h"
-#import "ContentViewController.h"
+#import "ContentController.h"
 #import "RTSlider.h"
 #import "RoutingCamera.h"
 #import "JCFlipPageView.h"
@@ -89,8 +89,8 @@
     pageController.dataSource=self;
     pageController.view.frame=self.pageView.bounds;
     [pageController becomeFirstResponder];
-    ContentViewController * initialViewController = [self viewCintrollerAtIndex:0];
-    ContentViewController * endViewController = [self viewCintrollerAtIndex:1];
+    ContentController * initialViewController = [self viewCintrollerAtIndex:0];
+    ContentController * endViewController = [self viewCintrollerAtIndex:1];
     
     NSArray *viewControllers=@[initialViewController,endViewController];
     [pageController setViewControllers:viewControllers direction:(UIPageViewControllerNavigationDirectionForward) animated:NO completion:nil];
@@ -165,11 +165,11 @@
 
 #pragma mark 创建Controller
 
-- (ContentViewController *)viewCintrollerAtIndex:(NSUInteger)index{
+- (ContentController *)viewCintrollerAtIndex:(NSUInteger)index{
     if ([_arrCamera count] == 0 || (index >= [_arrCamera count])) {
         return nil;
     }
-    ContentViewController * dataViewController =[[ContentViewController alloc]initWithNibName:@"ContentViewController" bundle:nil];
+    ContentController * dataViewController =[[ContentController alloc]initWithNibName:@"ContentViewController" bundle:nil];
     if (index%2==0) {
         dataViewController.isLeft=YES;
     }else{
@@ -179,14 +179,14 @@
     return dataViewController;
 }
 
-- (NSUInteger)indexOfViewController:(ContentViewController*)viewController{
+- (NSUInteger)indexOfViewController:(ContentController*)viewController{
     return  [_arrCamera indexOfObject:viewController.dataObject];
 }
 
 #pragma mark 翻页Controller
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController{
-    NSUInteger index = [self indexOfViewController:(ContentViewController *)viewController];
+    NSUInteger index = [self indexOfViewController:(ContentController *)viewController];
     if (index == 0 || (index == NSNotFound)) {
         isPage=YES;
         [self showView:isPage];
@@ -203,7 +203,7 @@
 }
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController{
-    NSUInteger index = [self indexOfViewController:(ContentViewController *)viewController];
+    NSUInteger index = [self indexOfViewController:(ContentController *)viewController];
     if (index == NSNotFound) {
         return nil;
     }

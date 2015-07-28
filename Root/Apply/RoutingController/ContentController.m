@@ -6,7 +6,7 @@
 //  Copyright (c) 2015年 广州因孚网络科技有限公司. All rights reserved.
 //
 
-#import "ContentViewController.h"
+#import "ContentController.h"
 #import "RoutingContentController.h"
 #import "RoutingCamera.h"
 #import "HgView.h"
@@ -14,13 +14,14 @@
 #import "UIImageView+WebCache.h"
 #import "RoutingWrittinController.h"
 
-@interface ContentViewController ()<SDWebImageManagerDelegate>{
+@interface ContentController ()<SDWebImageManagerDelegate>{
         SDWebImageManager *manager;
 }
+@property(nonatomic,weak)UIView *bgView;
 
 @end
 
-@implementation ContentViewController
+@implementation ContentController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -33,33 +34,49 @@
 }
 
 -(void)initView{
+    CGFloat moveX=20;
+    UIView *bgView=[[UIView alloc]init];
+    bgView.backgroundColor=[UIColor clearColor];
+    if (ScreenWidth()<=480) {
+        bgView.frame=CGRectMake(0, 0, 211, 184);
+        moveX=15;
+    }else{
+        bgView.frame=CGRectMake(0, 0, 250, 225);
+    }
+    UIActivityIndicatorView *activityView=[[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    activityView.color=[UIColor grayColor];
+    activityView.center=CGPointMake(bgView.center.x, bgView.center.y-moveX/2);
+    self.bgView=bgView;
+    [bgView addSubview:activityView];
+    [self.view addSubview:bgView];
+    
     manager=[SDWebImageManager sharedManager];
     manager.delegate=self;
     RoutingCamera *routing=self.dataObject;
     if (routing) {
         if (routing.rtTag==-1) { //第一张
-            UIView *startView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame)-20, CGRectGetHeight(self.view.frame))];
+            UIView *startView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.bgView.frame)-moveX, CGRectGetHeight(self.bgView.frame))];
 //            startView.backgroundColor=RGBCommon(247, 250, 236);
             startView.backgroundColor=[UIColor whiteColor];
             UIImageView *img=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"rt_ybright"]];
             img.frame=CGRectMake(0, 0, 75, CGRectGetHeight(startView.frame));
             [startView addSubview:img];
-            [self.view addSubview:startView];
+            [self.bgView addSubview:startView];
         }else if(routing.rtTag==-2){ //最后一张
-            UIView *endView=[[UIView alloc]initWithFrame:CGRectMake(20, 0, CGRectGetWidth(self.view.frame)-20, CGRectGetHeight(self.view.frame))];
+            UIView *endView=[[UIView alloc]initWithFrame:CGRectMake(moveX, 0, CGRectGetWidth(self.bgView.frame)-moveX, CGRectGetHeight(self.bgView.frame))];
 //            endView.backgroundColor=RGBCommon(247, 250, 236) ;
             endView.backgroundColor=[UIColor whiteColor];
             UIImageView *img=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"rt_ybleft"]];
             img.frame=CGRectMake(CGRectGetWidth(endView.frame)-75, 0, 75, CGRectGetHeight(endView.frame));
             [endView addSubview:img];
-            [self.view addSubview:endView];
+            [self.bgView addSubview:endView];
         }else if(routing.rtTag==-3){ //扉页
-            UIView *pageView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame)-20, CGRectGetHeight(self.view.frame))];
+            UIView *pageView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.bgView.frame)-moveX, CGRectGetHeight(self.bgView.frame))];
             pageView.backgroundColor=[UIColor whiteColor];
             UIImageView *img=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"rt_pageleft"]];
             img.frame=pageView.bounds;
             [pageView addSubview:img];
-            [self.view addSubview:pageView];
+            [self.bgView addSubview:pageView];
         }else{
             NSURL *smallUrl=[NSURL URLWithString:routing.rtSmallPath];
             if ([manager diskImageExistsForURL:smallUrl]) {
@@ -114,12 +131,17 @@
 -(void)showRouting:(RoutingCamera *)routing Image:(UIImage*)image{
     CGFloat moveX=0;
     if (!self.isLeft) {
-        moveX=20;
+        if(ScreenWidth()<=480){
+           moveX=15;
+        }else{
+           moveX=20;
+        }
+        
     }
     UITapGestureRecognizer *imgGesture=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(onGestureListener:)];
      UITapGestureRecognizer *txtGesture=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(onGestureListener:)];
     if (image.size.width>image.size.height) {
-        WgView *wgView=[[WgView alloc]initWithFrame:self.view.bounds];
+        WgView *wgView=[[WgView alloc]initWithFrame:self.bgView.bounds];
         wgView.moveX=moveX;
         wgView.imgIcon.image=image;
         if (![routing.rtStory isEqualToString:@""]) {
@@ -133,9 +155,9 @@
         wgView.lbTitle.tag=2;
         wgView.lbTitle.userInteractionEnabled=YES;
         [wgView.lbTitle addGestureRecognizer:txtGesture];
-        [self.view addSubview:wgView];
+        [self.bgView addSubview:wgView];
     }else{
-        HgView *hgView=[[HgView alloc]initWithFrame:self.view.bounds];
+        HgView *hgView=[[HgView alloc]initWithFrame:self.bgView.bounds];
         hgView.moveX=moveX;
         hgView.imgIcon.image=image;
         if (![routing.rtStory isEqualToString:@""]) {
@@ -149,7 +171,7 @@
         hgView.lbTitle.tag=2;
         hgView.lbTitle.userInteractionEnabled=YES;
         [hgView.lbTitle addGestureRecognizer:txtGesture];
-        [self.view addSubview:hgView];
+        [self.bgView addSubview:hgView];
     }
 }
 
