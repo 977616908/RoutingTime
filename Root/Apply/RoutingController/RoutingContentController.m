@@ -8,7 +8,6 @@
 
 #import "RoutingContentController.h"
 #import "RoutingImagsController.h"
-#import "RTSlider.h"
 
 @interface RoutingContentController ()
 
@@ -77,28 +76,37 @@
 }
 
 - (IBAction)onCancel:(id)sender {
+    [self exitCurrentController];
+
+}
+
+- (IBAction)onSelectAdd:(id)sender {
+    if ([sender tag]==1) {
+        RoutingImagsController *listController=[[RoutingImagsController alloc]init];
+        listController.type=ContentType;
+        listController.view.origin=CGPointMake(0, CGRectGetHeight(listController.view.frame));
+        [self.view addSubview:listController.view];
+        [self addChildViewController:listController];
+        [UIView animateWithDuration:0.5 animations:^{
+            listController.view.origin=CGPointMake(0, 0);
+        }];
+    }else{
+        [self exitCurrentController];
+    }
+
+}
+
+- (IBAction)onTypeClick:(id)sender {
+    
+}
+
+-(void)exitCurrentController{
     [UIView animateWithDuration:0.3 animations:^{
         self.bgView.frame=[_animView convertRect:_animView.bounds toView:nil];
     } completion:^(BOOL finished) {
         [self.view removeFromSuperview];
         [self removeFromParentViewController];
     }];
-
-}
-
-- (IBAction)onSelectAdd:(id)sender {
-    RoutingImagsController *listController=[[RoutingImagsController alloc]init];
-    listController.type=ContentType;
-    listController.view.origin=CGPointMake(0, CGRectGetHeight(listController.view.frame));
-    [self.view addSubview:listController.view];
-    [self addChildViewController:listController];
-    [UIView animateWithDuration:0.5 animations:^{
-        listController.view.origin=CGPointMake(0, 0);
-    }];
-}
-
-- (IBAction)onTypeClick:(id)sender {
-    
 }
 
 
