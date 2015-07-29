@@ -89,6 +89,7 @@
 
 -(void)onSelectClick:(id)sendar{
     NSLog(@"onSelect---");
+    [sendar setEnabled:NO];
     RoutingImagsController *imagsController=[[RoutingImagsController alloc]init];
 //    [self.superController presentViewController:imagsController animated:YES completion:nil];
     imagsController.view.origin=CGPointMake(0, CGRectGetHeight(imagsController.view.frame));
@@ -97,6 +98,8 @@
     [self.superController addChildViewController:imagsController];
     [UIView animateWithDuration:0.5 animations:^{
         imagsController.view.origin=CGPointMake(0, 0);
+    } completion:^(BOOL finished) {
+        [sendar setEnabled:YES];
     }];
 }
 
