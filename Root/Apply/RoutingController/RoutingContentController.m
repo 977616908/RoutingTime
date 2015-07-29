@@ -63,6 +63,7 @@
     [UIView animateWithDuration:0.3 animations:^{
         self.bgView.frame=moveRect;
     }];
+    self.view.backgroundColor=[UIColor clearColor];
 }
 
 
