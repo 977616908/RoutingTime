@@ -52,8 +52,9 @@
         [bgView addSubview:btnSelect];
         
         [self addSubview:bgView];
-        NSString *scr;
-        if (ScreenWidth()<=480) {
+        NSString *scr=@"";
+//        PSLog(@"[%f]--[%f]",ScreenHeight(),ScreenWidth());
+        if (CGRectGetWidth(self.frame)<=480) {
             scr=@"960";
         }
         UIImage *img=[UIImage imageNamed:[NSString stringWithFormat:@"rt_end%@",scr]];
