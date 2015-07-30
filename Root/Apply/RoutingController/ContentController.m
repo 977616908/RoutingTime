@@ -26,7 +26,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 //    [self initView];
-    
+    PSLog(@"----content----");
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
@@ -61,6 +61,7 @@
             UIImageView *img=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"rt_ybright"]];
             img.frame=CGRectMake(0, 0, 75, CGRectGetHeight(startView.frame));
             [startView addSubview:img];
+            _imageShow=[self getRoutingImage:startView];
             [self.bgView addSubview:startView];
         }else if(routing.rtTag==-2){ //最后一张
             UIView *endView=[[UIView alloc]initWithFrame:CGRectMake(moveX, 0, CGRectGetWidth(self.bgView.frame)-moveX, CGRectGetHeight(self.bgView.frame))];
@@ -69,6 +70,7 @@
             UIImageView *img=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"rt_ybleft"]];
             img.frame=CGRectMake(CGRectGetWidth(endView.frame)-75, 0, 75, CGRectGetHeight(endView.frame));
             [endView addSubview:img];
+            _imageShow=[self getRoutingImage:endView];
             [self.bgView addSubview:endView];
         }else if(routing.rtTag==-3){ //扉页
             UIView *pageView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.bgView.frame)-moveX, CGRectGetHeight(self.bgView.frame))];
@@ -76,6 +78,7 @@
             UIImageView *img=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"rt_pageleft"]];
             img.frame=pageView.bounds;
             [pageView addSubview:img];
+            _imageShow=[self getRoutingImage:pageView];
             [self.bgView addSubview:pageView];
         }else{
             NSURL *smallUrl=[NSURL URLWithString:routing.rtSmallPath];
@@ -146,6 +149,8 @@
         wgView.imgIcon.image=image;
         if (![routing.rtStory isEqualToString:@""]) {
             wgView.lbTitle.text=routing.rtStory;
+        }else{
+            wgView.lbTitle.hidden=YES;
         }
         wgView.lbDate.text=routing.rtDate;
         
@@ -155,6 +160,8 @@
         wgView.lbTitle.tag=2;
         wgView.lbTitle.userInteractionEnabled=YES;
         [wgView.lbTitle addGestureRecognizer:txtGesture];
+        _imageShow=[self getRoutingImage:wgView.bgView];
+        wgView.lbTitle.hidden=NO;
         [self.bgView addSubview:wgView];
     }else{
         HgView *hgView=[[HgView alloc]initWithFrame:self.bgView.bounds];
@@ -162,6 +169,8 @@
         hgView.imgIcon.image=image;
         if (![routing.rtStory isEqualToString:@""]) {
             hgView.lbTitle.text=routing.rtStory;
+        }else{
+            hgView.lbTitle.hidden=YES;
         }
         hgView.lbDate.text=routing.rtDate;
         
@@ -171,6 +180,8 @@
         hgView.lbTitle.tag=2;
         hgView.lbTitle.userInteractionEnabled=YES;
         [hgView.lbTitle addGestureRecognizer:txtGesture];
+        _imageShow=[self getRoutingImage:hgView.bgView];
+        hgView.lbTitle.hidden=NO;
         [self.bgView addSubview:hgView];
     }
 }

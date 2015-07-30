@@ -16,6 +16,7 @@
 @interface RoutingCameraController ()<UIPageViewControllerDataSource,JCFlipPageViewDataSource,PiFiiBaseViewDelegate>{
     NSInteger valueChange;
     BOOL isPage;
+    NSMutableArray *arrControllers;
 }
 
 @property (weak, nonatomic) IBOutlet RTSlider *slider;
@@ -89,6 +90,7 @@
     pageController.dataSource=self;
     pageController.view.frame=self.pageView.bounds;
     [pageController becomeFirstResponder];
+    [self createControllers];
     ContentController * initialViewController = [self viewCintrollerAtIndex:0];
     ContentController * endViewController = [self viewCintrollerAtIndex:1];
     
@@ -163,19 +165,28 @@
     valueChange=value;
 }
 
-#pragma mark 创建Controller
+#pragma 创建Controllers
+
+-(void)createControllers{
+    arrControllers=[NSMutableArray array];
+    for (int i=0; i<_arrCamera.count; i++) {
+        ContentController * dataViewController =[[ContentController alloc]init];
+        if (i%2==0) {
+            dataViewController.isLeft=YES;
+        }else{
+            dataViewController.isLeft=NO;
+        }
+        dataViewController.dataObject = [_arrCamera objectAtIndex:i];
+        [arrControllers addObject:dataViewController];
+    }
+}
+
 
 - (ContentController *)viewCintrollerAtIndex:(NSUInteger)index{
     if ([_arrCamera count] == 0 || (index >= [_arrCamera count])) {
         return nil;
     }
-    ContentController * dataViewController =[[ContentController alloc]init];
-    if (index%2==0) {
-        dataViewController.isLeft=YES;
-    }else{
-        dataViewController.isLeft=NO;
-    }
-    dataViewController.dataObject = [_arrCamera objectAtIndex:index];
+    ContentController * dataViewController =arrControllers[index];
     return dataViewController;
 }
 

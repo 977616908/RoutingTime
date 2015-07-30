@@ -12,4 +12,5 @@
 @interface ContentController : UIViewController
 @property(nonatomic,assign)BOOL isLeft;
 @property (strong,nonatomic)id dataObject;
+@property(nonatomic,strong,readonly)UIImage *imageShow;
 @end
