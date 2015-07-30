@@ -199,7 +199,6 @@
         }else{
             contentController=[[RoutingContentController alloc]initWithNibName:@"RoutingContentController" bundle:nil];
         }
-        
         contentController.animView=gesture.view;
         [contentController show];
 //        [self presentViewController:contentController animated:NO completion:nil];

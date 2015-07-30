@@ -175,7 +175,12 @@
     }
 //    cell.backgroundView.alpha = selected ? cellAAcitve : cellADeactive;
 //    [cell viewWithTag:selectedTag].alpha = selected ? cellAAcitve : cellAHidden;
-    self.lbTitle.text=[NSString stringWithFormat:@"已选择%d/支持25～37张照片",selectedIdx.count];
+    if (self.type==ContentType) {
+        self.lbTitle.text=[NSString stringWithFormat:@"已选择%d/支持1~2张照片",selectedIdx.count];
+    }else{
+       self.lbTitle.text=[NSString stringWithFormat:@"已选择%d/支持25～37张照片",selectedIdx.count];
+    }
+    
 }
 
 

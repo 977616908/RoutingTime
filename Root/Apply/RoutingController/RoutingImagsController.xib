@@ -87,7 +87,7 @@
 					<object class="IBUIButton" id="121759385">
 						<reference key="NSNextResponder" ref="548616512"/>
 						<int key="NSvFlags">307</int>
-						<string key="NSFrame">{{499.00000032240695, 5}, {55, 31}}</string>
+						<string key="NSFrame">{{499.00000065296138, 5}, {55, 31}}</string>
 						<reference key="NSSuperview" ref="548616512"/>
 						<reference key="NSNextKeyView" ref="439823641"/>
 						<bool key="IBUIOpaque">NO</bool>
@@ -376,24 +376,24 @@
 				<string key="-2.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<reference key="11.IBNSViewMetadataGestureRecognizers" ref="0"/>
 				<string key="11.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-				<array key="11.IBViewMetadataConstraints"/>
+				<reference key="11.IBViewMetadataConstraints" ref="0"/>
 				<string key="18.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<reference key="19.IBNSViewMetadataGestureRecognizers" ref="0"/>
 				<string key="19.IBPersistedLastKnownCanvasPosition">{533, 177}</string>
 				<string key="19.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-				<array key="19.IBViewMetadataConstraints"/>
+				<reference key="19.IBViewMetadataConstraints" ref="0"/>
 				<reference key="5cI-OG-5Ll.IBNSViewMetadataGestureRecognizers" ref="0"/>
 				<string key="5cI-OG-5Ll.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<reference key="5cI-OG-5Ll.IBUserGuides" ref="0"/>
-				<array key="5cI-OG-5Ll.IBViewMetadataConstraints"/>
+				<reference key="5cI-OG-5Ll.IBViewMetadataConstraints" ref="0"/>
 				<string key="SdX-aB-uJt.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-				<array key="SdX-aB-uJt.IBViewMetadataConstraints"/>
+				<reference key="SdX-aB-uJt.IBViewMetadataConstraints" ref="0"/>
 				<string key="Sm4-tm-f7j.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-				<array key="Sm4-tm-f7j.IBViewMetadataConstraints"/>
+				<reference key="Sm4-tm-f7j.IBViewMetadataConstraints" ref="0"/>
 				<string key="ad1-ux-bxC.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-				<array key="ad1-ux-bxC.IBViewMetadataConstraints"/>
+				<reference key="ad1-ux-bxC.IBViewMetadataConstraints" ref="0"/>
 				<string key="nCv-G3-wZP.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-				<array key="nCv-G3-wZP.IBViewMetadataConstraints"/>
+				<reference key="nCv-G3-wZP.IBViewMetadataConstraints" ref="0"/>
 			</dictionary>
 			<dictionary class="NSMutableDictionary" key="unlocalizedProperties"/>
 			<nil key="activeLocalization"/>

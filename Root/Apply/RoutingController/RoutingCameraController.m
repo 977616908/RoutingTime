@@ -27,6 +27,7 @@
 @property (nonatomic, strong) JCFlipPageView *flipPage;
 @property (nonatomic,weak)UIPageViewController *pageController;
 
+- (IBAction)onSaveClick:(id)sender;
 
 - (IBAction)onClick:(id)sender;
 
@@ -133,6 +134,10 @@
 -(NSUInteger)supportedInterfaceOrientations
 {
     return UIInterfaceOrientationMaskLandscape;
+}
+
+- (IBAction)onSaveClick:(id)sender {
+    
 }
 
 - (IBAction)onClick:(id)sender {

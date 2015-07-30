@@ -28,12 +28,6 @@
                     <color key="textColor" red="0.46274509803921571" green="0.46274509803921571" blue="0.46274509803921571" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ArN-v9-kJQ">
-                    <rect key="frame" x="443" y="290" width="34" height="20"/>
-                    <state key="normal" backgroundImage="rt_buspay.png">
-                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                    </state>
-                </button>
                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JdQ-8z-0vi">
                     <rect key="frame" x="10" y="291" width="39" height="17"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -46,7 +40,7 @@
                     </connections>
                 </button>
                 <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="n4K-H2-Fmq" customClass="RTSlider">
-                    <rect key="frame" x="71" y="290" width="310" height="18"/>
+                    <rect key="frame" x="72" y="290" width="316" height="18"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <connections>
                         <action selector="onSilderChange:" destination="-1" eventType="touchUpInside" id="kO7-lR-WOz"/>
@@ -71,10 +65,13 @@
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uXJ-fY-QqB">
-                    <rect key="frame" x="405" y="290" width="34" height="20"/>
-                    <state key="normal" backgroundImage="rt_share.png">
+                    <rect key="frame" x="422" y="290" width="42" height="20"/>
+                    <state key="normal" backgroundImage="rt_save.png">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
+                    <connections>
+                        <action selector="onSaveClick:" destination="-1" eventType="touchUpInside" id="glJ-lA-beN"/>
+                    </connections>
                 </button>
             </subviews>
             <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
@@ -83,11 +80,10 @@
         </view>
     </objects>
     <resources>
-        <image name="rt_buspay.png" width="34" height="20"/>
         <image name="rt_camera.png" width="528" height="250"/>
         <image name="rt_camera_bg960.png" width="480" height="320"/>
         <image name="rt_camera_line960.png" width="35" height="183"/>
         <image name="rt_jiantou.png" width="8" height="16"/>
-        <image name="rt_share.png" width="34" height="20"/>
+        <image name="rt_save.png" width="48" height="20"/>
     </resources>
 </document>

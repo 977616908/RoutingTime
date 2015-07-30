@@ -29,19 +29,16 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uXJ-fY-QqB">
-                    <rect key="frame" x="474" y="290" width="34" height="20"/>
-                    <state key="normal" backgroundImage="rt_share.png">
+                    <rect key="frame" x="496" y="290" width="42" height="20"/>
+                    <state key="normal" backgroundImage="rt_save.png">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
-                </button>
-                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ArN-v9-kJQ">
-                    <rect key="frame" x="515" y="290" width="34" height="20"/>
-                    <state key="normal" backgroundImage="rt_buspay.png">
-                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                    </state>
+                    <connections>
+                        <action selector="onSaveClick:" destination="-1" eventType="touchUpInside" id="m7t-7Y-iWk"/>
+                    </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JdQ-8z-0vi">
-                    <rect key="frame" x="16" y="291" width="39" height="17"/>
+                    <rect key="frame" x="17" y="291" width="39" height="17"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <state key="normal" title="返回" image="rt_jiantou.png">
                         <color key="titleColor" red="0.55686274509803924" green="0.69019607843137254" blue="0.60784313725490191" alpha="1" colorSpace="calibratedRGB"/>
@@ -52,7 +49,7 @@
                     </connections>
                 </button>
                 <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="n4K-H2-Fmq" customClass="RTSlider">
-                    <rect key="frame" x="88" y="291" width="363" height="18"/>
+                    <rect key="frame" x="89" y="291" width="365" height="18"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <connections>
                         <action selector="onSilderChange:" destination="-1" eventType="touchUpInside" id="kO7-lR-WOz"/>
@@ -83,11 +80,10 @@
         </view>
     </objects>
     <resources>
-        <image name="rt_buspay.png" width="34" height="20"/>
         <image name="rt_camera.png" width="528" height="250"/>
         <image name="rt_camera_bg.png" width="568" height="320"/>
         <image name="rt_camera_line.png" width="42" height="224"/>
         <image name="rt_jiantou.png" width="8" height="16"/>
-        <image name="rt_share.png" width="34" height="20"/>
+        <image name="rt_save.png" width="48" height="20"/>
     </resources>
 </document>

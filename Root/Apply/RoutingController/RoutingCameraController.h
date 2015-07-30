@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface RoutingCameraController : UIViewController
+@interface RoutingCameraController : PiFiiBaseViewController
 @property(nonatomic,copy)NSMutableArray *arrCamera;
 @property(nonatomic,copy)NSString *dateStr;
 @end
