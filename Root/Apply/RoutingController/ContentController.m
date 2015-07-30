@@ -195,6 +195,20 @@
     }
 }
 
+
+#pragma -mark 获取当前屏幕内容
+-(UIImage *)getRoutingImage:(UIView *)view{
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, 3);
+    CGContextRef context=UIGraphicsGetCurrentContext();
+    [view.layer renderInContext:context];
+    UIImage *image=UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+//  UIImageWriteToSavedPhotosAlbum(image, self, nil, nil);
+    return image;
+}
+
+
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

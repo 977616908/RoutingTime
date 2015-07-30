@@ -169,7 +169,7 @@
     if ([_arrCamera count] == 0 || (index >= [_arrCamera count])) {
         return nil;
     }
-    ContentController * dataViewController =[[ContentController alloc]initWithNibName:@"ContentViewController" bundle:nil];
+    ContentController * dataViewController =[[ContentController alloc]init];
     if (index%2==0) {
         dataViewController.isLeft=YES;
     }else{
