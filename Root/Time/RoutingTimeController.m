@@ -111,12 +111,12 @@ typedef enum{
 
 -(void)handleSwipeFrom:(UISwipeGestureRecognizer *)gesture{
     if (gesture.direction==UISwipeGestureRecognizerDirectionDown) {
-        NSLog(@"---down---");
+//        NSLog(@"---down---");
         [UIView animateWithDuration:0.35 animations:^{
             _rootScrollView.contentOffset=CGPointMake(0, -64);
         }];
     }else{
-        NSLog(@"---up---");
+//        NSLog(@"---up---");
         [UIView animateWithDuration:0.5 animations:^{
             _rootScrollView.contentOffset=CGPointMake(0, 35);
         }];
@@ -264,7 +264,7 @@ typedef enum{
 -(void)handleRequestFail:(NSError *)error mark:(NSString *)mark{
     [self performSelector:@selector(updateMark:) withObject:mark afterDelay:.2];
     if (_arrTime.count<=0) {
-         NSDictionary *params=[NSKeyedUnarchiver unarchiveObjectWithFile:pathArchive];
+        NSDictionary *params=[NSKeyedUnarchiver unarchiveObjectWithFile:pathArchive];
         NSString *path=[params objectForKey:@"logo_bg"];
         //            self.topImg.image=[UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:path]]];
         if (hasCachedImageWithString(path)) {
@@ -288,11 +288,17 @@ typedef enum{
 }
 
 -(void)saveRoutingTime:(NSDictionary *)response{
+    NSMutableArray *arrs=[NSMutableArray array];
+    for (id obj in _arrTime) {
+        if ([obj isKindOfClass:[RoutingTime class]]) {
+            [arrs addObject:obj];
+        }
+    }
     NSDictionary *param=@{@"item_counts":response[@"item_counts"],
                           @"picture_counts":response[@"picture_counts"],
                           @"video_counts":response[@"video_counts"],
                           @"logo_bg":response[@"logo_bg"],
-                          @"arrTime":_arrTime};
+                          @"arrTime":arrs};
     [NSKeyedArchiver archiveRootObject:param toFile:pathArchive];
 }
 

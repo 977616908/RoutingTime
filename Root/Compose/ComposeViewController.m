@@ -357,8 +357,13 @@
         ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
         [library assetForURL:[NSURL URLWithString:photo.imageUrl] resultBlock:^(ALAsset *asset)
          {
+             UIImage *image;
              //在这里使用asset来获取图片
-             UIImage *image = [[UIImage alloc]initWithCGImage:[[asset  defaultRepresentation]fullScreenImage]];
+             if ([GlobalShare isHDPicture]) {//高清图片
+                 image=[[UIImage alloc]initWithCGImage:[[asset defaultRepresentation]fullResolutionImage]];
+             }else{
+                 image = [[UIImage alloc]initWithCGImage:[[asset  defaultRepresentation]fullScreenImage]];
+             }
              [self uploadVedio:UIImageJPEGRepresentation(image, 1) photo:photo];
          }
                 failureBlock:^(NSError *error)
