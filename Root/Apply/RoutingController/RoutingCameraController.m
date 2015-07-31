@@ -7,6 +7,7 @@
 //
 
 #import "RoutingCameraController.h"
+#import "RoutingShareController.h"
 #import "ContentController.h"
 #import "RTSlider.h"
 #import "RoutingCamera.h"
@@ -137,7 +138,8 @@
 }
 
 - (IBAction)onSaveClick:(id)sender {
-    
+    RoutingShareController *shareController=[[RoutingShareController alloc]init];
+    [shareController show];
 }
 
 - (IBAction)onClick:(id)sender {
