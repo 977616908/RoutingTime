@@ -7,6 +7,7 @@
 //
 
 #import "RoutingDetailController.h"
+#import "PhotoSelectController.h"
 #import "CCTextView.h"
 #import "PhotosView.h"
 #import "MJPhotoBrowser.h"
@@ -22,7 +23,7 @@
 #define BARHEIGHT 44
 
 
-@interface RoutingDetailController ()<UITextViewDelegate,PhotosViewDelegate,PiFiiBaseViewDelegate,UIActionSheetDelegate>{
+@interface RoutingDetailController ()<UITextViewDelegate,PhotosViewDelegate,PiFiiBaseViewDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate>{
     NSMutableArray  *_photoArr;
     NSMutableArray  *_vedioArr;
     NSMutableArray  *_imageArr;
@@ -99,7 +100,7 @@
     [self.view addSubview:scrollView];
     
     PhotosView *photosView = [[PhotosView alloc] init];
-    photosView.isAdd=YES;
+//    photosView.isAdd=YES;
     photosView.frame = CGRectMake(0, 0, CGRectGetWidth(self.rootScrollView.frame), CGRectGetHeight(self.rootScrollView.frame));
     self.photosView = photosView;
     photosView.delegate=self;
@@ -272,63 +273,71 @@
 
 -(void)photosTapWithIndex:(NSInteger)index{
     PSLog(@"--add--[%d]",index);
-    RoutingMsg *msg=_imageArr[index-1];
-    if (isDelete) {
-        UIImageView *delImg=self.photosView.totalImages[index-1];
-        REPhoto *photo;
-        if (msg.isVedio) {
-            //            photo=_vedioArr[index-1];
-            for(photo in _vedioArr){
-                if([photo.imageName isEqualToString:msg.msgNum]){
-                    break;
-                }
-            }
-        }else{
-            for(photo in _photoArr){
-                if([photo.imageName isEqualToString:msg.msgNum]){
-                    break;
-                }
-            }
-        }
-        if ([_deleteArr containsObject:photo]) {
-            delImg.alpha=1.0;
-            [_deleteArr removeObject:photo];
-            [[delImg.subviews lastObject] removeFromSuperview];
-        }else{
-            [_deleteArr addObject:photo];
-            UIImageView *selectImg=[[UIImageView alloc]init];
-            UIImage *image=@"ImageSelectedOn".imageInstance;
-            CGSize size=image.size;
-            selectImg.frame=CGRectMake(CGRectGetWidth(delImg.frame)-size.width, CGRectGetHeight(delImg.frame)-size.height, size.width, size.height);
-            selectImg.image=image;
-            [delImg addSubview:selectImg];
-            delImg.alpha=0.7;
-        }
+    if(index==-1){
+        UIActionSheet *action=[[UIActionSheet alloc]initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:@"拍照" otherButtonTitles:@"从手机相册中选择", nil];
+        action.tag=index;
+        [action showInView:self.view];
+        //        [self openLibaray];
     }else{
-        if (msg.isVedio) {
-            MPMoviePlayerViewController *playerController=[[MPMoviePlayerViewController alloc]init];
-            NSURL *url=[_routingTime.rtPaths[index-1] msgPath].urlInstance;
-            playerController.moviePlayer.contentURL = url;
-            playerController.moviePlayer.controlStyle=MPMovieControlStyleFullscreen;
-            [playerController.moviePlayer prepareToPlay];
-            [self presentMoviePlayerViewControllerAnimated:playerController];
-        }else{
-            MJPhotoBrowser *photo=[[MJPhotoBrowser alloc]init];
-            photo.photoType=PhotoShowCamera;
-            NSInteger count=0;
-            for (int i=0; i<_photoArr.count; i++) {
-                if ([[_photoArr[i] imageName]isEqualToString:msg.msgNum]) {
-                    count=i;
-                    break;
+        RoutingMsg *msg=_imageArr[index-1];
+        if (isDelete) {
+            UIImageView *delImg=self.photosView.totalImages[index-1];
+            REPhoto *photo;
+            if (msg.isVedio) {
+                //            photo=_vedioArr[index-1];
+                for(photo in _vedioArr){
+                    if([photo.imageName isEqualToString:msg.msgNum]){
+                        break;
+                    }
+                }
+            }else{
+                for(photo in _photoArr){
+                    if([photo.imageName isEqualToString:msg.msgNum]){
+                        break;
+                    }
                 }
             }
-            photo.currentPhotoIndex=count;
-            photo.photos=_photoArr;
-            photo.pifiiDelegate=self;
-            [self.navigationController.view.layer addAnimation:[self customAnimationType:kCATransitionFade upDown:NO]  forKey:@"animation"];
-            [self.navigationController pushViewController:photo animated:NO];
+            if ([_deleteArr containsObject:photo]) {
+                delImg.alpha=1.0;
+                [_deleteArr removeObject:photo];
+                [[delImg.subviews lastObject] removeFromSuperview];
+            }else{
+                [_deleteArr addObject:photo];
+                UIImageView *selectImg=[[UIImageView alloc]init];
+                UIImage *image=@"ImageSelectedOn".imageInstance;
+                CGSize size=image.size;
+                selectImg.frame=CGRectMake(CGRectGetWidth(delImg.frame)-size.width, CGRectGetHeight(delImg.frame)-size.height, size.width, size.height);
+                selectImg.image=image;
+                [delImg addSubview:selectImg];
+                delImg.alpha=0.7;
+            }
+        }else{
+            if (msg.isVedio) {
+                MPMoviePlayerViewController *playerController=[[MPMoviePlayerViewController alloc]init];
+                NSURL *url=[_routingTime.rtPaths[index-1] msgPath].urlInstance;
+                playerController.moviePlayer.contentURL = url;
+                playerController.moviePlayer.controlStyle=MPMovieControlStyleFullscreen;
+                [playerController.moviePlayer prepareToPlay];
+                [self presentMoviePlayerViewControllerAnimated:playerController];
+            }else{
+                MJPhotoBrowser *photo=[[MJPhotoBrowser alloc]init];
+                photo.photoType=PhotoShowCamera;
+                NSInteger count=0;
+                for (int i=0; i<_photoArr.count; i++) {
+                    if ([[_photoArr[i] imageName]isEqualToString:msg.msgNum]) {
+                        count=i;
+                        break;
+                    }
+                }
+                photo.currentPhotoIndex=count;
+                photo.photos=_photoArr;
+                photo.pifiiDelegate=self;
+                [self.navigationController.view.layer addAnimation:[self customAnimationType:kCATransitionFade upDown:NO]  forKey:@"animation"];
+                [self.navigationController pushViewController:photo animated:NO];
+            }
         }
     }
+  
 }
 
 
@@ -364,37 +373,52 @@
 
 #pragma -mark 删除图片
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
-    if (buttonIndex==0) {
-        if (actionSheet.tag==1) {
-            PSLog(@"下载");
-            if (_deleteArr.count>0) {
-                [self downImageWithVedio];
-                for (UIImageView *delImg in _photosView.totalImages) {
-                    if(delImg.subviews.count>0&&delImg.alpha<1.0){
-                        delImg.alpha=1.0;
-                        [[delImg.subviews lastObject] removeFromSuperview];
-                    }
-                }
-            }
-
-        }else{
-            PSLog(@"删除图片");
-            NSMutableString *sb=[NSMutableString string];
-            if (_deleteArr.count>0) {
-                for (int i=0; i<_deleteArr.count; i++) {
-                    REPhoto *photo=_deleteArr[i];
-                    if (i!=0) {
-                        [sb appendString:@","];
-                    }
-                    [sb appendString:photo.imageName];
-                }
-            }
-            NSDictionary *param=@{
-                                  @"resId":sb,
-                                  @"timeId":@(_routingTime.rtId)};
-            [self initPostWithURL:ROUTINGTIMEURL path:@"deleteFiles" paras:param mark:@"delete" autoRequest:YES];
+    if (actionSheet.tag==-1) {
+        switch (buttonIndex) {
+            case 0://未知
+                //拍照
+                [self openCamera];
+                break;
+            case 1://男
+                [self openLibaray];
+                break;
         }
+        
+    }else{
+        if (buttonIndex==0) {
+            if (actionSheet.tag==1) {
+                PSLog(@"下载");
+                if (_deleteArr.count>0) {
+                    [self downImageWithVedio];
+                    for (UIImageView *delImg in _photosView.totalImages) {
+                        if(delImg.subviews.count>0&&delImg.alpha<1.0){
+                            delImg.alpha=1.0;
+                            [[delImg.subviews lastObject] removeFromSuperview];
+                        }
+                    }
+                }
+                
+            }else{
+                PSLog(@"删除图片");
+                NSMutableString *sb=[NSMutableString string];
+                if (_deleteArr.count>0) {
+                    for (int i=0; i<_deleteArr.count; i++) {
+                        REPhoto *photo=_deleteArr[i];
+                        if (i!=0) {
+                            [sb appendString:@","];
+                        }
+                        [sb appendString:photo.imageName];
+                    }
+                }
+                NSDictionary *param=@{
+                                      @"resId":sb,
+                                      @"timeId":@(_routingTime.rtId)};
+                [self initPostWithURL:ROUTINGTIMEURL path:@"deleteFiles" paras:param mark:@"delete" autoRequest:YES];
+            }
+        }
+
     }
+
 }
 
 -(void)handleRequestOK:(id)response mark:(NSString *)mark{
@@ -435,6 +459,37 @@
 {
     [self.view endEditing:YES];
 }
+
+#pragma -mark 打开相机
+- (void)openCamera {
+    UIImagePickerController *imagePicker =  [[UIImagePickerController alloc] init];
+    imagePicker.delegate = self;
+    imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+    imagePicker.showsCameraControls = YES;
+    [self presentViewController:imagePicker animated:YES completion:nil];
+}
+
+-(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info{
+    // 1.销毁picker控制器
+    [picker dismissViewControllerAnimated:YES completion:nil];
+    
+    // 2.去的图片
+//    UIImage *image = info[UIImagePickerControllerOriginalImage];
+//    UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+}
+
+/*
+ * 打开相册
+ */
+-(void)openLibaray{
+    PhotoSelectController *photoController=[[PhotoSelectController alloc]init];
+    photoController.pifiiDelegate=self;
+    //    [self.navigationController.view.layer addAnimation:[self customAnimationType:kCATransitionPush upDown:YES] forKey:@"animation"];
+    //    [self.navigationController pushViewController:photoController animated:NO];
+    PiFiiBaseNavigationController *nav=[[PiFiiBaseNavigationController alloc]initWithRootViewController:photoController];
+    [self presentViewController:nav animated:YES completion:nil];
+}
+
 
 #pragma -mark 下载
 -(void)downImageWithVedio{
@@ -568,6 +623,8 @@
     if ([dataSource isKindOfClass:[RoutingTime class]]) {
         _routingTime=dataSource;
         self.textView.text=_routingTime.rtTitle;
+    }else{
+        
     }
 }
 

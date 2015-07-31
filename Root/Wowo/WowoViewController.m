@@ -14,6 +14,7 @@
 #import "BindView.h"
 #import "ScannerViewController.h"
 #import "WoSetViewController.h"
+#import "RoutingFootprintController.h"
 #import "WoUser.h"
 #import <ShareSDK/ShareSDK.h>
 
@@ -118,7 +119,8 @@
         }
             break;
         case 1:{
-            
+            RoutingFootprintController *fontController=[[RoutingFootprintController alloc]init];
+            [self.navigationController pushViewController:fontController animated:YES];
         }
             break;
         case 2:{
