@@ -183,6 +183,7 @@
         }else{
             dataViewController.isLeft=NO;
         }
+        dataViewController.viewHg=CGRectGetHeight(self.pageView.frame);
         dataViewController.dataObject = [_arrCamera objectAtIndex:i];
         [arrControllers addObject:dataViewController];
     }

@@ -37,7 +37,7 @@
     img.image=[UIImage imageNamed:@"rt_sharebg"];
     [bgView addSubview:img];
     
-    CCButton *btnExit=CCButtonCreateWithValue(CGRectMake(CGRectGetWidth(bgView.frame)-12, 0, 24, 24), @selector(onClick:), self);
+    CCButton *btnExit=CCButtonCreateWithValue(CGRectMake(CGRectGetWidth(bgView.frame)-12, 5, 24, 24), @selector(onClick:), self);
     [btnExit alterNormalBackgroundImage:@"rt_exit"];
     [bgView addSubview:btnExit];
     

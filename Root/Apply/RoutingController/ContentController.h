@@ -13,4 +13,5 @@
 @property(nonatomic,assign)BOOL isLeft;
 @property (strong,nonatomic)id dataObject;
 @property(nonatomic,strong,readonly)UIImage *imageShow;
+@property(nonatomic,assign)CGFloat viewHg;
 @end

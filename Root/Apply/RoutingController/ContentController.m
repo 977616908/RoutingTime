@@ -25,8 +25,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-//    [self initView];
-    PSLog(@"----content----");
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
@@ -37,8 +35,8 @@
     CGFloat moveX=20;
     UIView *bgView=[[UIView alloc]init];
     bgView.backgroundColor=[UIColor clearColor];
-    if (ScreenWidth()<=480) {
-        bgView.frame=CGRectMake(0, 0, 211, 184);
+    if (self.viewHg<=186) {
+        bgView.frame=CGRectMake(0, 0, 211, 185);
         moveX=15;
     }else{
         bgView.frame=CGRectMake(0, 0, 250, 225);
@@ -134,7 +132,7 @@
 -(void)showRouting:(RoutingCamera *)routing Image:(UIImage*)image{
     CGFloat moveX=0;
     if (!self.isLeft) {
-        if(ScreenWidth()<=480){
+        if(self.viewHg<=186){
            moveX=15;
         }else{
            moveX=20;
@@ -142,7 +140,7 @@
         
     }
     UITapGestureRecognizer *imgGesture=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(onGestureListener:)];
-     UITapGestureRecognizer *txtGesture=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(onGestureListener:)];
+    UITapGestureRecognizer *txtGesture=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(onGestureListener:)];
     if (image.size.width>image.size.height) {
         WgView *wgView=[[WgView alloc]initWithFrame:self.bgView.bounds];
         wgView.moveX=moveX;
@@ -194,7 +192,7 @@
         [self presentViewController:writtinController animated:YES completion:nil];
     }else{
         RoutingContentController *contentController;
-        if (ScreenWidth()<=480) {
+        if (self.viewHg<=186) {
             contentController=[[RoutingContentController alloc]initWithNibName:@"RoutingContentController640x960" bundle:nil];
         }else{
             contentController=[[RoutingContentController alloc]initWithNibName:@"RoutingContentController" bundle:nil];
