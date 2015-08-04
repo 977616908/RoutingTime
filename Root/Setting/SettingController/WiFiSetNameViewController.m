@@ -36,6 +36,7 @@
     self.navigationItem.title = @"WiFi设置";
     
     
+    
 //    UIImageView *bgImage=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"login_hm_sruk"]];
 //    //    UIView *bgImage=[[UIView alloc]init];
 //    bgImage.frame=CGRectMake(27, 25, 266, 42);
@@ -51,6 +52,8 @@
     textName.contentVerticalAlignment=UIControlContentVerticalAlignmentCenter;
     //    [textPwd setTextAlignment:NSTextAlignmentLeft|NSTextAlignmentCenter];
     textName.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"请输入名称" attributes:@{NSForegroundColorAttributeName:RGBCommon(181, 181, 181)}];
+    tvName=[[NSUserDefaults standardUserDefaults] objectForKey:ROUTERNAME];
+    textName.text=tvName;
     self.wifiName=textName;
     [self.view addSubview:textName];
     
@@ -61,6 +64,7 @@
     [btnBind alterFontSize:18];
     [btnBind alterNormalTitle:@"确定"];
     [self.view addSubview:btnBind];
+    
 }
 
 
@@ -86,6 +90,10 @@
             [self performSelector:@selector(exitCurrentController) withObject:nil afterDelay:1.5];
         }
     }
+}
+
+-(void)handleRequestFail:(NSError *)error mark:(NSString *)mark{
+     PSLog(@"%@ : %@",mark,error);
 }
 
 - (void)didReceiveMemoryWarning
@@ -119,6 +127,11 @@
         stateView.removeFromSuperViewOnHide=YES;
         stateView.labelText=@"正在设置...";
         [self initGetWithURL:ROUTINGBASEURL path:@"module/sys_hostname_set" paras:@{@"token": [GlobalShare getToken],@"hostname":_wifiName.text} mark:@"device1" autoRequest:YES];
+//        NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+//        NSDictionary *userData= [user objectForKey:USERDATA];
+//        NSString *userPhone=userData[@"userPhone"];
+//        [self initGetWithURL:FLOWTTBASEURL path:@"routerRename" paras:@{@"user": userPhone,@"hostname":_wifiName.text} mark:@"device1" autoRequest:YES];
+//        [self initPostWithURL:FLOWTTBASEURL path:@"routerRename" paras:@{@"user": userPhone,@"hostname":_wifiName.text} mark:@"device1" autoRequest:YES];
     }
 }
 
