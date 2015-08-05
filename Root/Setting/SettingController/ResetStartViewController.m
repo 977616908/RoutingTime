@@ -63,33 +63,47 @@
 -(void)handleRequestOK:(id)response mark:(NSString *)mark{
     PSLog(@"%@:%@",response,mark);
     if ([mark isEqualToString:@"device"]) {
-        if ([response isKindOfClass:[NSDictionary class]]) {
-            id status=response[@"status"];
-            if ([status integerValue]==1||[status integerValue]==0) {
-                stateView.labelText=@"正在启动...请等待";
-                [self performSelector:@selector(showSuccess:) withObject:@1 afterDelay:6];
-            }else{
-                stateView.labelText=@"重启失败...正在检测";
-               [self performSelector:@selector(showSuccess:) withObject:@0 afterDelay:1.5];
-            }
-            
+//        if ([response isKindOfClass:[NSDictionary class]]) {
+//            id status=response[@"status"];
+//            if ([status integerValue]==1||[status integerValue]==0) {
+//                stateView.labelText=@"正在启动...请等待";
+//                [self performSelector:@selector(showSuccess:) withObject:@1 afterDelay:6];
+//            }else{
+//                stateView.labelText=@"重启失败...正在检测";
+//               [self performSelector:@selector(showSuccess:) withObject:@0 afterDelay:1.5];
+//            }
+//            
+//        }
+        NSNumber *code=response[@"returnCode"];
+        if ([code integerValue]==200) {
+            stateView.labelText=@"正在启动...请等待";
+        }else{
+            stateView.labelText=@"重启失败...正在检测";
         }
+        [self performSelector:@selector(showSuccess:) withObject:response[@"desc"] afterDelay:1.5];
     }
     
 }
 
 -(void)handleRequestFail:(NSError *)error mark:(NSString *)mark{
-    [self showSuccess:@0];
+//    [self showSuccess:@(0)];
+    [self showSuccess:@"网络异常，请检测网络!"];
 }
 
--(void)showSuccess:(id) isStatue{
+//-(void)showSuccess:(id) isStatue{
+//    stateView.hidden=YES;
+//    [_startImage.layer removeAllAnimations];
+//    if ([isStatue boolValue]) {
+//        [[[UIAlertView alloc]initWithTitle:@"提示" message:@"重启成功" delegate:self cancelButtonTitle:@"确定" otherButtonTitles: nil]show];
+//    }else{
+//        [[[UIAlertView alloc]initWithTitle:@"提示" message:@"重启失败,请检测是否为当前路由!" delegate:self cancelButtonTitle:@"确定" otherButtonTitles: nil]show];
+//    }
+//}
+
+-(void)showSuccess:(NSString *) msg{
     stateView.hidden=YES;
     [_startImage.layer removeAllAnimations];
-    if ([isStatue boolValue]) {
-        [[[UIAlertView alloc]initWithTitle:@"提示" message:@"重启成功" delegate:self cancelButtonTitle:@"确定" otherButtonTitles: nil]show];
-    }else{
-        [[[UIAlertView alloc]initWithTitle:@"提示" message:@"重启失败,请检测是否为当前路由!" delegate:self cancelButtonTitle:@"确定" otherButtonTitles: nil]show];
-    }
+    [[[UIAlertView alloc]initWithTitle:@"提示" message:msg delegate:self cancelButtonTitle:@"确定" otherButtonTitles: nil]show];
 }
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
@@ -105,7 +119,11 @@
         stateView=[MBProgressHUD showHUDAddedTo:self.view animated:YES];
         stateView.removeFromSuperViewOnHide=YES;
         stateView.labelText=@"正在重启路由器...";
-        [self initGetWithURL:ROUTINGBASEURL path:@"module/sys_reboot_set" paras:@{@"token": [GlobalShare getToken]} mark:@"device" autoRequest:YES];
+//        [self initGetWithURL:ROUTINGBASEURL path:@"module/sys_reboot_set" paras:@{@"token": [GlobalShare getToken]} mark:@"device" autoRequest:YES];
+        NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+        NSDictionary *userData= [user objectForKey:USERDATA];
+        NSString *userPhone=userData[@"userPhone"];
+        [self initGetWithURL:FLOWTTBASEURL path:@"routerReboot" paras:@{@"user": userPhone} mark:@"device" autoRequest:YES];
     }
 }
 

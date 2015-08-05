@@ -301,19 +301,19 @@
         [self convertVedio:[photo.imageUrl urlInstance] block:^(AVAssetExportSession * session) {
             switch (session.status) {
                 case AVAssetExportSessionStatusUnknown:
-                    NSLog(@"AVAssetExportSessionStatusUnknown");
+                    PSLog(@"AVAssetExportSessionStatusUnknown");
                     break;
                 case AVAssetExportSessionStatusWaiting:
-                    NSLog(@"AVAssetExportSessionStatusWaiting");
+                    PSLog(@"AVAssetExportSessionStatusWaiting");
                     break;
                 case AVAssetExportSessionStatusExporting:
-                    NSLog(@"AVAssetExportSessionStatusExporting");
+                    PSLog(@"AVAssetExportSessionStatusExporting");
                     break;
                 case AVAssetExportSessionStatusCompleted:
-                    NSLog(@"AVAssetExportSessionStatusCompleted");
+                    PSLog(@"AVAssetExportSessionStatusCompleted");
                     break;
                 case AVAssetExportSessionStatusFailed:
-                    NSLog(@"AVAssetExportSessionStatusFailed");
+                    PSLog(@"AVAssetExportSessionStatusFailed");
                     break;
                     
                 default:

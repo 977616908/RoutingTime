@@ -80,15 +80,25 @@
             _wifiName.text=tvName;
         }
     }else if([mark isEqualToString:@"device1"]){
-        if ([response isKindOfClass:[NSDictionary class]]) {
-            NSNumber *status=response[@"status"];
-            if (status.intValue==0||status.intValue==1) {
-                stateView.labelText=@"设置成功";
-            }else{
-                stateView.labelText=@"设置失败";
-            }
-            [self performSelector:@selector(exitCurrentController) withObject:nil afterDelay:1.5];
+//        if ([response isKindOfClass:[NSDictionary class]]) {
+//            NSNumber *status=response[@"status"];
+//            if (status.intValue==0||status.intValue==1) {
+//                stateView.labelText=@"设置成功";
+//            }else{
+//                stateView.labelText=@"设置失败";
+//            }
+//            [self performSelector:@selector(exitCurrentController) withObject:nil afterDelay:1.5];
+//        }
+        NSNumber *code=response[@"returnCode"];
+        if ([code integerValue]==200) {
+            NSUserDefaults *user=[NSUserDefaults standardUserDefaults];
+            [user setObject:_wifiName.text forKey:ROUTERNAME];
+            [user synchronize];
+            stateView.labelText=@"设置成功";
+        }else{
+            stateView.labelText=response[@"desc"];
         }
+        [self performSelector:@selector(exitCurrentController) withObject:nil afterDelay:1.5];
     }
 }
 
@@ -126,12 +136,12 @@
         stateView=[MBProgressHUD showHUDAddedTo:self.view animated:YES];
         stateView.removeFromSuperViewOnHide=YES;
         stateView.labelText=@"正在设置...";
-        [self initGetWithURL:ROUTINGBASEURL path:@"module/sys_hostname_set" paras:@{@"token": [GlobalShare getToken],@"hostname":_wifiName.text} mark:@"device1" autoRequest:YES];
-//        NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
-//        NSDictionary *userData= [user objectForKey:USERDATA];
-//        NSString *userPhone=userData[@"userPhone"];
-//        [self initGetWithURL:FLOWTTBASEURL path:@"routerRename" paras:@{@"user": userPhone,@"hostname":_wifiName.text} mark:@"device1" autoRequest:YES];
-//        [self initPostWithURL:FLOWTTBASEURL path:@"routerRename" paras:@{@"user": userPhone,@"hostname":_wifiName.text} mark:@"device1" autoRequest:YES];
+//        [self initGetWithURL:ROUTINGBASEURL path:@"module/sys_hostname_set" paras:@{@"token": [GlobalShare getToken],@"hostname":_wifiName.text} mark:@"device1" autoRequest:YES];
+        NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+        NSDictionary *userData= [user objectForKey:USERDATA];
+        NSString *userPhone=userData[@"userPhone"];
+        [self initGetWithURL:FLOWTTBASEURL path:@"routerRename" paras:@{@"user": userPhone,@"wifiname":_wifiName.text} mark:@"device1" autoRequest:YES];
+//        [self initPostWithURL:FLOWTTBASEURL path:@"routerRename" paras:@{@"user": userPhone,@"wifiname":_wifiName.text} mark:@"device1" autoRequest:YES];
     }
 }
 
