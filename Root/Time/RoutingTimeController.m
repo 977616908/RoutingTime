@@ -165,7 +165,6 @@ typedef enum{
     if (userPhone&&![userPhone isEqualToString:@""]) {
         [self initPostWithURL:ROUTINGTIMEURL path:@"mainPageVideo" paras:@{@"username":userPhone,@"page":@(page)} mark:mark autoRequest:YES];
     }
-  
 }
 
 -(void)handleRequestOK:(id)response mark:(NSString *)mark{
