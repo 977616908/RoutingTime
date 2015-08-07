@@ -15,6 +15,7 @@
 #import "PiFiiBaseNavigationController.h"
 #import "REPhoto.h"
 #import <AssetsLibrary/AssetsLibrary.h>
+#import <AVFoundation/AVFoundation.h>
 #import <MediaPlayer/MediaPlayer.h>
 #import "RoutingMsg.h"
 #import "RoutingTime.h"
@@ -27,6 +28,7 @@
     NSMutableArray  *_photoArr;
     NSMutableArray  *_vedioArr;
     NSMutableArray  *_imageArr;
+    NSMutableArray  *_upLoadArr;
     MBProgressHUD           *stateView;
     NSString *pathArchtive;
     NSMutableOrderedSet     *_saveSet;
@@ -36,6 +38,7 @@
     UIView       *_toolbar;
     BOOL  isDelete;
     NSInteger deleteCount;
+    NSString *resultPath;
 }
 
 @property(nonatomic,weak)CCTextView *textView;
@@ -53,6 +56,7 @@
     self.title=@"时光片段";
     _photoArr=[NSMutableArray array];
     _vedioArr=[NSMutableArray array];
+    _upLoadArr=[NSMutableArray array];
     _deleteArr=[NSMutableOrderedSet orderedSet];
     pathArchtive= pathInCacheDirectory(@"AppCache/SavePhotoName.archiver");
     NSArray *array=[NSKeyedUnarchiver unarchiveObjectWithFile:pathArchtive];
@@ -340,9 +344,7 @@
   
 }
 
-
-
-
+#pragma -mark 添加相册
 -(void)addImage:(id)dataSource{
     for (RoutingMsg *msg in dataSource) {
         NSString *path=msg.msgPath;
@@ -363,6 +365,24 @@
     CGFloat gh=(self.photosView.subviews.count/4+1)*80;
     self.photosView.size=CGSizeMake(CGRectGetWidth(self.rootScrollView.frame), gh);
     self.rootScrollView.contentSize=CGSizeMake(0, gh);
+}
+
+-(void)addUpImage:(id)dataSource{
+    if ([dataSource isKindOfClass:[NSArray class]]) {
+        for (REPhoto *photo in dataSource) {
+            [self.photosView addImage:photo.image duration:photo.duration];
+        }
+        [_upLoadArr addObjectsFromArray:dataSource];
+    }else{
+        REPhoto *photo=dataSource;
+        [self.photosView addImage:photo.image duration:photo.duration];
+        [_photoArr addObject:dataSource];
+    }
+    CGFloat gh=(self.photosView.subviews.count/4+1)*80;
+    self.photosView.size=CGSizeMake(CGRectGetWidth(self.rootScrollView.frame), gh);
+    self.rootScrollView.contentSize=CGSizeMake(0, gh);
+    self.photosView.isUpload=NO;
+    [self upLoadImage];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -472,10 +492,42 @@
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info{
     // 1.销毁picker控制器
     [picker dismissViewControllerAnimated:YES completion:nil];
-    
+    self.photosView.isUpload=YES;
     // 2.去的图片
-//    UIImage *image = info[UIImagePickerControllerOriginalImage];
-//    UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+    UIImage *image = info[UIImagePickerControllerOriginalImage];
+    UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+}
+
+-(void)pushData{
+    NSMutableArray *datasource = [[NSMutableArray alloc] init];
+    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+    [library enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
+        if (group) {
+            [group setAssetsFilter:[ALAssetsFilter allPhotos]];
+            [group enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
+                if([[result valueForProperty:ALAssetPropertyType] isEqualToString:ALAssetTypePhoto]) {
+                    REPhoto *photo = [[REPhoto alloc] init];
+                    photo.image = [UIImage imageWithCGImage:result.thumbnail];
+                    //                    photo.image = [UIImage imageWithCGImage:result.aspectRatioThumbnail];//高清
+                    NSString *fileName=[[result defaultRepresentation]filename];
+                    photo.imageName=fileName;
+                    photo.imageUrl=[NSString stringWithFormat:@"%@",[result valueForProperty:ALAssetPropertyAssetURL]];
+                    photo.photoDate = [result valueForProperty:ALAssetPropertyDate];
+                    [datasource addObject:photo];
+                }
+            }];
+        } else {
+            [datasource sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                REPhoto *item1=(REPhoto *)obj1;
+                REPhoto *item2=(REPhoto *)obj2;
+                return [item2.photoDate compare:item1.photoDate];
+            }];
+            [self performSelectorOnMainThread:@selector(addUpImage:) withObject:datasource[0] waitUntilDone:NO];
+        }
+    } failureBlock:^(NSError *error) {
+        
+    }];
+    
 }
 
 /*
@@ -538,12 +590,17 @@
         stateView.labelText=@"下载失败";
         [self performSelector:@selector(setStateView:) withObject:@"fail" afterDelay:0.5];
     }else{
-        if (_deleteArr.count==0) {
-            stateView.labelText=@"下载完成";
-            [self performSelector:@selector(setStateView:) withObject:@"success" afterDelay:0.5];
+        if (self.photosView.isUpload) {
+            [self pushData];
         }else{
-            stateView.labelText=[NSString stringWithFormat:@"正在下载(%d/%d)",deleteCount-_deleteArr.count,deleteCount];
+            if (_deleteArr.count==0) {
+                stateView.labelText=@"下载完成";
+                [self performSelector:@selector(setStateView:) withObject:@"success" afterDelay:0.5];
+            }else{
+                stateView.labelText=[NSString stringWithFormat:@"正在下载(%d/%d)",deleteCount-_deleteArr.count,deleteCount];
+            }
         }
+
 //        [self showToast:@"下载成功" Long:1.5];
     }
 }
@@ -624,7 +681,8 @@
         _routingTime=dataSource;
         self.textView.text=_routingTime.rtTitle;
     }else{
-        
+        self.photosView.isUpload=YES;
+        [self addUpImage:dataSource];
     }
 }
 
@@ -674,6 +732,164 @@
         
     }];
 }
+
+
+#pragma -mark 上传图片与视频
+/**
+ *  分享
+ */
+- (void)upLoadImage
+{
+    [self.view endEditing:YES];
+    NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+    NSDictionary *userData= [user objectForKey:USERDATA];
+    NSString *userPhone=userData[@"userPhone"];
+    params = [NSMutableDictionary dictionary];
+    params[@"username"] = userPhone;
+    params[@"title"]=_textView.text;
+    params[@"timeId"]=@(self.routingTime.rtId);
+    //    params[@"totalCount"]=@(downCount);
+    
+    [self uploadWithPhoto:_upLoadArr[0]];
+}
+
+
+-(void)uploadWithPhoto:(REPhoto *)photo{
+    if (photo.isVedio) {
+        [self convertVedio:[photo.imageUrl urlInstance] block:^(AVAssetExportSession * session) {
+            switch (session.status) {
+                case AVAssetExportSessionStatusUnknown:
+                    PSLog(@"AVAssetExportSessionStatusUnknown");
+                    break;
+                case AVAssetExportSessionStatusWaiting:
+                    PSLog(@"AVAssetExportSessionStatusWaiting");
+                    break;
+                case AVAssetExportSessionStatusExporting:
+                    PSLog(@"AVAssetExportSessionStatusExporting");
+                    break;
+                case AVAssetExportSessionStatusCompleted:
+                    PSLog(@"AVAssetExportSessionStatusCompleted");
+                    break;
+                case AVAssetExportSessionStatusFailed:
+                    PSLog(@"AVAssetExportSessionStatusFailed");
+                    break;
+                    
+                default:
+                    break;
+            }
+            CGFloat length=[self getFileSize:resultPath];
+            if (length>0) {
+                [self uploadVedio:[NSData dataWithContentsOfFile:resultPath] photo:photo];
+            }
+            NSLog(@"%@:%f",resultPath,length);
+            
+        }];
+    }else{
+        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+        [library assetForURL:[NSURL URLWithString:photo.imageUrl] resultBlock:^(ALAsset *asset)
+         {
+             UIImage *image;
+             //在这里使用asset来获取图片
+             if ([GlobalShare isHDPicture]) {//高清图片
+                 image=[[UIImage alloc]initWithCGImage:[[asset defaultRepresentation]fullResolutionImage]];
+             }else{
+                 image = [[UIImage alloc]initWithCGImage:[[asset  defaultRepresentation]fullScreenImage]];
+             }
+             [self uploadVedio:UIImageJPEGRepresentation(image, 1) photo:photo];
+         }
+                failureBlock:^(NSError *error)
+         {}];
+        
+    }
+    
+}
+
+#pragma mark 视频压缩
+-(void)convertVedio:(NSURL *)path block:(void (^)(AVAssetExportSession*))handler{
+    AVURLAsset *avAsset = [AVURLAsset URLAssetWithURL:path options:nil];
+    NSArray *compatiblePresets = [AVAssetExportSession exportPresetsCompatibleWithAsset:avAsset];
+    if ([compatiblePresets containsObject:AVAssetExportPresetMediumQuality]) {
+        AVAssetExportSession *exportSession = [[AVAssetExportSession alloc] initWithAsset:avAsset presetName:AVAssetExportPresetMediumQuality];
+        resultPath = [NSHomeDirectory() stringByAppendingString:@"/Documents/output.mp4"];
+        exportSession.outputURL = [NSURL fileURLWithPath:resultPath];
+        exportSession.outputFileType = AVFileTypeMPEG4;
+        [exportSession exportAsynchronouslyWithCompletionHandler:^(void)
+         {
+             handler(exportSession);
+         }];
+    }
+}
+
+- (CGFloat) getFileSize:(NSString *)path
+{
+    NSFileManager *fileManager = [[NSFileManager alloc] init];
+    float filesize = -1.0;
+    if ([fileManager fileExistsAtPath:path]) {
+        NSDictionary *fileDic = [fileManager attributesOfItemAtPath:path error:nil];//获取文件的属性
+        unsigned long long size = [[fileDic objectForKey:NSFileSize] longLongValue];
+        filesize = 1.0*size/1024;
+    }
+    return filesize;
+}
+
+#pragma -mark 备份视频
+-(void)uploadVedio:(NSData *)data photo:(REPhoto *)photo{
+    NSString *url=[NSString stringWithFormat:@"%@/uploadFiles",ROUTINGTIMEURL];
+    NSMutableURLRequest *request = [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:@"POST" URLString:url parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+        if (data) {
+            if (photo.isVedio) {
+                [formData appendPartWithFileData:data name:@"files" fileName:photo.imageName mimeType:@"video/mp4"];
+                [[NSFileManager defaultManager]removeItemAtPath:resultPath error:nil];
+            }else{
+                [formData appendPartWithFileData:data name:@"files" fileName:photo.imageName mimeType:@"image/jpeg"];
+            }
+        }
+        
+    } error:nil];
+    AFURLSessionManager *managers = [[AFURLSessionManager alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+    NSProgress *progress = nil;
+    NSURLSessionUploadTask *uploadTask = [managers uploadTaskWithStreamedRequest:request progress:&progress completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        if(progress)[progress removeObserver:self forKeyPath:NSStringFromSelector(@selector(fractionCompleted))];
+        PSLog(@"下载完成:%@",responseObject);
+        if (error) {
+            PSLog(@"Error: %@", error);
+            [PSNotificationCenter postNotificationName:@"UPDATE" object:nil userInfo:params];
+        } else {
+            photo.isBackup=YES;
+            [_saveSet addObject:photo.imageName];
+            [NSKeyedArchiver archiveRootObject:_saveSet.array toFile:pathArchtive];
+            [_upLoadArr removeObject:photo];
+            if (_upLoadArr.count>0) {
+                [self uploadWithPhoto:_upLoadArr[0]];
+            }else{
+                [self.pifiiDelegate removeViewDataSources:nil];
+            }
+        }
+    }];
+    [progress addObserver:self
+               forKeyPath:NSStringFromSelector(@selector(fractionCompleted))
+                  options:NSKeyValueObservingOptionInitial
+                  context:nil];
+    [uploadTask resume];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
+                        change:(NSDictionary *)change context:(void *)context
+{
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        NSProgress *progress = object;
+        CGFloat fraction= progress.fractionCompleted;
+//        NSDictionary *param=@{@"count":@(_photoArr.count),
+//                              @"totalCount":@(downCount),
+//                              @"progress":@(fraction*100),
+//                              @"date":params[@"date"]};
+//        [PSNotificationCenter postNotificationName:@"DOWNPROGRESS" object:nil userInfo:param];
+        PSLog(@"[%f]",fraction);
+    }];
+}
+
+
+
 
 -(CATransition *)customAnimationType:(NSString *)type upDown:(BOOL )boolUpDown{
     CATransition *animation = [CATransition animation];

@@ -140,6 +140,7 @@
     [lbView addSubview:start];
     UILabel *lbDown=[[UILabel alloc]initWithFrame:CGRectMake(20, 0,CGRectGetWidth(self.bgView.frame), CGRectGetHeight(lbView.frame))];
     [lbDown setFont:[UIFont systemFontOfSize:10.0]];
+    lbDown.backgroundColor=[UIColor clearColor];
     lbDown.textColor=[UIColor whiteColor];
     lbDown.text=@"上传中...";
     self.lbProgress=lbDown;

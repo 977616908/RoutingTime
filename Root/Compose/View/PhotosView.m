@@ -48,8 +48,29 @@
         [bgVedio addSubview:imgVedio];
         [imageView addSubview:bgVedio];
     }
+    if (_isUpload) {
+        [self addImageProgress:imageView];
+    }
     [self addSubview:imageView];
     return imageView;
+}
+
+-(void)addImageProgress:(UIImageView *)image{
+    UIView *bgProgress=[[UIView alloc]initWithFrame:CGRectMake(0, 0, CGRectGetWidth(image.frame), 14)];
+    bgProgress.hidden=NO;
+    bgProgress.backgroundColor=RGBAlpha(0, 0, 0, 0.7);
+    UIActivityIndicatorView *start=[[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    start.frame=CGRectMake(5, 2, 10, 10);
+    start.transform=CGAffineTransformMakeScale(0.5, 0.5);
+    [start startAnimating];
+    [bgProgress addSubview:start];
+    UILabel *lbDown=[[UILabel alloc]initWithFrame:CGRectMake(20, 0,CGRectGetWidth(bgProgress.frame), CGRectGetHeight(bgProgress.frame))];
+    [lbDown setFont:[UIFont systemFontOfSize:8.0]];
+    lbDown.backgroundColor=[UIColor clearColor];
+    lbDown.textColor=[UIColor whiteColor];
+    lbDown.text=@"上传中...";
+    [bgProgress addSubview:lbDown];
+    [image addSubview:bgProgress];
 }
 
 - (void)layoutSubviews

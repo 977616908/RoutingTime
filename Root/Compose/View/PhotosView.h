@@ -17,6 +17,7 @@
 @interface PhotosView : UIView
 
 @property(nonatomic,assign)BOOL isAdd;
+@property(nonatomic,assign)BOOL isUpload;
 
 @property(nonatomic,weak)id<PhotosViewDelegate> delegate;
 /**
