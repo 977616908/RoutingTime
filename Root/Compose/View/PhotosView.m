@@ -60,11 +60,11 @@
     bgProgress.hidden=NO;
     bgProgress.backgroundColor=RGBAlpha(0, 0, 0, 0.7);
     UIActivityIndicatorView *start=[[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-    start.frame=CGRectMake(5, 2, 10, 10);
+    start.frame=CGRectMake(3, 2, 10, 10);
     start.transform=CGAffineTransformMakeScale(0.5, 0.5);
     [start startAnimating];
     [bgProgress addSubview:start];
-    UILabel *lbDown=[[UILabel alloc]initWithFrame:CGRectMake(20, 0,CGRectGetWidth(bgProgress.frame), CGRectGetHeight(bgProgress.frame))];
+    UILabel *lbDown=[[UILabel alloc]initWithFrame:CGRectMake(15, 0,CGRectGetWidth(bgProgress.frame), CGRectGetHeight(bgProgress.frame))];
     [lbDown setFont:[UIFont systemFontOfSize:8.0]];
     lbDown.backgroundColor=[UIColor clearColor];
     lbDown.textColor=[UIColor whiteColor];

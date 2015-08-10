@@ -46,6 +46,7 @@
 @property(nonatomic,weak)CCScrollView *rootScrollView;
 @property(nonatomic,weak)CCLabel *lbDate;
 @property(nonatomic,weak)CCButton *btnSelect;
+@property(nonatomic,weak)UIView *progressView;
 @end
 
 @implementation RoutingDetailController
@@ -283,6 +284,10 @@
         [action showInView:self.view];
         //        [self openLibaray];
     }else{
+        if (_imageArr.count<index) {
+            [self showToast:@"正在上传..." Long:1.5];
+            return;
+        }
         RoutingMsg *msg=_imageArr[index-1];
         if (isDelete) {
             UIImageView *delImg=self.photosView.totalImages[index-1];
@@ -368,6 +373,7 @@
 }
 
 -(void)addUpImage:(id)dataSource{
+    PSLog(@"Img:[%d]",_photosView.totalImages.count);
     if ([dataSource isKindOfClass:[NSArray class]]) {
         for (REPhoto *photo in dataSource) {
             [self.photosView addImage:photo.image duration:photo.duration];
@@ -376,12 +382,14 @@
     }else{
         REPhoto *photo=dataSource;
         [self.photosView addImage:photo.image duration:photo.duration];
-        [_photoArr addObject:dataSource];
+        [_upLoadArr addObject:dataSource];
     }
     CGFloat gh=(self.photosView.subviews.count/4+1)*80;
     self.photosView.size=CGSizeMake(CGRectGetWidth(self.rootScrollView.frame), gh);
     self.rootScrollView.contentSize=CGSizeMake(0, gh);
     self.photosView.isUpload=NO;
+    [self.photosView totalImages];
+    PSLog(@"Img:[%d]",_photosView.totalImages.count);
     [self upLoadImage];
 }
 
@@ -749,12 +757,16 @@
     params[@"title"]=_textView.text;
     params[@"timeId"]=@(self.routingTime.rtId);
     //    params[@"totalCount"]=@(downCount);
-    
+    downCount=_upLoadArr.count;
     [self uploadWithPhoto:_upLoadArr[0]];
 }
 
 
 -(void)uploadWithPhoto:(REPhoto *)photo{
+    NSInteger count=downCount-_upLoadArr.count+_imageArr.count;
+    UIImageView *imgView=self.photosView.totalImages[count];
+    NSLog(@"--[%d]---[%d]",self.photosView.totalImages.count,imgView.subviews.count);
+    _progressView=[imgView.subviews lastObject];
     if (photo.isVedio) {
         [self convertVedio:[photo.imageUrl urlInstance] block:^(AVAssetExportSession * session) {
             switch (session.status) {
@@ -884,6 +896,12 @@
 //                              @"progress":@(fraction*100),
 //                              @"date":params[@"date"]};
 //        [PSNotificationCenter postNotificationName:@"DOWNPROGRESS" object:nil userInfo:param];
+        if (fraction>=1.0) {
+            [_progressView removeFromSuperview];
+        }else{
+            UILabel *txtMsg=[_progressView.subviews lastObject];
+            txtMsg.text=[NSString stringWithFormat:@"上传中:%.2f%%",fraction*100];
+        }
         PSLog(@"[%f]",fraction);
     }];
 }
