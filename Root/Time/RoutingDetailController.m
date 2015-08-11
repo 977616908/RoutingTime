@@ -81,7 +81,7 @@
             photo.imageUrl=msg.msgPath;
             photo.date=_routingTime.rtDate;
             photo.isVedio=[_routingTime.rtSmallPaths[i] isVedio];
-            photo.imageName=msg.msgNum;
+            photo.rtContent=msg.msgNum;
             if (photo.isVedio) {
                 [_vedioArr addObject:photo];
             }else{
@@ -284,28 +284,43 @@
         [action showInView:self.view];
         //        [self openLibaray];
     }else{
+        UIImageView *delImg=self.photosView.totalImages[index-1];
+        REPhoto *photo;
         if (_imageArr.count<index) {
-            [self showToast:@"正在上传..." Long:1.5];
-            return;
-        }
-        RoutingMsg *msg=_imageArr[index-1];
-        if (isDelete) {
-            UIImageView *delImg=self.photosView.totalImages[index-1];
-            REPhoto *photo;
+            PSLog(@"-------[%@]-----",delImg.restorationIdentifier);
+            NSString *path=delImg.restorationIdentifier;
+            for(photo in _vedioArr){
+                if([photo.imageName isEqualToString:path]){
+                    break;
+                }
+            }
+            for(photo in _photoArr){
+                if([photo.imageName isEqualToString:path]){
+                    break;
+                }
+            }
+            if (!photo) {
+               [self showToast:@"正在上传..." Long:1.5];
+                return;
+            }
+        }else{
+           NSString *path=[_imageArr[index-1] msgNum];
+            RoutingMsg *msg=_imageArr[index-1];
             if (msg.isVedio) {
-                //            photo=_vedioArr[index-1];
                 for(photo in _vedioArr){
-                    if([photo.imageName isEqualToString:msg.msgNum]){
+                    if([photo.rtContent isEqualToString:path]){
                         break;
                     }
                 }
             }else{
                 for(photo in _photoArr){
-                    if([photo.imageName isEqualToString:msg.msgNum]){
+                    if([photo.rtContent isEqualToString:path]){
                         break;
                     }
                 }
             }
+        }
+        if (isDelete) {
             if ([_deleteArr containsObject:photo]) {
                 delImg.alpha=1.0;
                 [_deleteArr removeObject:photo];
@@ -321,32 +336,30 @@
                 delImg.alpha=0.7;
             }
         }else{
-            if (msg.isVedio) {
-                MPMoviePlayerViewController *playerController=[[MPMoviePlayerViewController alloc]init];
-                NSURL *url=[_routingTime.rtPaths[index-1] msgPath].urlInstance;
-                playerController.moviePlayer.contentURL = url;
-                playerController.moviePlayer.controlStyle=MPMovieControlStyleFullscreen;
-                [playerController.moviePlayer prepareToPlay];
-                [self presentMoviePlayerViewControllerAnimated:playerController];
-            }else{
-                MJPhotoBrowser *photo=[[MJPhotoBrowser alloc]init];
-                photo.photoType=PhotoShowCamera;
-                NSInteger count=0;
-                for (int i=0; i<_photoArr.count; i++) {
-                    if ([[_photoArr[i] imageName]isEqualToString:msg.msgNum]) {
-                        count=i;
-                        break;
-                    }
-                }
-                photo.currentPhotoIndex=count;
-                photo.photos=_photoArr;
-                photo.pifiiDelegate=self;
-                [self.navigationController.view.layer addAnimation:[self customAnimationType:kCATransitionFade upDown:NO]  forKey:@"animation"];
-                [self.navigationController pushViewController:photo animated:NO];
-            }
+            [self startPhoto:photo];
         }
     }
   
+}
+
+
+-(void)startPhoto:(REPhoto *)photo{
+    if (photo.isVedio) {
+        MPMoviePlayerViewController *playerController=[[MPMoviePlayerViewController alloc]init];
+        NSURL *url=photo.imageUrl.urlInstance;
+        playerController.moviePlayer.contentURL = url;
+        playerController.moviePlayer.controlStyle=MPMovieControlStyleFullscreen;
+        [playerController.moviePlayer prepareToPlay];
+        [self presentMoviePlayerViewControllerAnimated:playerController];
+    }else{
+        MJPhotoBrowser *photoBrowser=[[MJPhotoBrowser alloc]init];
+        photoBrowser.photoType=PhotoShowCamera;
+        photoBrowser.currentPhotoIndex=[_photoArr indexOfObject:photo];
+        photoBrowser.photos=_photoArr;
+        photoBrowser.pifiiDelegate=self;
+        [self.navigationController.view.layer addAnimation:[self customAnimationType:kCATransitionFade upDown:NO]  forKey:@"animation"];
+        [self.navigationController pushViewController:photoBrowser animated:NO];
+    }
 }
 
 #pragma -mark 添加相册
@@ -435,7 +448,7 @@
                         if (i!=0) {
                             [sb appendString:@","];
                         }
-                        [sb appendString:photo.imageName];
+                        [sb appendString:photo.rtContent];
                     }
                 }
                 NSDictionary *param=@{
@@ -451,31 +464,48 @@
 
 -(void)handleRequestOK:(id)response mark:(NSString *)mark{
     if ([[response objectForKey:@"returnCode"]integerValue]==200) {
-        NSInteger count=_photoArr.count+_vedioArr.count;
-        if (_deleteArr.count==count) {
-            [self performSelector:@selector(exitCurrentController) withObject:nil afterDelay:1.5];
-        }else{
-//            NSMutableArray *arrImg=[NSMutableArray array];
-            for (REPhoto *photo in _deleteArr) {
-                if (photo.isVedio) {
-                    [_vedioArr removeObject:photo];
-                }else{
-                    [_photoArr removeObject:photo];
-                }
-                for (RoutingMsg *msg in _imageArr) {
-                    if ([msg.msgNum isEqualToString:photo.imageName]) {
-                        [_imageArr removeObject:msg];
-                        break;
+        if ([mark isEqualToString:@"delete"]) {
+            NSInteger count=_photoArr.count+_vedioArr.count;
+            if (_deleteArr.count==count) {
+                [self performSelector:@selector(exitCurrentController) withObject:nil afterDelay:1.5];
+            }else{
+                //            NSMutableArray *arrImg=[NSMutableArray array];
+                for (REPhoto *photo in _deleteArr) {
+                    if (photo.isVedio) {
+                        [_vedioArr removeObject:photo];
+                    }else{
+                        [_photoArr removeObject:photo];
                     }
+                    for (RoutingMsg *msg in _imageArr) {
+                        if ([msg.msgNum isEqualToString:photo.rtContent]) {
+                            [_imageArr removeObject:msg];
+                            break;
+                        }
+                    }
+                    
                 }
-
+                [_deleteArr removeAllObjects];
+                for (UIImageView *delImg in _photosView.totalImages) {
+                    if(delImg.subviews.count>0&&delImg.alpha<1.0)[delImg removeFromSuperview];
+                }
             }
-            [_deleteArr removeAllObjects];
-            for (UIImageView *delImg in _photosView.totalImages) {
-                if(delImg.subviews.count>0&&delImg.alpha<1.0)[delImg removeFromSuperview];
+            [self.pifiiDelegate removeViewDataSources:nil];
+        }else{
+            NSArray *arrDetail=response[@"data"];
+            NSDictionary *param=[arrDetail lastObject];
+            NSString *duration=param[@"duration"];
+            NSString *path=param[@"path"];
+            REPhoto *photo;
+            if (duration&&![duration isEqualToString:@""]) {
+                photo=[_vedioArr lastObject];
+            }else{
+                photo=[_photoArr lastObject];
             }
+            photo.rtContent=[param[@"id"] stringValue];
+            photo.imageUrl=path;
+            photo.routingId=[NSString stringWithFormat:@"%d",_routingTime.rtId];
         }
-        [self.pifiiDelegate removeViewDataSources:nil];
+
     }
 }
 
@@ -623,19 +653,9 @@
     if (msg.isVedio) {
         contentType=SSPublishContentMediaTypeVideo;
         photo=_vedioArr[0];
-//        for(photo in _vedioArr){
-//            if([photo.imageName isEqualToString:msg.msgNum]){
-//                break;
-//            }
-//        }
     }else{
         contentType=SSPublishContentMediaTypeImage;
         photo=_photoArr[0];
-//        for(photo in _photoArr){
-//            if([photo.imageName isEqualToString:msg.msgNum]){
-//                break;
-//            }
-//        }
     }
     NSString *url=photo.imageUrl;
     //1、构造分享内容
@@ -708,7 +728,7 @@
             REPhoto *photo=dataSource[i];
             for (int j=0; j<_imageArr.count; j++) {
                 RoutingMsg *msg=_imageArr[j];
-                if ([msg.msgNum isEqualToString:photo.imageName]) {
+                if ([msg.msgNum isEqualToString:photo.rtContent]) {
                     [arrImg addObject:msg];
                     break;
                 }
@@ -765,6 +785,7 @@
 -(void)uploadWithPhoto:(REPhoto *)photo{
     NSInteger count=downCount-_upLoadArr.count+_imageArr.count;
     UIImageView *imgView=self.photosView.totalImages[count];
+    imgView.restorationIdentifier=photo.imageName;
     NSLog(@"--[%d]---[%d]",self.photosView.totalImages.count,imgView.subviews.count);
     _progressView=[imgView.subviews lastObject];
     if (photo.isVedio) {
@@ -871,6 +892,13 @@
             [_saveSet addObject:photo.imageName];
             [NSKeyedArchiver archiveRootObject:_saveSet.array toFile:pathArchtive];
             [_upLoadArr removeObject:photo];
+            if (photo.isVedio) {
+                [_vedioArr addObject:photo];
+            }else{
+                [_photoArr addObject:photo];
+            }
+            [self initPostWithURL:ROUTINGTIMEURL path:@"photoDetails" paras:@{@"timeId":@(self.routingTime.rtId)} mark:@"photo" autoRequest:YES];
+
             if (_upLoadArr.count>0) {
                 [self uploadWithPhoto:_upLoadArr[0]];
             }else{
@@ -902,7 +930,7 @@
             UILabel *txtMsg=[_progressView.subviews lastObject];
             txtMsg.text=[NSString stringWithFormat:@"上传中:%.2f%%",fraction*100];
         }
-        PSLog(@"[%f]",fraction);
+//        PSLog(@"[%f]",fraction);
     }];
 }
 

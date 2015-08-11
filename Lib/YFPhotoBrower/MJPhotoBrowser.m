@@ -215,7 +215,7 @@
 
 -(void)deletePhoto:(REPhoto *)photo{
     NSDictionary *param=@{
-                          @"resId":photo.imageName,
+                          @"resId":photo.rtContent,
                           @"timeId":photo.routingId};
     [self initPostWithURL:ROUTINGTIMEURL path:@"deleteFiles" paras:param mark:@"delete" autoRequest:YES];
 }
