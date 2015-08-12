@@ -388,7 +388,7 @@ typedef enum{
 //        }
     [self dismissViewControllerAnimated:YES completion:nil];
     NSURL *url=[info objectForKey:UIImagePickerControllerMediaURL];//视频路径
-    NSString *urlStr=[url path];
+//    NSString *urlStr=[url path];
     
     NSData *data=[NSData dataWithContentsOfURL:url];
     
@@ -397,7 +397,7 @@ typedef enum{
         _stateView.labelText=@"正在分享...";
         [self uploadWithVedio:data name:[NSString stringWithFormat:@"IMG_0%d.MOV",arc4random()%1000]];
     }
-    PSLog(@"--%@--",urlStr);
+//    PSLog(@"--%@--",urlStr);
 }
 
 #pragma -mark 备份视频
@@ -435,11 +435,11 @@ typedef enum{
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         NSProgress *progress = object;
         CGFloat fraction= progress.fractionCompleted;
-        NSString *localized=progress.localizedDescription;
-        NSString *additional=progress.localizedAdditionalDescription;
+//        NSString *localized=progress.localizedDescription;
+//        NSString *additional=progress.localizedAdditionalDescription;
         int progressDuration=fraction*100;
         _stateView.labelText=[NSString stringWithFormat:@"正在分享...(%d%%)",progressDuration];
-        PSLog(@"[%f]--[%@]--[%@]",fraction,localized,additional);
+//        PSLog(@"[%f]--[%@]--[%@]",fraction,localized,additional);
     }];
 }
 

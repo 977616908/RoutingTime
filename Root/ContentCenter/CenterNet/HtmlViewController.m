@@ -65,9 +65,9 @@
 //判断加载的网站
 -(BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType{
     if (navigationType==UIWebViewNavigationTypeLinkClicked) {
-        NSURL *url=[request URL];
-        NSString *curUrl=[url absoluteString];
-        PSLog(@"-----%@",curUrl);
+//        NSURL *url=[request URL];
+//        NSString *curUrl=[url absoluteString];
+//        PSLog(@"-----%@",curUrl);
     }
     
     return YES;

@@ -609,11 +609,11 @@ typedef void(^BoundPiFiiRounter)(BOOL isBound);
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         NSProgress *progress = object;
         CGFloat fraction= progress.fractionCompleted;
-        NSString *localized=progress.localizedDescription;
-        NSString *additional=progress.localizedAdditionalDescription;
+//        NSString *localized=progress.localizedDescription;
+//        NSString *additional=progress.localizedAdditionalDescription;
         int progressDuration=fraction*100;
         stateView.labelText=[NSString stringWithFormat:@"正在备份...(%d%%)",progressDuration];
-        PSLog(@"[%f]--[%@]--[%@]",fraction,localized,additional);
+//        PSLog(@"[%f]--[%@]--[%@]",fraction,localized,additional);
     }];
 }
 
