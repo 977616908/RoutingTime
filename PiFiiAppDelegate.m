@@ -13,8 +13,8 @@
 #import "PiFiiBaseTabBarController.h"
 
 #import <ShareSDK/ShareSDK.h>
-#import "WeiboApi.h"
-#import "WeiboSDK.h"
+//#import "WeiboApi.h"
+//#import "WeiboSDK.h"
 #import <TencentOpenAPI/QQApiInterface.h>
 #import <TencentOpenAPI/TencentOAuth.h>
 #import "WXApi.h"
@@ -191,7 +191,7 @@ void uncaughtExceptionHandler(NSException *exception)
 -(void)shareSDK{
     [ShareSDK registerApp:@"7ab47a6975cc"];
     
-    [ShareSDK connectSinaWeiboWithAppKey:@"4164192594" appSecret:@"51a4a913583870a0501c47c81c60b26d" redirectUri:@"www.pifii.com" weiboSDKCls:[WeiboSDK class]];
+//    [ShareSDK connectSinaWeiboWithAppKey:@"4164192594" appSecret:@"51a4a913583870a0501c47c81c60b26d" redirectUri:@"www.pifii.com" weiboSDKCls:[WeiboSDK class]];
     
     [ShareSDK connectWeChatWithAppId:@"wxca95672398f19838"
                            appSecret:@"04383b3f8824135f303343c57b1c62e1"
