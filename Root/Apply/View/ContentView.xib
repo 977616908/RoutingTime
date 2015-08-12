@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14D131" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <deployment identifier="iOS"/>
+        <deployment version="2048" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
     <objects>
@@ -23,7 +23,7 @@
                         <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Lta-Iy-UAC">
                             <rect key="frame" x="25" y="35" width="180" height="145"/>
                             <subviews>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="rt_test00.png" translatesAutoresizingMaskIntoConstraints="NO" id="9HN-yz-ChE">
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9HN-yz-ChE">
                                     <rect key="frame" x="0.0" y="12" width="180" height="121"/>
                                 </imageView>
                             </subviews>
@@ -80,7 +80,7 @@
                         <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PaZ-xd-SN1">
                             <rect key="frame" x="18" y="26" width="144" height="186"/>
                             <subviews>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="rt_test01.png" translatesAutoresizingMaskIntoConstraints="NO" id="B79-5q-mWn">
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="B79-5q-mWn">
                                     <rect key="frame" x="3" y="0.0" width="125" height="185"/>
                                 </imageView>
                             </subviews>
@@ -125,7 +125,7 @@
                         <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Fkj-1T-6ej">
                             <rect key="frame" x="15" y="19" width="162" height="130"/>
                             <subviews>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="rt_test00.png" translatesAutoresizingMaskIntoConstraints="NO" id="aLf-Yo-iCa">
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aLf-Yo-iCa">
                                     <rect key="frame" x="0.0" y="11" width="162" height="108"/>
                                 </imageView>
                             </subviews>
@@ -182,7 +182,7 @@
                         <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QK8-RK-7hD">
                             <rect key="frame" x="17" y="18" width="118" height="166"/>
                             <subviews>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="rt_test01.png" translatesAutoresizingMaskIntoConstraints="NO" id="L7i-dH-f4T">
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="L7i-dH-f4T">
                                     <rect key="frame" x="0.0" y="0.0" width="106" height="158"/>
                                 </imageView>
                             </subviews>
@@ -215,8 +215,6 @@
     <resources>
         <image name="rt_dian.png" width="3" height="3"/>
         <image name="rt_hline.png" width="123" height="1"/>
-        <image name="rt_test00.png" width="199" height="132"/>
-        <image name="rt_test01.png" width="141" height="212"/>
         <image name="rt_wline.png" width="179" height="1"/>
     </resources>
 </document>

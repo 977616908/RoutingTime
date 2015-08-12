@@ -18,6 +18,7 @@
 #import <TencentOpenAPI/QQApiInterface.h>
 #import <TencentOpenAPI/TencentOAuth.h>
 #import "WXApi.h"
+#import "LoginRegisterController.h"
 
 @implementation PiFiiAppDelegate
 
@@ -43,11 +44,19 @@
 //    [self requestMacForIP];
 //    [self requestTokenOfRouting];
 //    [self requestSaveBindMac];
-    [NSThread sleepForTimeInterval:1];
+//    [NSThread sleepForTimeInterval:1];
     [application setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
-   
-    PiFiiBaseTabBarController *tab=[[PiFiiBaseTabBarController alloc]init];
-    self.window.rootViewController = tab;
+    NSUserDefaults *userDefaultes = [NSUserDefaults standardUserDefaults];
+    BOOL isLogin = [[userDefaultes objectForKey:ISLOGIN] boolValue];
+    if (!isLogin){
+        //推入
+        LoginRegisterController *loginController=[[LoginRegisterController alloc]init];
+        self.window.rootViewController=loginController;
+    }else{
+        PiFiiBaseTabBarController *tab=[[PiFiiBaseTabBarController alloc]init];
+        self.window.rootViewController = tab;
+    }
+
     
     application.statusBarStyle = UIStatusBarStyleLightContent;
 //    self.window.backgroundColor = @"hm_bg".colorInstance;
