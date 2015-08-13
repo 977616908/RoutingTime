@@ -319,9 +319,12 @@ typedef void(^BoundPiFiiRounter)(BOOL isBound);
                 {
                     [self.navigationController.view.layer addAnimation:[self customAnimation1:self.view upDown:YES] forKey:@"animation1"];
                     ScannerViewController *svc = [[ScannerViewController alloc]init];
+                    svc.showsZBarControls=NO;
                     svc.type=ScannerMac;
                     svc.delegate=self;
-                    [self.navigationController pushViewController:svc animated:NO];
+//                    [self.navigationController pushViewController:svc animated:NO];
+                    svc.modalTransitionStyle=UIModalTransitionStyleFlipHorizontal;
+                    [self presentViewController:svc animated:YES completion:nil];
                 }
                     break;
                 case 2://绑定

@@ -46,7 +46,7 @@
 
 -(void)createNav{
     self.view.backgroundColor=RGBCommon(63, 205, 225);
-    CGFloat gh=-20;
+    CGFloat gh=0;
     if (is_iOS7()) {
         gh=20;
     }
@@ -173,9 +173,12 @@
         }else{
             [self.navigationController.view.layer addAnimation:[self customAnimation1:self.view upDown:YES] forKey:@"animation1"];
             ScannerViewController *svc = [[ScannerViewController alloc]init];
+            svc.showsZBarControls=NO;
             svc.type=ScannerOther;
             svc.delegate=self;
-            [self.navigationController pushViewController:svc animated:NO];
+//            [self.navigationController pushViewController:svc animated:NO];
+            svc.modalTransitionStyle=UIModalTransitionStyleFlipHorizontal;
+            [self presentViewController:svc animated:YES completion:nil];
         }
     }
 }
@@ -191,7 +194,7 @@
         [self.btnStart alterNormalTitle:@"开始智能连接"];
         [self start:self.cameraMsg.camid];
     }else{
-        [self showToast:@"设备不正确或未连接“IPCAM-XXX”的WIFI" Long:1.5];
+        [self showToast:@"设备不正确或未连接“IPCAM-XXX”的WIFI" Long:2.5];
     }
     NSLog(@"---[%@]---",wifiiName);
 }

@@ -72,7 +72,7 @@
  *  @param from   原来选中的位置
  *  @param to     最新选中的位置
  */
-- (void)tabBar:(CCTabBar *)tabBar didSelectedButtonFrom:(int)from to:(int)to
+- (void)tabBar:(CCTabBar *)tabBar didSelectedButtonFrom:(NSInteger)from to:(NSInteger)to
 {
     self.selectedIndex = to;
 }

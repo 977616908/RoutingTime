@@ -11,6 +11,7 @@
 #import "WFXDeviceFinder.h"
 #import "SemiAsyncDispatcher.h"
 #import "PiFiiBaseTabBarController.h"
+#import "PiFiiBaseNavigationController.h"
 
 #import <ShareSDK/ShareSDK.h>
 //#import "WeiboApi.h"
@@ -51,10 +52,11 @@
     if (!isLogin){
         //推入
         LoginRegisterController *loginController=[[LoginRegisterController alloc]init];
-        self.window.rootViewController=loginController;
+        PiFiiBaseNavigationController *navController=[[PiFiiBaseNavigationController alloc]initWithRootViewController:loginController];
+        self.window.rootViewController=navController;
     }else{
-        PiFiiBaseTabBarController *tab=[[PiFiiBaseTabBarController alloc]init];
-        self.window.rootViewController = tab;
+        PiFiiBaseTabBarController *tabController=[[PiFiiBaseTabBarController alloc]init];
+        self.window.rootViewController = tabController;
     }
 
     

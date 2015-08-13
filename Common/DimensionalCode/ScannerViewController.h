@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <DimensionalCode/DimensionalCodeSDK.h>
+//#import <DimensionalCode/DimensionalCodeSDK.h>
 #import "DownLoadViewController.h"
 #import "WFXDeviceFinder.h"
 #import "SemiAsyncDispatcher.h"
+#import "ZBarSDK.h"
 typedef enum{
     ScannerNone=0,
     ScannerMac,
@@ -23,15 +24,7 @@ typedef enum{
 
 @end
 
-@interface ScannerViewController : DimensionalCodeReaderViewController <DimensionalCodeReaderViewControllerDelegate>
-
-{
-    CCLabel *tipBack;
-    CCView  *tipView;
-    CCLabel *crMsg;
-    CCView *rigViewNav;
-    CGFloat org_Y;
-}
+@interface ScannerViewController : ZBarReaderViewController
 
 @property(nonatomic,assign)ScannerType type;
 @property(nonatomic,weak)id<ScannerMacDelegate> delegate;
