@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface RoutingShareController : PiFiiBaseViewController
-
+@property(nonatomic,assign)NSInteger  albumId;
 -(void)show;
 @end
