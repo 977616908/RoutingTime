@@ -80,6 +80,9 @@
         viewController.hidesBottomBarWhenPushed=YES;
     }
     [super pushViewController:viewController animated:animated];
+    if ([self respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.interactivePopGestureRecognizer.delegate=nil;
+    }
 }
 
 -(BOOL)shouldAutorotate{

@@ -300,6 +300,7 @@
     }
     self.bindView.isBind=isMacBounds;
     [self.bindView moveTransiton:YES];
+    __weak typeof(self) weakSelf=self;
     self.bindView.type=^(NSInteger tag,NSString *statue){
         switch (tag) {
             case 1://扫一扫
@@ -308,10 +309,10 @@
                 ScannerViewController *svc = [[ScannerViewController alloc]init];
                 svc.showsZBarControls=NO;
                 svc.type=ScannerMac;
-                svc.delegate=self;
+                svc.delegate=weakSelf;
 //                [self.navigationController pushViewController:svc animated:NO];
                 svc.modalTransitionStyle=UIModalTransitionStyleFlipHorizontal;
-                [self presentViewController:svc animated:YES completion:nil];
+                [weakSelf presentViewController:svc animated:YES completion:nil];
             }
                 break;
             case 2://绑定
@@ -319,16 +320,16 @@
                     [[[UIAlertView alloc]initWithTitle:@"提示" message:@"请扫一扫要绑定路由设备" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil]show];
                     return;
                 }
-                [_bindView moveTransiton:NO];
+                [weakSelf.bindView moveTransiton:NO];
                 [self routerBind:NO Statue:nil];
                 
                 break;
             case 3://解绑
-                [_bindView moveTransiton:NO];
+                [weakSelf.bindView moveTransiton:NO];
                 [self routerBind:YES Statue:statue];
                 break;
             default:
-                [_bindView moveTransiton:NO];
+                [weakSelf.bindView moveTransiton:NO];
                 break;
         }
         

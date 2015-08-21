@@ -8,8 +8,12 @@
 
 #import "RoutingFootprintController.h"
 #import "FontprintCell.h"
+#import "AlbumInstallController.h"
+#import "RoutingCameraController.h"
 
-@interface RoutingFootprintController ()<UITableViewDataSource,UITableViewDelegate>
+#define DEVICE @"APPDEVICE"
+
+@interface RoutingFootprintController ()<UITableViewDataSource,UITableViewDelegate,PiFiiBaseViewDelegate>
 @property(nonatomic,weak)CCTableView *table;
 
 
@@ -19,7 +23,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self dataBase];
     [self initView];
+
 }
 
 -(void)initView{
@@ -33,6 +39,53 @@
     self.table=table;
     [self.view addSubview:table];
 }
+
+-(void)dataBase{
+    NSArray *arr=[[NSUserDefaults standardUserDefaults]objectForKey:DEVICE];
+    if (![arr containsObject:@(2)]) {
+        AlbumInstallController  *albumController=[[AlbumInstallController alloc]init];
+        albumController.pifiiDelegate=self;
+        [self.navigationController pushViewController:albumController animated:YES];
+    }
+    else{
+        RoutingCameraController *routingController;
+        if (ScreenHeight()>480) {
+            routingController=[[RoutingCameraController alloc]initWithNibName:@"RoutingCameraController" bundle:nil];
+        }else{
+            routingController=[[RoutingCameraController alloc]initWithNibName:@"RoutingCameraController640x960" bundle:nil];
+        }
+        routingController.arrCamera=[NSMutableArray array];
+        //            routingController.dateStr=sb;
+        [self presentViewController:routingController animated:YES completion:nil];
+    }
+}
+
+
+#pragma -mark 传递数据处理
+-(void)pushViewDataSource:(id)dataSource{
+    NSInteger count=[dataSource integerValue];
+    if(count!=0){
+        [self saveDevice:dataSource];
+    }
+    
+}
+
+-(void)saveDevice:(id)data{
+    NSUserDefaults *ud=[NSUserDefaults standardUserDefaults];
+    NSArray *arr=[ud objectForKey:DEVICE];
+    if (!arr) {
+        arr=@[data];
+    }else{
+        if (![arr containsObject:data]) {
+            NSMutableArray *ar=[NSMutableArray arrayWithArray:arr];
+            [ar addObject:data];
+            arr=ar;
+        }
+    }
+    [ud setObject:arr forKey:DEVICE];
+    [ud synchronize];
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

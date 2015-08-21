@@ -171,7 +171,7 @@ FOUNDATION_EXPORT BOOL isInstallWithURLScheme(NSString *scheme)
 
 FOUNDATION_EXPORT BOOL is_iOS7()
 {
-    return [[MyDevice OS_Version] hasPrefix:@"7"]||[[MyDevice OS_Version] hasPrefix:@"8"];
+    return [[MyDevice OS_Version] hasPrefix:@"7"]||[[MyDevice OS_Version] hasPrefix:@"8"]||[[MyDevice OS_Version] hasPrefix:@"9"];
 }
 
 FOUNDATION_EXPORT BOOL is3_5Screen()

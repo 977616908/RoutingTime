@@ -120,34 +120,35 @@
         [self.view addSubview:applyView];
     }
     [self.applyView moveTransiton:YES];
+    __weak typeof(self) weakSelf=self;
     _applyView.type=^(NSInteger tag){
         PSLog(@"---[%d]---",tag);
         BOOL isBound=[GlobalShare isBindMac];
         switch (tag) {
             case 0:{
                 AlbumInstallController  *albumController=[[AlbumInstallController alloc]init];
-                albumController.pifiiDelegate=self;
-                [self.navigationController pushViewController:albumController animated:YES];
+                albumController.pifiiDelegate=weakSelf;
+                [weakSelf.navigationController pushViewController:albumController animated:YES];
             }
                 break;
             case 1:{
                 if (isBound) {
-                    self.cameraMsg=nil;
+                    weakSelf.cameraMsg=nil;
                     CameraViewController *cameraController=[[CameraViewController alloc]init];
-                    cameraController.pifiiDelegate=self;
-                    [self.navigationController pushViewController:cameraController animated:YES];
+                    cameraController.pifiiDelegate=weakSelf;
+                    [weakSelf.navigationController pushViewController:cameraController animated:YES];
                 }else{
-                    [self showToast:@"未绑定路由，请绑定路由再添加" Long:1.5];
+                    [weakSelf showToast:@"未绑定路由，请绑定路由再添加" Long:1.5];
                 }
             }
                 break;
             case 2:{
                 if (isBound) {
                     NetInstallController *netController=[[NetInstallController alloc]init];
-                    netController.pifiiDelegate=self;
-                    [self.navigationController pushViewController:netController animated:YES];
+                    netController.pifiiDelegate=weakSelf;
+                    [weakSelf.navigationController pushViewController:netController animated:YES];
                 }else{
-                    [self showToast:@"未绑定路由，请绑定路由再添加" Long:1.5];
+                    [weakSelf showToast:@"未绑定路由，请绑定路由再添加" Long:1.5];
                 }
     
             }

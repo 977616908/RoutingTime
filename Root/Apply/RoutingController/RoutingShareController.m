@@ -43,6 +43,7 @@
     
     CCButton *btnShare=CCButtonCreateWithValue(CGRectMake(43, 40, 94, 22), @selector(onClick:), self);
     btnShare.backgroundColor=RGBCommon(140, 181, 156);
+    btnShare.tag=1;
     [btnShare alterNormalTitle:@"分享"];
     [btnShare alterFontSize:14.0f];
     [bgView addSubview:btnShare];
@@ -50,6 +51,7 @@
     CCButton *btnPay=CCButtonCreateWithValue(CGRectMake(43, 80, 94, 22), @selector(onClick:), self);
     [btnPay alterNormalTitle:@"购买"];
     [btnPay alterFontSize:14.0f];
+    btnPay.tag=2;
     btnPay.backgroundColor=RGBCommon(140, 181, 156);
     [bgView addSubview:btnPay];
 }
@@ -86,7 +88,6 @@
 
 - (void)onClick:(id)sender {
     [self exitCurrentController];
-
 }
 
 

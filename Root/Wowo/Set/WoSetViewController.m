@@ -12,7 +12,7 @@
 
 #define BUTTONHEIGHT 75
 
-@interface WoSetViewController ()<UITableViewDataSource,UITableViewDelegate,UIAlertViewDelegate>{
+@interface WoSetViewController ()<UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate>{
     NSArray *_arrTitle;
     MBProgressHUD *stateView;
 }
@@ -38,7 +38,7 @@
                 @{@"title":@"WiFi设置",@"icon":@"hm_wifisz"},
                 @{@"title":@"重启路由器",@"icon":@"hm_cqlyq"},
                 @{@"icon":@"hm_icon",@"title":@"快速上网"},
-                @{@"icon":@"hm_zhuxiao",@"title":@"注销"},
+//                @{@"icon":@"hm_zhuxiao",@"title":@"注销"},
                 @{@"icon":@"hm_wotupian",@"title":@"上传原图片"},
                 @{@"icon":@"hm_icon02",@"title":@"意见反馈"}];
     CGFloat gh=44;
@@ -50,6 +50,21 @@
     self.woTable=woTable;
     woTable.showsVerticalScrollIndicator=NO;
     [self.view addSubview:woTable];
+    
+    UIView *footView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame), CGRectGetHeight(woTable.frame)-340)];
+      footView.backgroundColor=[UIColor clearColor];
+    //获取当前应用版本号
+    NSDictionary *appInfo = [[NSBundle mainBundle] infoDictionary];
+    NSString *currentVersion = [appInfo objectForKey:@"CFBundleVersion"];
+    CCLabel *lbMsg=CCLabelCreateWithNewValue([NSString stringWithFormat:@"当前版本:%@\n©2015 pifii.com版权所有",currentVersion], 10.0, CGRectMake(0, CGRectGetHeight(footView.frame)-30, CGRectGetWidth(footView.frame), 24.0));
+    lbMsg.numberOfLines=0;
+    lbMsg.textAlignment=NSTextAlignmentCenter;
+    lbMsg.textColor=RGBCommon(179, 179, 179);
+    [footView addSubview:lbMsg];
+  
+    
+    woTable.tableFooterView=footView;
+    
 }
 
 
@@ -100,7 +115,7 @@
         NSDictionary *param=_arrTitle[indexPath.row];
         cell.imageView.image=[UIImage imageNamed:param[@"icon"]];
         cell.textLabel.text=param[@"title"];
-        if (indexPath.row==4) {
+        if (indexPath.row==3) {
             UISwitch *select=[[UISwitch alloc]init];
             select.onTintColor=RGBCommon(63, 205, 225);
             NSUserDefaults *user=[NSUserDefaults standardUserDefaults];
@@ -109,8 +124,10 @@
             cell.accessoryView=select;
         }
     }else{
-        cell.accessoryView.hidden=YES;
-        cell.backgroundView=[self createUpdate:cell.frame];
+//        cell.accessoryView.hidden=YES;
+//        cell.backgroundView=[self createUpdate:cell.frame];
+        cell.imageView.image=[UIImage imageNamed:@"hm_zhuxiao"];
+        cell.textLabel.text=@"退出登录";
     }
     return cell;
 }
@@ -131,11 +148,9 @@
     if (section==0) {
         NSLog(@"---[%d]--",indexPath.row);
         if (indexPath.row==3) {
-             [[[UIAlertView alloc]initWithTitle:@"注销" message:@"注销并返回登录界面?" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"注销", nil]show];
-        }else if(indexPath.row==4){
-            
+//             [[[UIAlertView alloc]initWithTitle:@"注销" message:@"注销并返回登录界面?" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"注销", nil]show];
         }else{
-            NSArray *pushControllers = @[@"WiFiSetNameViewController",@"ResetStartViewController",@"NetSetViewController",@"",@"",@"FeedBackViewController"];
+            NSArray *pushControllers = @[@"WiFiSetNameViewController",@"ResetStartViewController",@"NetSetViewController",@"",@"FeedBackViewController"];
             id  vcInstance = [[pushControllers objectAtIndex:indexPath.row] instance];
             [self.navigationController.view.layer addAnimation:[self customAnimation:self.view upDown:YES] forKey:@"animation"];
             [vcInstance setCustomAnimation:YES];
@@ -143,12 +158,16 @@
         }
     }else{
 //        [self onCheckVersion];
-        if (!stateView) {
-            stateView = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        }
-        stateView.hidden=NO;
-        [self performSelector:@selector(showDialog) withObject:nil afterDelay:1.5];
+//        if (!stateView) {
+//            stateView = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//        }
+//        stateView.hidden=NO;
+//        [self performSelector:@selector(showDialog) withObject:nil afterDelay:1.5];
 
+//        [[[UIAlertView alloc]initWithTitle:@"注销" message:@"注销并返回登录界面?" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"注销", nil]show];
+        UIActionSheet *action=[[UIActionSheet alloc]initWithTitle:@"您确定要退出登录吗？" delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:@"退出登录" otherButtonTitles: nil];
+        [action showInView:self.view];
+        
     }
 }
 
@@ -163,7 +182,7 @@
     if (section==0) {
         return 44.0f;
     }else{
-        return 61.0f;
+        return 50.0f;
     }
 }
 
@@ -172,7 +191,7 @@
 -(void)onCheckVersion{
     NSDictionary *info=[[NSBundle mainBundle]infoDictionary];
     NSString *currentVersion=[info objectForKey:@"CFBundleVersion"];
-    NSURL *url = [NSURL URLWithString:@"http://itunes.apple.com/lookup?id=682185259"];
+    NSURL *url = [NSURL URLWithString:@"http://itunes.apple.com/lookup?id=1029412655"];
     NSMutableURLRequest *request=[[NSMutableURLRequest alloc]initWithURL:url];;
     [request setHTTPMethod:@"POST"];
     [request setTimeoutInterval:REQUESTTIMEOUT];
@@ -219,6 +238,18 @@
             [loginController setCustomAnimation:YES];
             [self.navigationController pushViewController:loginController animated:NO];
         }
+    }
+}
+
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
+    PSLog(@"--%d--",buttonIndex);
+    if (buttonIndex==0) {
+        [self clearUserMessage];
+        [self.navigationController.view.layer addAnimation:[self customAnimation:self.view upDown:YES] forKey:@"animation"];
+        //推入
+        LoginRegisterController *loginController=[[LoginRegisterController alloc]init];
+        [loginController setCustomAnimation:YES];
+        [self.navigationController pushViewController:loginController animated:NO];
     }
 }
 
